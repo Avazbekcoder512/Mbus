@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { seatModel } from './seat.js'
 
 const busSchema = new mongoose.Schema({
     bus_number: String,

@@ -47,7 +47,7 @@ export const register = async (req, res) => {
 
         const token = generateToken(userId, email, name, gender)
 
-        return res.status(201).status({
+        return res.status(201).send({
             message: "Registratsiya muvaffaqiyatli amalga oshirildi!",
             token
         })
@@ -93,7 +93,7 @@ export const login = async (req, res) => {
 
         const token = generateToken(userId, email, name, gender)
 
-        return res.status(200).status({
+        return res.status(200).send({
             message: "Login muvaffaqiyatli amalga oshirildi!",
             token
         })

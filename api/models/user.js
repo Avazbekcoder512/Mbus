@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     phoneNumber: String,
     gender: String,
     bank_card: String,
+    verification_code: Number,
     ticket: { type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }
 })
 
