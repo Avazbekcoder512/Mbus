@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+import { tripModel } from './trip.js'
+
 const routeSchema = new mongoose.Schema({
     name: String,
     from: String,
