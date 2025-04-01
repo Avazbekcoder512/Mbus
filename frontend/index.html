@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+</head>
+
+<body>
+    <div class="background"></div>
+    <header class="header container">
+        <h1><span>M</span>BUS.UZ</h1>
+        <div class="about">
+            <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
+            <button type="submit"><i class="fa-regular fa-right-to-bracket"></i> Kirish</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>
+            O’zbekiston bo’ylab avtobus qatnovlari uchun <br> chiptalarni <span>ONLAYN</span> xarid qiling!
+        </h1>
+
+        <p>O’zingizga mos hududni va sanani tanlang!</p>
+        <form id="ticket-search">
+            <div>
+                <select name="from" id="from" required>
+                    <option disabled selected value="">Bekatni tanlang</option>
+                    <option value="Toshkent">Toshkent</option>
+                    <option value="Xorazm">Xorazm</option>
+                </select>
+            </div>
+            <div>
+                <select name="to" id="to" required>
+                    <option disabled selected value="">Bekatni tanlang</option>
+                    <option value="Toshkent">Toshkent</option>
+                    <option value="Samarqand">Samarqand</option>
+                </select>
+            </div>
+            <div>
+                <input type="date" name="departure_date" id="departure_date" required>
+            </div>
+            <button type="submit">Chipta izlash</button>
+        </form>
+
+        <div id="Data">
+            <!-- Backenddan olingan ma'lumotlar shu yerda ko'rsatiladi -->
+        </div>
+    </main>
+    <script src="index.js"></script>
+</body>
+
+</html>
