@@ -1,37 +1,96 @@
-const form = document.getElementById('ticket-search')
+document.addEventListener("DOMContentLoaded", async () => {
+    const fromSelect = document.getElementById("from");
+    const toSelect = document.getElementById("to");
+    const dataDiv = document.getElementById("Data");
+    const form = document.getElementById("ticket-search");
 
-let today = new Date();
+    // Sanani avtomatik ravishda minimal qilib qo'yish
+    // let today = new Date();
+    // let minDate = today.toISOString().split("T")[0];
+    // document.getElementById("departure_date").setAttribute("min", minDate);
 
-let minDate = today.toISOString().split("T")[0];
+    // Backenddan bekatlar ro‘yxatini olish va select option'ga qo‘shish
+    try {
+        const response = await fetch("http://localhost:8000/cities");
+        const data = await response.json();
 
-document.getElementById("departure_date").setAttribute("min", minDate);
 
-form.addEventListener('submit', function (event) {
-    event.preventDefault()
+        const cities = data.cities; // ✅ Backenddan kelayotgan massiv
+        console.log("Bekatlar:", cities);
 
-    const from = document.getElementById('from').value
-    const to = document.getElementById('to').value
-    const departure_date = document.getElementById('departure_date').value
+        if (Array.isArray(cities)) {
+            cities.forEach(city => {
+                const optionFrom = document.createElement("option");
+                optionFrom.value = city.name;
+                optionFrom.textContent = city.name;
+                fromSelect.appendChild(optionFrom);
 
-    const queryString = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure_date=${encodeURIComponent(departure_date)}`
+                const optionTo = document.createElement("option");
+                optionTo.value = city.name;
+                optionTo.textContent = city.name;
+                toSelect.appendChild(optionTo);
+            });
+        } else {
+            console.error("Ma'lumot noto‘g‘ri formatda keldi:", result);
+        }
+    } catch (error) {
+        console.error("Ma'lumotlarni yuklashda xatolik:", error);
+    }
 
-    const url = `http://localhost:8000/findroute?${queryString}`
+    // Formni yuborish va natijalarni chiqarish
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-    fetch(url)
-        .then(response => response.json())
-        .then(responseData => {
-            console.log('Javob:', responseData);
+        const from = fromSelect.value;
+        const to = toSelect.value;
+        const departure_date = document.getElementById('departure_date').value;
 
-            const dataDiv = document.getElementById('Data')
+        const queryString = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure_date=${encodeURIComponent(departure_date)}`;
+        const url = `http://localhost:8000/findroute?${queryString}`;
 
-            const info = `
-            <p><strong>Qayerdan</strong> ${responseData.data.from}</p>
-            <p><strong>Qayerga</strong> ${responseData.data.to}</p>
-            <p><strong>Qachon</strong> ${responseData.trips}</p>
-        `
-            dataDiv.innerHTML = info
-        })
-        .catch(error => {
-            console.log('Xatoli:', error);
-        })
-})
+        fetch(url)
+            .then(response => response.json())
+            .then(responseData => {
+                console.log('Javob:', responseData);
+                const trips = responseData.data.trips;
+
+                let info = `
+                    <table class="trip-table">
+                        <thead>
+                            <tr>
+                                <th>Ketish vaqti</th>
+                                <th>Reys nomi</th>
+                                <th>Umumiy o‘rinlar</th>
+                                <th>Chipta narxi</th>
+                                <th>Avtobus modeli</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                trips.forEach(trip => {
+                    info += `
+                         <tr onclick="saveBusId('${trip.bus._id}')" style="cursor: pointer;">
+                            <td>${trip.departure_date}<br>${trip.departure_time}</td>
+                            <td>${responseData.data.name}</td>
+                            <td>${trip.bus.seats_count}</td>
+                            <td>${trip.ticket_price} so'm</td>
+                            <td>${trip.bus.bus_model}</td>
+                        </tr>
+                    `;
+                });
+
+
+                info += `</tbody></table>`;
+                dataDiv.innerHTML = info;
+            })
+            .catch(error => {
+                console.log('Xatolik:', error);
+            });
+    });
+});
+
+function saveBusId(busId) {
+    localStorage.setItem("selectedBusId", busId);
+    window.location.href = "seats.html"; // Sahifani o'zgartirish
+}

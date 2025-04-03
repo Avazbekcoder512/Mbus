@@ -20,8 +20,17 @@ export const routeFind = async (req, res) => {
 
         const data = await routeModel.findOne({ from: from, to: to }).populate({
             path: 'trips',
-            match: { departure_date }
+            match: { departure_date },
+            populate: [
+                {path: 'bus'}
+            ]
         })
+
+        if (!data) {
+            return res.status(404).send({
+                error: "Reys topilmadi!"
+            })
+        }
 
         return res.status(200).send({
             data
