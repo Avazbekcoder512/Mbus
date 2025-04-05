@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const preloader = document.getElementById("preloader");
+  const token = localStorage.getItem('token');
+  
+
+  function showPreloader() {
+    if (preloader) preloader.classList.remove("hidden");
+  }
+
+  function hidePreloader() {
+    if (preloader) preloader.classList.add("hidden");
+  }
+
   const busId = localStorage.getItem("selectedBusId");
   if (!busId) {
     console.error("Avtobus ID topilmadi!");
@@ -6,9 +18,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const response = await fetch(`http://localhost:8000/bus/${busId}`);
+    showPreloader()
+    // const response = await fetch(`http://localhost:8000/bus/${busId}`, {
+    //   method: "GET",
+    //   headers: {
+    //     'Authorization': `Bearer ${token}`
+    //   }
+    // });
+    const response = await fetch(`https://mbus.onrender.com/bus/${busId}`, {
+      method: "GET",
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     const busData = await response.json();
-    console.log("Avtobus ma'lumotlari:", busData);
+
+    hidePreloader()
 
     const seatsData = busData.bus.seats;
     const occupiedSeats = new Set(
