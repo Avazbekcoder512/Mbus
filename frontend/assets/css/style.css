@@ -243,7 +243,7 @@ table {
   background: #fff;
   padding: 30px;
   border-radius: 20px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   text-align: center;
 }
 td {
@@ -291,7 +291,7 @@ td.driver {
   border-radius: 12px;
   background-color: #f4f4f4;
   color: #000;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   width: fit-content;
   display: flex;
   justify-content: space-between;
@@ -333,50 +333,314 @@ td.driver {
 
 /* Foydalanuvchi ismi uchun button stil (ozgina shaffof) */
 #user-name {
-  background-color: rgba(0, 218, 65, 0.8);  /* Orqa fon rangini shaffof qilish */
-  color: white;  /* Yozuv rangini oq qilish */
-  padding: 8px 16px;  /* Ichki bo'shliq */
-  border-radius: 5px;  /* Burchaklarni yumshatish */
-  cursor: pointer;  /* Kursorni pointer qilib qo'yish */
-  font-size: 16px;  /* Matn o'lchamini sozlash */
-  display: inline-block;  /* Inline-block qilish */
+  background-color: rgba(0, 218, 65, 0.8); /* Orqa fon rangini shaffof qilish */
+  color: white; /* Yozuv rangini oq qilish */
+  padding: 8px 16px; /* Ichki bo'shliq */
+  border-radius: 5px; /* Burchaklarni yumshatish */
+  cursor: pointer; /* Kursorni pointer qilib qo'yish */
+  font-size: 16px; /* Matn o'lchamini sozlash */
+  display: inline-block; /* Inline-block qilish */
   align-items: center;
 }
 
 #user-name:hover {
-  background-color: rgba(0, 255, 85, 0.397);  /* Hover holatida fon rangini o'zgartirish */
+  background-color: rgba(
+    0,
+    255,
+    85,
+    0.397
+  ); /* Hover holatida fon rangini o'zgartirish */
 }
 
 /* Dropdown menyu */
 #user-menu {
-  display: none;  /* Yashirish */
-  position: absolute;  /* Dropdownni joylashtirish */
-  background-color: #fff;  /* Oq fon */
-  border: 1px solid #ddd;  /* Chegarani qo'shish */
-  border-radius: 5px;  /* Burchaklarni yumshatish */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Soyali effekt */
-  min-width: 180px;  /* Kichikroq o'lcham */
-  padding: 10px 0;  /* Ichki bo'shliq */
-  z-index: 1000;  /* Yuqori qatlamda ko'rsatish */
+  display: none; /* Yashirish */
+  position: absolute; /* Dropdownni joylashtirish */
+  background-color: #fff; /* Oq fon */
+  border: 1px solid #ddd; /* Chegarani qo'shish */
+  border-radius: 5px; /* Burchaklarni yumshatish */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soyali effekt */
+  min-width: 180px; /* Kichikroq o'lcham */
+  padding: 10px 0; /* Ichki bo'shliq */
+  z-index: 1000; /* Yuqori qatlamda ko'rsatish */
   top: 72px;
   right: 30px;
 }
 
 #user-menu.show {
-  display: block;  /* Dropdownni ko'rsatish */
+  display: block; /* Dropdownni ko'rsatish */
 }
 
 /* Dropdown itemlari */
 #user-menu a {
-  display: block;  /* Har bir elementni blok qilib joylashtirish */
-  padding: 10px 20px;  /* Ichki bo'shliq */
-  color: #333;  /* Matn rangi */
-  text-decoration: none;  /* Chiziqni olib tashlash */
-  font-size: 14px;  /* O'lcham */
-  border-bottom: 1px solid #eee;  /* Bo'lim chizig'i */
-  cursor: pointer;  /* Pointer kursor */
+  display: block; /* Har bir elementni blok qilib joylashtirish */
+  padding: 10px 20px; /* Ichki bo'shliq */
+  color: #333; /* Matn rangi */
+  text-decoration: none; /* Chiziqni olib tashlash */
+  font-size: 14px; /* O'lcham */
+  border-bottom: 1px solid #eee; /* Bo'lim chizig'i */
+  cursor: pointer; /* Pointer kursor */
 }
 
 #user-menu a:hover {
-  background-color: #f1f1f1;  /* Hover holatida fon rangi */
-} 
+  background-color: #f1f1f1; /* Hover holatida fon rangi */
+}
+
+#preloader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+}
+#preloader.hidden {
+  display: none;
+}
+
+.circle {
+  width: 180px;
+  height: 180px;
+  border: 10px inset rgb(133, 224, 242);
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -100px;
+  margin-top: -100px;
+  border-radius: 200px;
+  -moz-animation: rotate 5s infinitelinear;
+  -webkit-animation: rotate 5s infinite linear;
+  animation: rotate 5s infinite linear;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.circle-small {
+  width: 150px;
+  height: 150px;
+  border: 6px outset rgb(133, 224, 242);
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -81px;
+  margin-top: -81px;
+  border-radius: 156px;
+  -moz-animation: rotate-rev 3s infinite linear;
+  -webkit-animation: rotate-rev 3s infinite linear;
+  animation: rotate-rev 3s infinite linear;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.circle-big {
+  width: 210px;
+  height: 210px;
+  border: 4px dotted rgb(133, 224, 242);
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -109px;
+  margin-top: -109px;
+  border-radius: 214px;
+  -moz-animation: rotate-rev 10s infinite linear;
+  -webkit-animation: rotate-rev 10s infinite linear;
+  animation: rotate-rev 10s infinite linear;
+}
+
+.circle-inner {
+  width: 80px;
+  height: 80px;
+  background-color: rgb(133, 224, 242);
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -40px;
+  margin-top: -40px;
+  border-radius: 80px;
+  -moz-animation: pulse 1.5s infinite ease-in;
+  -webkit-animation: pulse 1.5s infinite ease-in;
+  animation: pulse 1.5s infinite ease-in;
+  opacity: 1;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.circle-inner-inner {
+  width: 100px;
+  height: 100px;
+  background-color: rgb(74, 124, 134);
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+  border-radius: 100px;
+  -moz-animation: pulse 1.5s infinite ease-in;
+  -webkit-animation: pulse 1.5s infinite ease-in;
+  animation: pulse 1.5s infinite ease-in;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/*==============ANIMATIONS=================*/
+
+/*==============ROTATE=====================*/
+
+@-moz-keyframes rotate {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*==============ROTATE-REV=================*/
+
+@-moz-keyframes rotate-rev {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(-360deg);
+  }
+}
+
+@-webkit-keyframes rotate-rev {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(-360deg);
+  }
+}
+
+@keyframes rotate-rev {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+/*==============PULSE======================*/
+
+@-moz-keyframes pulse {
+  0% {
+    -moz-transform: scale(0.1);
+    opacity: 0.2;
+  }
+  50% {
+    -moz-transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    -moz-transform: scale(0.1);
+    opacity: 0.2;
+  }
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(0.1);
+    opacity: 0.2;
+  }
+  50% {
+    -webkit-transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    -webkit-transform: scale(0.1);
+    opacity: 0.2;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.1);
+    opacity: 0.2;
+  }
+}
+
+/* .error-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.error-popup h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #e74c3c;
+}
+
+.error-popup p {
+  font-size: 16px;
+  margin-bottom: 25px;
+  color: #555;
+}
+
+#popup_button {
+  margin-top: 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#popup_button:hover {
+  background-color: #c0392b;
+}
+
+.popup-close i {
+  font-size: 36px;
+  color: #e74c3c;
+} */

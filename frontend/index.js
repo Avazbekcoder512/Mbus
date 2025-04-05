@@ -9,6 +9,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const usernameDisplay = document.getElementById("username");
     const userMenu = document.getElementById("user-menu");
 
+    const preloader = document.getElementById("preloader");
+
+    function showPreloader() {
+        if (preloader) preloader.classList.remove("hidden");
+    }
+
+    function hidePreloader() {
+        if (preloader) preloader.classList.add("hidden");
+    }
+
     // Check if user is logged in by token
     const token = localStorage.getItem("token");
 
@@ -19,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Foydalanuvchi ismini ko'rsatish
         usernameDisplay.textContent = userName;
-        userNameElement.style.display = "inline-flex";  
+        userNameElement.style.display = "inline-flex";
 
         // Kirish tugmasini yashirish va foydalanuvchi ismini ko'rsatish
         loginButton.style.display = "none";
@@ -70,9 +80,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Backenddan bekatlar ro‘yxatini olish va select option'ga qo‘shish
     try {
-        const response = await fetch("http://localhost:8000/cities");
+        showPreloader()
+        // const response = await fetch("http://localhost:8000/cities");
+        const response = await fetch("https://mbus.onrender.com/cities");
         const data = await response.json();
 
+        hidePreloader()
 
         const cities = data.cities; // ✅ Backenddan kelayotgan massiv
         console.log("Bekatlar:", cities);
@@ -105,7 +118,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const departure_date = document.getElementById('departure_date').value;
 
         const queryString = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure_date=${encodeURIComponent(departure_date)}`;
-        const url = `http://localhost:8000/findroute?${queryString}`;
+        // const url = `http://localhost:8000/findroute?${queryString}`;
+        const url = `https://mbus.onrender.com/findroute?${queryString}`;
 
         fetch(url)
             .then(response => response.json())
