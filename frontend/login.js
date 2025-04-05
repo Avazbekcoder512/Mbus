@@ -95,7 +95,7 @@ document.getElementById('register_button').addEventListener('click', async funct
 
         if (response.ok && result.token) {
             localStorage.setItem('token', result.token);
-            window.location.href = '/frontend/index.html';
+            window.location.href = 'index.html';
         } else {
             if (result.error && result.error.length > 0) {
                 showErrorPopup(result.error[0]);
@@ -138,7 +138,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
 
         if (response.ok && result.token) {
             localStorage.setItem('token', result.token);
-            window.location.href = '/frontend/index.html';
+            window.location.href = 'index.html';
         } else {
             alert(result.message || 'Login muvaffaqiyatsiz');
         }
