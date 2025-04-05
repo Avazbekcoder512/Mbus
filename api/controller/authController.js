@@ -37,15 +37,13 @@ export const register = async (req, res) => {
             email: data.email,
             password: passwordHash,
             phoneNumber: data.phoneNumber,
-            gender: data.gender
         })
 
         const userId = user._id
         const email = user.email
         const name = user.name
-        const gender = user.gender
 
-        const token = generateToken(userId, email, name, gender)
+        const token = generateToken(userId, email, name)
 
         return res.status(201).send({
             message: "Registratsiya muvaffaqiyatli amalga oshirildi!",
@@ -89,9 +87,8 @@ export const login = async (req, res) => {
         const userId = user._id
         const email = user.email
         const name = user.name
-        const gender = user.gender
 
-        const token = generateToken(userId, email, name, gender)
+        const token = generateToken(userId, email, name)
 
         return res.status(200).send({
             message: "Login muvaffaqiyatli amalga oshirildi!",

@@ -177,9 +177,6 @@ form button:hover {
   }
 }
 
-
-
-
 /* Grid (16 ustun, 5 qator) – rasmga yaqin ko‘rinish uchun */
 .seats-grid {
   display: grid;
@@ -238,3 +235,148 @@ form button:hover {
   border-radius: 5px;
   cursor: default;
 }
+
+table {
+  margin: 0 auto; /* Markazga joylashtirish */
+  border-collapse: separate;
+  border-spacing: 15px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  text-align: center;
+}
+td {
+  width: 60px;
+  height: 60px;
+  vertical-align: middle;
+  font-weight: 600;
+  border: none;
+  font-size: 20px;
+}
+td.seat {
+  background: #eaeaea;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+td.seat:hover {
+  background: #d0d0d0;
+  transform: scale(1.1);
+}
+td.seat.selected {
+  background-color: #4caf50;
+  color: #fff;
+  transform: scale(1.1);
+}
+td.seat.occupied {
+  background-color: #f44336;
+  color: #fff;
+  cursor: not-allowed;
+}
+td.empty {
+  background: transparent;
+}
+td.driver {
+  background: #555;
+  color: #fff;
+  font-size: 26px;
+  border-radius: 8px;
+  cursor: default;
+}
+
+#ticket-form {
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #f4f4f4;
+  color: #000;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  width: fit-content;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+#ticket-form input {
+  padding: 14px 20px;
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  min-width: 220px;
+}
+
+#ticket-form button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  font-size: 18px;
+  border-radius: 8px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#ticket-form button:hover {
+  background-color: #3f9444;
+}
+
+#ticket-form h3 {
+  width: 100%;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 20px;
+}
+
+/* Foydalanuvchi ismi uchun button stil (ozgina shaffof) */
+#user-name {
+  background-color: rgba(0, 218, 65, 0.8);  /* Orqa fon rangini shaffof qilish */
+  color: white;  /* Yozuv rangini oq qilish */
+  padding: 8px 16px;  /* Ichki bo'shliq */
+  border-radius: 5px;  /* Burchaklarni yumshatish */
+  cursor: pointer;  /* Kursorni pointer qilib qo'yish */
+  font-size: 16px;  /* Matn o'lchamini sozlash */
+  display: inline-block;  /* Inline-block qilish */
+  align-items: center;
+}
+
+#user-name:hover {
+  background-color: rgba(0, 255, 85, 0.397);  /* Hover holatida fon rangini o'zgartirish */
+}
+
+/* Dropdown menyu */
+#user-menu {
+  display: none;  /* Yashirish */
+  position: absolute;  /* Dropdownni joylashtirish */
+  background-color: #fff;  /* Oq fon */
+  border: 1px solid #ddd;  /* Chegarani qo'shish */
+  border-radius: 5px;  /* Burchaklarni yumshatish */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Soyali effekt */
+  min-width: 180px;  /* Kichikroq o'lcham */
+  padding: 10px 0;  /* Ichki bo'shliq */
+  z-index: 1000;  /* Yuqori qatlamda ko'rsatish */
+  top: 72px;
+  right: 30px;
+}
+
+#user-menu.show {
+  display: block;  /* Dropdownni ko'rsatish */
+}
+
+/* Dropdown itemlari */
+#user-menu a {
+  display: block;  /* Har bir elementni blok qilib joylashtirish */
+  padding: 10px 20px;  /* Ichki bo'shliq */
+  color: #333;  /* Matn rangi */
+  text-decoration: none;  /* Chiziqni olib tashlash */
+  font-size: 14px;  /* O'lcham */
+  border-bottom: 1px solid #eee;  /* Bo'lim chizig'i */
+  cursor: pointer;  /* Pointer kursor */
+}
+
+#user-menu a:hover {
+  background-color: #f1f1f1;  /* Hover holatida fon rangi */
+} 

@@ -33,13 +33,6 @@ export const registerValidate = {
         notEmpty: {
             errorMessage: 'Telefon raqamni kiriting!'
         }
-    },
-    gender: {
-        notEmpty: { errorMessage: "Jinsingizni kiritng!" },
-        isIn: {
-            options: [["Erkak", "Ayol"]],
-            errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
-        },
     }
 }
 

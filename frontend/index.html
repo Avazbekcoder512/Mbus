@@ -7,16 +7,25 @@
     <title>Chipta Qidirish</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link type="image/x-icon" href="./assets/images/favicon-3.png" rel="icon" />
 </head>
 
 <body>
     <div class="background"></div>
     <header class="header container">
-        <h1><span>M</span>BUS.UZ</h1>
+        <a href="./index.html" style="color: white; text-decoration: none;"><h1><span>M</span>BUS.UZ</h1></a>
         <div class="about">
             <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
-            <button type="submit"><i class="fa-regular fa-right-to-bracket"></i> Kirish</button>
+            <a href="./login.html"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i> Kirish</button></a>
+            <span id="user-name" style="display: none;">
+                <i class="fa-solid fa-user"></i> <!-- Foydalanuvchi ikonkasini qo'shish -->
+                <span id="username"></span> <!-- Foydalanuvchi ismi -->
+            </span>
+            <div id="user-menu" class="dropdown-menu">
+                <a href="#" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
+                <a id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+            </div>
         </div>
     </header>
 
@@ -47,7 +56,7 @@
             <!-- Backenddan kelgan ma'lumotlar shu joyda ko'rsatiladi -->
         </div>
     </main>
-    
+
     <script src="index.js"></script>
 </body>
 
