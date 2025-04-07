@@ -85,6 +85,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         // const response = await fetch("https://mbus.onrender.com/cities");
         const data = await response.json();
 
+        if (!response.ok) {
+            // Agar serverdan xato javob bo'lsa, xato message chiqaramiz
+            throw new Error(data.error || "Bekatlar ro'yxatini olishda xatolik");
+        }
+
         hidePreloader()
 
         const cities = data.cities; // ✅ Backenddan kelayotgan massiv
@@ -103,10 +108,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 toSelect.appendChild(optionTo);
             });
         } else {
-            console.error("Ma'lumot noto‘g‘ri formatda keldi:", result);
+            showErrorPopup(error.message);
         }
     } catch (error) {
-        console.error("Ma'lumotlarni yuklashda xatolik:", error);
+        showErrorPopup(error.message);
     }
 
     // Formni yuborish va natijalarni chiqarish
@@ -126,7 +131,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         fetch(url)
             .then(response => response.json())
             .then(responseData => {
-                console.log('Javob:', responseData);
+                if (!responseData.ok) {
+                    // Agar serverdan xato javob bo'lsa, xato message chiqaramiz
+                    throw new Error(responseData.error || "Reyslar ro'yxatini olishda xatolik");
+                }
                 const trips = responseData.data.trips;
 
                 let info = `
@@ -160,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 dataDiv.innerHTML = info;
             })
             .catch(error => {
-                console.log('Xatolik:', error);
+                showErrorPopup(error.message);
             })
             .finally(() => {
                 hidePreloader(); // 🔄 Fetch tugagach, preloaderni o‘chiramiz

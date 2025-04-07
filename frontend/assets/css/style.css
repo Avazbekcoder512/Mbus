@@ -37,7 +37,7 @@ body {
 
 .about a {
   text-decoration: none;
-  color: white;
+  color: #333;
   font-size: 18px;
   font-weight: 500;
 }
@@ -67,7 +67,7 @@ h1 {
 }
 
 p {
-  color: #ababab;
+  color: #333;
   font-size: 18px;
   line-height: 1.5;
 }
@@ -591,7 +591,7 @@ td.driver {
   }
 }
 
-/* .error-popup {
+.error-popup {
   position: fixed;
   top: 0;
   left: 0;
@@ -643,4 +643,4 @@ td.driver {
 .popup-close i {
   font-size: 36px;
   color: #e74c3c;
-} */
+}
