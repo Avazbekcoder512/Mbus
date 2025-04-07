@@ -1,7 +1,7 @@
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #1e2a3a;
-  color: white;
+  background-color: #ddd;
+  color: #333;
   text-align: center;
   margin: 0;
   padding: 0;
@@ -21,12 +21,12 @@ body {
   font-weight: 600;
 }
 
-.header h1 span {
-  color: #6abf45;
+.header a h1 span {
+  color: #49aa1f;
 }
 
 .container h1 span {
-  color: #6abf45;
+  color: #49aa1f;
 }
 
 .about {

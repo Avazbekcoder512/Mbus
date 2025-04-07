@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
   const token = localStorage.getItem('token');
-  
+
 
   function showPreloader() {
     if (preloader) preloader.classList.remove("hidden");
@@ -19,21 +19,65 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     showPreloader()
-    // const response = await fetch(`http://localhost:8000/bus/${busId}`, {
-    //   method: "GET",
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`
-    //   }
-    // });
-    const response = await fetch(`https://mbus.onrender.com/bus/${busId}`, {
+    const response = await fetch(`http://localhost:8000/bus/${busId}`, {
       method: "GET",
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
+    // const response = await fetch(`https://mbus.onrender.com/bus/${busId}`, {
+    //   method: "GET",
+    //   headers: {
+    //     'Authorization': `Bearer ${token}`
+    //   }
+    // });
     const busData = await response.json();
 
     hidePreloader()
+
+    const routeFrom = busData.bus.trip.route.from;
+    const routeTo = busData.bus.trip.route.to;
+    const routeName = busData.bus.trip.route.name;
+
+    const departureDate = busData.bus.trip.departure_date;
+    const departureTime = busData.bus.trip.departure_time;
+    const price = busData.bus.trip.ticket_price;
+
+    function formatDate(dateStr) {
+      const parts = dateStr.split("-");
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+
+    const formattedDate = formatDate(departureDate);
+
+    const tripTitleEl = document.getElementById("trip-title");
+    if (tripTitleEl) {
+      tripTitleEl.innerHTML = `${routeFrom} - ${routeTo} <span class="date">${formattedDate} ${departureTime}</span>`;
+    }
+
+    const tripPriceEl = document.getElementById("ticket-price");
+    if (tripPriceEl) {
+      tripPriceEl.innerHTML = `<span class="price">Chipta narxi: ${price} so'm</span>`;
+    }
+
+    const seats = busData.bus.seats || [];
+
+    let freeSeats = 0;
+    let bookedSeats = 0;
+    let selectedSeats = 0;
+
+    seats.forEach(seat => {
+      if (seat.status === "bo'sh") {
+        freeSeats++;
+      } else if (seat.status === "band") {
+        bookedSeats++;
+      } else if (seat.status === "selected") {
+        selectedSeats++;
+      }
+    });
+
+    document.getElementById("free-seats").textContent = freeSeats;
+    document.getElementById("booked-seats").textContent = bookedSeats;
 
     const seatsData = busData.bus.seats;
     const occupiedSeats = new Set(

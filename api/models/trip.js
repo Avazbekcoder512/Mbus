@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { routeModel } from './route.js'
 
 const tripSchema = new mongoose.Schema({
     route: { type: mongoose.Schema.Types.ObjectId, ref: "Route" },

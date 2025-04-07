@@ -80,16 +80,16 @@ document.getElementById('register_button').addEventListener('click', async funct
     };
 
     try {
-        // const response = await fetch('http://localhost:8000/register', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
-        const response = await fetch('https://mbus.onrender.com/register', {
+        const response = await fetch('http://localhost:8000/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        // const response = await fetch('https://mbus.onrender.com/register', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // });
 
         const result = await response.json();
 
@@ -123,16 +123,16 @@ document.getElementById('login_buttton').addEventListener('click', async functio
     };
 
     try {
-        // const response = await fetch('http://localhost:8000/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
-        const response = await fetch('https://mbus.onrender.com/login', {
+        const response = await fetch('http://localhost:8000/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        // const response = await fetch('https://mbus.onrender.com/login', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // });
 
         const result = await response.json();
 
