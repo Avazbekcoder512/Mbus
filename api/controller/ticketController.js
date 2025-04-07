@@ -62,8 +62,6 @@ export const getBus = async (req, res) => {
                 }
             });
 
-        console.log(JSON.stringify(bus, null, 2));
-
         if (!bus) {
             return res.status(404).send({
                 error: "Avtobus topilmadi!"

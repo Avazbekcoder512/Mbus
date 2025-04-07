@@ -140,10 +140,14 @@ document.getElementById('login_buttton').addEventListener('click', async functio
             localStorage.setItem('token', result.token);
             window.location.href = 'index.html';
         } else {
-            alert(result.message || 'Login muvaffaqiyatsiz');
+            if (result.error && result.error.length > 0) {
+                showErrorPopup(result.error[0]);
+            } else {
+                showErrorPopup(result.error || 'Xatolik yuz berdi. Iltimos qayta urinib ko\'ring.');
+            }
         }
     } catch (err) {
-        alert('Tarmoq xatosi!');
+        showErrorPopup('Tarmoq xatosi: ' + err.message);
     }
 
     hideLoader(button, 'KIRISH');
