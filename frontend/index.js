@@ -81,8 +81,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Backenddan bekatlar ro‘yxatini olish va select option'ga qo‘shish
     try {
         showPreloader()
-        // const response = await fetch("http://localhost:8000/cities");
-        const response = await fetch("https://mbus.onrender.com/cities");
+        const response = await fetch("http://localhost:8000/cities");
+        // const response = await fetch("https://mbus.onrender.com/cities");
         const data = await response.json();
 
         hidePreloader()
@@ -118,8 +118,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const departure_date = document.getElementById('departure_date').value;
 
         const queryString = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure_date=${encodeURIComponent(departure_date)}`;
-        // const url = `http://localhost:8000/findroute?${queryString}`;
-        const url = `https://mbus.onrender.com/findroute?${queryString}`;
+        const url = `http://localhost:8000/findroute?${queryString}`;
+        // const url = `https://mbus.onrender.com/findroute?${queryString}`;
+
+        showPreloader();
 
         fetch(url)
             .then(response => response.json())
@@ -159,6 +161,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .catch(error => {
                 console.log('Xatolik:', error);
+            })
+            .finally(() => {
+                hidePreloader(); // 🔄 Fetch tugagach, preloaderni o‘chiramiz
             });
     });
 });

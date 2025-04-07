@@ -22,7 +22,7 @@ export const routeFind = async (req, res) => {
             path: 'trips',
             match: { departure_date },
             populate: [
-                {path: 'bus'}
+                { path: 'bus' }
             ]
         })
 
@@ -53,7 +53,16 @@ export const getBus = async (req, res) => {
             })
         }
 
-        const bus = await busModel.findById(id).populate('seats')
+        const bus = await busModel.findById(id)
+            .populate('seats')
+            .populate({
+                path: 'trip',
+                populate: {
+                    path: 'route'
+                }
+            });
+
+        console.log(JSON.stringify(bus, null, 2));
 
         if (!bus) {
             return res.status(404).send({

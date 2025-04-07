@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import { seatModel } from './seat.js'
+import { tripModel } from './trip.js'
 
 const busSchema = new mongoose.Schema({
     bus_number: String,
