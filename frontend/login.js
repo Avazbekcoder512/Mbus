@@ -66,6 +66,18 @@ function closeErrorPopup() {
     popup.style.display = 'none';
 }
 
+function showSuccessPopup(message) {
+    const popup = document.getElementById('success-popup');
+    const msg = document.getElementById('success-message');
+    msg.textContent = message || "Amal muvaffaqiyatli bajarildi!";
+    popup.style.display = 'flex';
+}
+
+function closeSuccessPopup() {
+    document.getElementById('success-popup').style.display = 'none';
+    location.reload(); // Sahifani yangilash
+}
+
 document.getElementById('register_button').addEventListener('click', async function (e) {
     e.preventDefault();
     const button = this;
@@ -140,12 +152,15 @@ document.getElementById('login_buttton').addEventListener('click', async functio
             localStorage.setItem('token', result.token);
             window.location.href = 'index.html';
         } else {
-            if (result.error && result.error.length > 0) {
+            if (result.error && typeof result.error === 'string') {
+                showErrorPopup(result.error);
+            } else if (result.error && Array.isArray(result.error) && result.error.length > 0) {
                 showErrorPopup(result.error[0]);
             } else {
-                showErrorPopup(result.error || 'Xatolik yuz berdi. Iltimos qayta urinib ko\'ring.');
+                showErrorPopup('Xatolik yuz berdi. Iltimos qayta urinib ko\'ring.');
             }
         }
+
     } catch (err) {
         showErrorPopup('Tarmoq xatosi: ' + err.message);
     }
@@ -166,4 +181,125 @@ document.querySelectorAll('.toggle-password').forEach(function (eyeIcon) {
             this.classList.add('fa-eye'); // Ko‘rsatish uchun
         }
     });
+});
+
+// Sahifa yuklanganda login formaning asl HTML tarkibini saqlab olamiz
+const originalLoginFormHtml = document.getElementById('b-form').innerHTML;
+
+// "Parolingiz esdan chiqdimi?" havolasiga bosilganda telefon raqam kiritish formasi ko'rsatiladi
+document.getElementById('b-form').addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'forgot-password-link') {
+        e.preventDefault();
+        // Forgot password jarayoni
+        const form = document.getElementById('b-form');
+
+        // Telefon raqam uchun input, SMS so‘rov tugmasi va orqaga qaytish tugmasini qo'shamiz
+        form.innerHTML = `
+        <h2 class="form_title title">Parolni Tiklash</h2>
+        <input class="form__input" type="tel" name="phoneNumber" placeholder="Telefon raqam" required>
+        <button type="submit" id="send_phone_button" class="form__button button submit">SMS kod uchun so‘rov yuborish</button>
+        <button type="button" id="back_button" class="form__button button submit">Orqaga qaytish</button>
+    `;
+
+        // "Orqaga qaytish" tugmasi: asl login formaga qaytarish
+        document.getElementById('back_button').addEventListener('click', function (e) {
+            e.preventDefault();
+            form.innerHTML = originalLoginFormHtml;
+            // Login formasi va uning tugmalari uchun event listenerlarni qayta o'rnatish zarur bo'lishi mumkin
+            // Masalan:
+            // loginEventListeners(); 
+            // Agar siz allaqachon event listenerlarni window load hodisasida o'rnatgan bo'lsangiz, qayta chaqirishga ehtiyoj qolmasligi mumkin.
+        });
+
+        // Telefon raqamni yuborish tugmasi uchun event listener
+        document.getElementById('send_phone_button').addEventListener('click', async function (e) {
+            e.preventDefault();
+            const button = this;
+            showLoader(button);
+
+            const phone = form.querySelector("input[name='phoneNumber']").value;
+            if (!phone) {
+                showErrorPopup("Iltimos, telefon raqamingizni kiriting.");
+                hideLoader(button, "SMS kod uchun so‘rov yuborish");
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/send-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber: phone })
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Telefon raqam yuborilgach, yangi parol va SMS kodini kiritish uchun inputlar bilan formani yangilaymiz
+                    form.innerHTML = `
+                    <h2 class="form_title title">Yangi Parolni Tiklash</h2>
+                    <input class="form__input" type="password" name="password" placeholder="Yangi Parol" required>
+                    <input class="form__input" type="text" name="smsCode" placeholder="SMS kodi" required>
+                    <button type="submit" id="reset_button" class="form__button button submit">Tasdiqlash</button>
+                    <button type="button" id="back_button_reset" class="form__button button submit">Orqaga qaytish</button>
+                `;
+
+                    // "Orqaga qaytish" tugmasi: telefon raqam bosqichiga qaytish
+                    document.getElementById('back_button_reset').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        // Telefon raqam bosqichiga qaytamiz
+                        form.innerHTML = `
+                        <h2 class="form_title title">Parolni Tiklash</h2>
+                        <input class="form__input" type="tel" name="phoneNumber" placeholder="Telefon raqam" required>
+                        <button type="submit" id="send_phone_button" class="form__button button submit">SMS kod uchun so‘rov yuborish</button>
+                        <button type="button" id="back_button" class="form__button button submit">Orqaga qaytish</button>
+                    `;
+                        // Qayta event listenerlarni o'rnatamiz
+                        // (Bu yerda funksiya qayta takrorlanishi mumkin yoki alohida funksiya sifatida ajratish mumkin)
+                    });
+
+                    // Yangi parolni tiklash tugmasiga event listener
+                    document.getElementById('reset_button').addEventListener('click', async function (e) {
+                        e.preventDefault();
+                        const resetButton = this;
+                        showLoader(resetButton);
+
+                        const password = form.querySelector("input[name='password']").value;
+                        const smsCode = form.querySelector("input[name='smsCode']").value;
+
+                        try {
+                            const responseReset = await fetch('http://localhost:8000/reset-password', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ phoneNumber: phone, password, smsCode })
+                            });
+                            const resultReset = await responseReset.json();
+
+                            if (responseReset.ok) {
+                                showSuccessPopup(resultReset.message);
+                            } else {
+                                if (resultReset.error) {
+                                    showErrorPopup(typeof resultReset.error === 'string' ? resultReset.error : resultReset.error[0]);
+                                } else {
+                                    showErrorPopup('Xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');
+                                }
+                            }
+                        } catch (err) {
+                            showErrorPopup('Tarmoq xatosi: ' + err.message);
+                        }
+
+                        hideLoader(resetButton, 'Tasdiqlash');
+                    });
+                } else {
+                    if (result.error) {
+                        showErrorPopup(typeof result.error === 'string' ? result.error : result.error[0]);
+                    } else {
+                        showErrorPopup('Xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');
+                    }
+                }
+            } catch (err) {
+                showErrorPopup('Tarmoq xatosi: ' + err.message);
+            }
+
+            hideLoader(button, "SMS kod uchun so‘rov yuborish");
+        });
+    }
 });

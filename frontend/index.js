@@ -129,12 +129,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         showPreloader();
 
         fetch(url)
-            .then(response => response.json())
-            .then(responseData => {
-                if (!responseData.ok) {
-                    // Agar serverdan xato javob bo'lsa, xato message chiqaramiz
-                    throw new Error(responseData.error || "Reyslar ro'yxatini olishda xatolik");
+            .then(response => {
+                console.log(response);
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error);
+                    });
                 }
+                return response.json();
+            })
+            .then(responseData => {
                 const trips = responseData.data.trips;
 
                 let info = `

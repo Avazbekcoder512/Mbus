@@ -25,7 +25,7 @@ export const register = async (req, res) => {
 
         if (checkUser) {
             return res.status(400).send({
-                error: "Bunday emailga ega user allaqachon ro'yhatdan o'tgan!"
+                error: "Bunday emailga ega foydalanuvchi allaqachon ro'yhatdan o'tgan!"
             })
         }
 
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
 
         if (!user) {
             return res.status(400).send({
-                error: "Email xato!"
+                error: "Bunday emailga ega foydalanuvchi mavjud emas!"
             })
         }
 

@@ -4,7 +4,6 @@
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="main.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
     <link type="image/x-icon" href="./assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -365,6 +364,54 @@
             color: #e74c3c;
             /* Red color for the icon */
         }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 50px 60px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            width: 95%;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            font-family: sans-serif;
+            font-size: 20px;
+        }
+
+
+        .success-icon {
+            font-size: 64px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+
+        .popup-button {
+            margin-top: 30px;
+            padding: 14px 28px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .popup-button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 
@@ -378,24 +425,34 @@
         </div>
     </div>
 
+    <!-- Success popup -->
+    <div id="success-popup" style="display: none;" class="popup-overlay">
+        <div class="popup-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <p id="success-message">Parolingiz muvaffaqiyatli yangilandi!</p>
+            <button onclick="closeSuccessPopup()" class="popup-button">Yopish</button>
+        </div>
+    </div>
+
+
     <div class="main">
         <div class="container a-container" id="a-container">
-            <form class="form" id="a-form" method="" action="">
+            <form class="form" id="a-form">
                 <h2 class="form_title title">Hisob yaratish</h2>
-                <input class="form__input" type="text" name="name" placeholder="Ism, Familiya">
-                <input class="form__input" type="text" name="email" placeholder="Email">
-                <input class="form__input" type="password" name="password" placeholder="Parol">
-                <input class="form__input" type="tel" name="phoneNumber" placeholder="Telefon raqam">
+                <input class="form__input" type="text" name="name" placeholder="Ism, Familiya" required>
+                <input class="form__input" type="text" name="email" placeholder="Email" required>
+                <input class="form__input" type="password" name="password" placeholder="Parol" required>
+                <input class="form__input" type="tel" name="phoneNumber" placeholder="Telefon raqam" required>
                 <button type="submit" id="register_button" class="form__button button submit">RO'YXATDAN O'TISH</button>
             </form>
         </div>
         <div class="container b-container" id="b-container">
-            <form class="form" id="b-form" method="" action="">
+            <form class="form" id="b-form">
                 <h2 class="form_title title">Veb-saytga Kiring</h2>
-                <input class="form__input" type="text" name="email" placeholder="Email">
-                <input class="form__input" type="password" name="password" placeholder="Parol"><a
-                    class="form__link">Parolingiz esdan
-                    chiqdimi?</a>
+                <input class="form__input" type="text" name="email" placeholder="Email" required>
+                <input class="form__input" type="password" name="password" placeholder="Parol" required>
+                <a class="form__link" id="forgot-password-link" style="cursor: pointer;">Parolingiz esdan chiqdimi?</a>
+                <!-- Yangi parol va tasdiqlash kodi inputlari -->
                 <button id="login_buttton" type="submit" class="form__button button submit">KIRISH</button>
             </form>
         </div>
