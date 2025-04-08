@@ -28,7 +28,7 @@ export const routeFind = async (req, res) => {
 
         if (!data || !data.trips.length) {
             return res.status(404).send({
-                error: "Reys topilmadi!"
+                error: "Bunday reys mavjud emas!"
             })
         }
 
