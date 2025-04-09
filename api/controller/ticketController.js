@@ -4,6 +4,7 @@ import { routeModel } from '../models/route.js'
 import { seatModel } from '../models/seat.js'
 import { config } from 'dotenv'
 import { userModel } from '../models/user.js'
+import { tempTicketModel } from '../models/tempticket.js'
 config()
 
 export const routeFind = async (req, res) => {
@@ -151,6 +152,66 @@ export const seatSelection = async (req, res) => {
 
 export const seatReservation = async (req, res) => {
     try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                error: errors.array().map(error => error.msg)
+            })
+        }
+
+        const data = matchedData(req)
+
+        const seats = await seatModel.find({ _id: { $in: data.seats } })
+
+        if (seats.length !== data.seats.length) {
+            return res.status(400).send({
+                error: "No to'g'ri o'rindiqlar tanlandi!"
+            })
+        }
+
+        const anyBooked = seats.some(seat => seat.status === "band")
+        if (anyBooked) {
+            return res.status(400).send({
+                error: "Ba'zi o'rindiqlar band qilingan!"
+            })
+        }
+
+        const totalPrice = seats.reduce((sum, seat) => sum + seat.price, 0)
+        if (totalPrice !== data.price) {
+            return res.status(400).send({
+                error: "Narx chipta narxiga mos emmas!"
+            })
+        }
+
+        const generateRandomCode = () =>
+            Math.floor(100000 + Math.random() * 900000);
+
+        const verificationCode = generateRandomCode();
+
+        const createdTempTickets = [];
+
+        for (const seat of seats) {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+            const tempTicket = await tempTicketModel.create({
+                bus_number: seat.bus,
+                seat: seat._id,
+                seat_number: seat.seatNumber,
+                passenger_Id: userId,
+                passenger: user,
+                route: rou,
+                departure_date: data,
+                cardNumber,
+                inputPrice: seat.price, // individual narx
+                code,
+            });
+
+            await sendSmsToUser(userId, `Seat: ${seat.number} uchun kod: ${code}`);
+
+            createdTempTickets.push(tempTicket._id);
+        }
+
+
     } catch (error) {
         console.log(error);
         return res.status(500).send({
