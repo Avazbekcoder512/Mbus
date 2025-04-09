@@ -1,17 +1,17 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const ticketSchema = new mongoose.Schema({
+const tempTicketSchema = new mongoose.Schema({
     bus_number: String,
-    seat_number: Number,
     seat: { type: mongoose.Schema.Types.ObjectId, ref: "Seat" },
+    seat_number: Number,
+    passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    passenger: String,
     route: String,
     departure_date: String,
     departure_time: String,
-    passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    passenger: String,
     price: Number,
     status: { type: String, enum: ["booked", "canceled"], default: "booked" },
     ticketNumber: String,
 }, { timestamps: true })
 
-export const ticketModel = mongoose.model("Ticket", ticketSchema)
+export const tempTicketModel = mongoose.model('tempTicket', tempTicketSchema)

@@ -1,7 +1,9 @@
+// selectedPrices global scope'da bo'lishi kerak, chunki boshqa joylarda ham ishlatiladi
+const selectedPrices = new Map(); // seatId => price
+
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
   const token = localStorage.getItem('token');
-
 
   function showPreloader() {
     if (preloader) preloader.classList.remove("hidden");
@@ -18,27 +20,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    showPreloader()
+    showPreloader();
     const response = await fetch(`http://localhost:8000/bus/${busId}`, {
       method: "GET",
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
-    // const response = await fetch(`https://mbus.onrender.com/bus/${busId}`, {
-    //   method: "GET",
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`
-    //   }
-    // });
-    const busData = await response.json();
 
-    hidePreloader()
+    const busData = await response.json();
+    hidePreloader();
 
     const routeFrom = busData.bus.trip.route.from;
     const routeTo = busData.bus.trip.route.to;
-    const routeName = busData.bus.trip.route.name;
-
     const departureDate = busData.bus.trip.departure_date;
     const departureTime = busData.bus.trip.departure_time;
     const price = busData.bus.trip.ticket_price;
@@ -49,7 +43,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const formattedDate = formatDate(departureDate);
-
     const tripTitleEl = document.getElementById("trip-title");
     if (tripTitleEl) {
       tripTitleEl.innerHTML = `${routeFrom} - ${routeTo} <span class="date">${formattedDate} ${departureTime}</span>`;
@@ -61,19 +54,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const seats = busData.bus.seats || [];
-
     let freeSeats = 0;
     let bookedSeats = 0;
-    let selectedSeats = 0;
 
     seats.forEach(seat => {
-      if (seat.status === "bo'sh") {
-        freeSeats++;
-      } else if (seat.status === "band") {
-        bookedSeats++;
-      } else if (seat.status === "selected") {
-        selectedSeats++;
-      }
+      if (seat.status === "bo'sh") freeSeats++;
+      else if (seat.status === "band") bookedSeats++;
     });
 
     document.getElementById("free-seats").textContent = freeSeats;
@@ -81,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const seatsData = busData.bus.seats;
     const occupiedSeats = new Set(
-      seatsData.filter(seat => seat.status === "band").map(seat => seat.seetNumber)
+      seatsData.filter(seat => seat.status === "band").map(seat => seat.seatNumber)
     );
 
     const seatLayout = [
@@ -109,10 +95,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           td.classList.add("seat");
           td.textContent = value;
 
-          const seatObj = seatsData.find(seat => seat.seetNumber === value);
+          const seatObj = seatsData.find(seat => seat.seatNumber === value);
           if (seatObj) {
             td.dataset.id = seatObj._id;
-            td.dataset.seetNumber = seatObj.seetNumber;
+            td.dataset.seatNumber = seatObj.seatNumber;
           }
 
           if (occupiedSeats.has(value)) {
@@ -124,19 +110,17 @@ document.addEventListener("DOMContentLoaded", async () => {
               td.classList.toggle("selected");
 
               const selectedId = td.dataset.id;
-              const selectedSeatNumber = td.dataset.seetNumber;
-              const seatObj = seatsData.find(seat => seat._id === selectedId || seat.seetNumber === value);
+              const seatObj = seatsData.find(seat => seat._id === selectedId || seat.seatNumber == value);
               const seatPrice = seatObj?.price || 0;
 
-              // Agar seat tanlangan bo'lsa, narxni qo'shish
               if (td.classList.contains("selected")) {
                 selectedPrices.set(selectedId, seatPrice);
               } else {
                 selectedPrices.delete(selectedId);
               }
 
-              updateTotalPrice(); // Umumiy narxni yangilash
-              showTicketForm(); // Ticket formni yangilash
+              updateTotalPrice();
+              showTicketForm();
             }
           });
         }
@@ -150,8 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Ma'lumotlarni yuklashda xatolik:", error);
   }
 
-  const selectedPrices = new Map(); // seatId => price
-
+  // umumiy narxni hisoblaydigan funksiya
   function updateTotalPrice() {
     let total = 0;
     for (let price of selectedPrices.values()) {
@@ -159,20 +142,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // showTicketForm funksiyasi
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
-
-    // Umumiy narxni hisoblash
     let totalPrice = 0;
-    selectedPrices.forEach(price => {
-      totalPrice += price;
-    });
+    selectedPrices.forEach(price => totalPrice += price);
 
-    // Agar hech qanday o'rindiq tanlanmagan bo'lsa, formani yashirish
     if (selectedPrices.size === 0) {
-      formContainer.style.display = "none";  // Formani yashirish
-      return; // Hech qanday tanlangan o'rindiq yo'q, funksiyani tugatish
+      formContainer.style.display = "none";
+      return;
     }
 
     formContainer.innerHTML = `
@@ -186,13 +163,91 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     formContainer.style.display = "block";
 
-    document.getElementById("ticket-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const data = new FormData(e.target);
-      const card = data.get("cardNumber");
-      const priceInput = data.get("priceInput"); // Foydalanuvchi kiritgan narx
-
-      console.log("Yuborilmoqda:", { card, priceInput });
-    });
+    // 🎯 FORMGA listener YANGILAB QO'YILDI:
+    document.getElementById("ticket-form").addEventListener("submit", submitTicketForm);
   }
 });
+
+// FORMNI YUBORISH FUNKSIYASI
+async function submitTicketForm(e) {
+  e.preventDefault();
+  const data = new FormData(e.target);
+  const card = data.get("cardNumber");
+  const priceInput = data.get("priceInput");
+
+  const selectedSeatIds = Array.from(selectedPrices.keys());
+
+  const payload = {
+    seats: selectedSeatIds,
+    cardNumber: card,
+    totalPrice: priceInput,
+  };
+
+  try {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('http://localhost:8000/tickets/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      showSMSVerificationForm(result.ticketId);
+    } else {
+      alert(result.message || 'Xatolik yuz berdi!');
+    }
+
+  } catch (err) {
+    console.error('Xatolik:', err);
+    alert('Server bilan aloqa o‘rnatilmadi');
+  }
+}
+
+function showSMSVerificationForm(ticketId) {
+  const formContainer = document.getElementById("ticket-form-container");
+
+  formContainer.innerHTML = `
+    <form id="sms-verification-form">
+      <h3>SMS orqali yuborilgan kodni kiriting:</h3>
+      <input type="text" name="smsCode" placeholder="SMS kod" required>
+      <button type="submit">Tasdiqlash</button>
+    </form>
+  `;
+
+  document.getElementById("sms-verification-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    const smsCode = data.get("smsCode");
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const verifyResponse = await fetch(`http://localhost:8000/tickets/verify/${ticketId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ code: smsCode })
+      });
+
+      const verifyResult = await verifyResponse.json();
+
+      if (verifyResponse.ok) {
+        alert("Chipta muvaffaqiyatli tasdiqlandi!");
+        window.location.href = '/my-tickets.html';
+      } else {
+        alert(verifyResult.message || "Kod noto‘g‘ri yoki eskirgan.");
+      }
+    } catch (err) {
+      console.error('Tasdiqlash xatoligi:', err);
+      alert("Server bilan aloqa o‘rnatilmadi");
+    }
+  });
+}

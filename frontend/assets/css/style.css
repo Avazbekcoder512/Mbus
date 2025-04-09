@@ -200,6 +200,11 @@ form button:hover {
   transition: background-color 0.3s;
 }
 
+.seat-info {
+    font-size: 20px;
+    margin: 10px 10px;
+}
+
 /* Band (occupied) o‘rindiq */
 .seat.occupied {
   background-color: #dc3545; /* Qizil */
