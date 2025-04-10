@@ -5,6 +5,7 @@ import { seatModel } from '../models/seat.js'
 import { config } from 'dotenv'
 import { userModel } from '../models/user.js'
 import { tempTicketModel } from '../models/tempticket.js'
+import { tripModel } from '../models/trip.js'
 config()
 
 export const routeFind = async (req, res) => {
@@ -44,7 +45,7 @@ export const routeFind = async (req, res) => {
     }
 }
 
-export const getBus = async (req, res) => {
+export const getTrip = async (req, res) => {
     try {
         const { id } = req.params
 
@@ -54,23 +55,18 @@ export const getBus = async (req, res) => {
             })
         }
 
-        const bus = await busModel.findById(id)
+        const trip = await tripModel.findById(id)
             .populate('seats')
-            .populate({
-                path: 'trip',
-                populate: {
-                    path: 'route'
-                }
-            });
+            .populate({path: 'route'});
 
-        if (!bus) {
+        if (!trip) {
             return res.status(404).send({
-                error: "Avtobus topilmadi!"
+                error: "Reys topilmadi!"
             })
         }
 
         return res.status(200).send({
-            bus
+            trip
         })
     } catch (error) {
         console.log(error);

@@ -13,29 +13,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (preloader) preloader.classList.add("hidden");
   }
 
-  const busId = localStorage.getItem("selectedBusId");
-  if (!busId) {
-    console.error("Avtobus ID topilmadi!");
+  const tripId = localStorage.getItem("selectedTripId");
+  if (!tripId) {
+    console.error("Reys ID topilmadi!");
     return;
   }
 
+  function showTokenExpiredPopup() {
+    const popup = document.getElementById("token-expired-popup");
+    popup.classList.remove("hidden");
+    localStorage.removeItem('token');
+  }
+
+  document.getElementById("close-popup-btn").addEventListener("click", () => {
+    const popup = document.getElementById("token-expired-popup");
+    popup.classList.add("hidden");
+  });
+
+
   try {
     showPreloader();
-    const response = await fetch(`http://localhost:8000/bus/${busId}`, {
+    const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
       method: "GET",
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
 
-    const busData = await response.json();
+    if (response.status === 401) {
+      showTokenExpiredPopup();
+      return;
+    }
+
+    const tripData = await response.json();
     hidePreloader();
 
-    const routeFrom = busData.bus.trip.route.from;
-    const routeTo = busData.bus.trip.route.to;
-    const departureDate = busData.bus.trip.departure_date;
-    const departureTime = busData.bus.trip.departure_time;
-    const price = busData.bus.trip.ticket_price;
+    const routeFrom = tripData.trip.route.from;
+    const routeTo = tripData.trip.route.to;
+    const departureDate = tripData.trip.departure_date;
+    const departureTime = tripData.trip.departure_time;
+    const price = tripData.trip.ticket_price;
 
     function formatDate(dateStr) {
       const parts = dateStr.split("-");
@@ -53,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       tripPriceEl.innerHTML = `<span class="price">Chipta narxi: ${price} so'm</span>`;
     }
 
-    const seats = busData.bus.seats || [];
+    const seats = tripData.trip.seats || [];
     let freeSeats = 0;
     let bookedSeats = 0;
 
@@ -65,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("free-seats").textContent = freeSeats;
     document.getElementById("booked-seats").textContent = bookedSeats;
 
-    const seatsData = busData.bus.seats;
+    const seatsData = tripData.trip.seats;
     const occupiedSeats = new Set(
       seatsData.filter(seat => seat.status === "band").map(seat => seat.seatNumber)
     );

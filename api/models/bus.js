@@ -7,7 +7,6 @@ const busSchema = new mongoose.Schema({
     bus_model: String,
     seats_count: Number,
     trip: { type: mongoose.Schema.Types.ObjectId, ref: "Trip" },
-    seats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Seat" }],
     image: String,
 }, { timestamps: true })
 
