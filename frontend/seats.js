@@ -125,17 +125,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           td.addEventListener("click", () => {
             if (!td.classList.contains("occupied")) {
               td.classList.toggle("selected");
-
+          
               const selectedId = td.dataset.id;
               const seatObj = seatsData.find(seat => seat._id === selectedId || seat.seatNumber == value);
-              const seatPrice = seatObj?.price || 0;
-
+              const seatNumber = seatObj ? seatObj.seatNumber : value;
+              // const seatPrice = seatObj?.price || 0;
+          
               if (td.classList.contains("selected")) {
-                selectedPrices.set(selectedId, seatPrice);
+                selectedPrices.set(selectedId, seatNumber);
               } else {
                 selectedPrices.delete(selectedId);
               }
-
+          
               updateTotalPrice();
               showTicketForm();
             }
@@ -161,28 +162,64 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
-    let totalPrice = 0;
-    selectedPrices.forEach(price => totalPrice += price);
-
+    formContainer.innerHTML = ""; // oldingi formalarni tozalaymiz
+  
     if (selectedPrices.size === 0) {
       formContainer.style.display = "none";
       return;
     }
-
-    formContainer.innerHTML = `
-      <form id="ticket-form">
-        <h3>Chipta narxi: ${totalPrice} so'm</h3>
-        <input type="text" name="priceInput" placeholder="Chipta narxini kiriting" required>
-        <input type="text" name="cardNumber" placeholder="Karta raqami" required>
-        <button type="submit">To'lash</button>
-      </form>
-    `;
-
+  
     formContainer.style.display = "block";
-
-    // 🎯 FORMGA listener YANGILAB QO'YILDI:
-    document.getElementById("ticket-form").addEventListener("submit", submitTicketForm);
-  }
+  
+    selectedPrices.forEach((seatNumber, seatId) => {
+      const form = document.createElement("form");
+      form.classList.add("ticket-passenger-form");
+      form.innerHTML = `
+        <div class="form-header">O‘rindiq raqami: ${seatNumber}</div>
+        <div class="form-row">
+          <div class="input-group">
+            <label for="fullName_${seatNumber}">To‘liq ism:</label>
+            <input type="text" id="fullName_${seatId}" name="fullName_${seatId}" placeholder="To‘liq ism" required>
+          </div>
+          <div class="input-group">
+            <label for="birthDate_${seatId}">Tug‘ilgan sana:</label>
+            <input type="date" id="birthDate_${seatId}" name="birthDate_${seatId}" placeholder="Tug‘ilgan sana" required>
+          </div>
+          <div class="input-group">
+            <label for="passport_${seatId}">Pasport raqam:</label>
+            <input type="text" id="passport_${seatId}" name="passport_${seatId}" placeholder="Pasport raqam" required>
+          </div>
+          <div class="input-group">
+            <label for="phone_${seatId}">Telefon raqam:</label>
+            <input type="text" id="phone_${seatId}" name="phone_${seatId}" placeholder="Telefon raqam" required>
+          </div>
+        </div>
+      `;
+      formContainer.appendChild(form);
+    });
+  
+    // Pastki tugmalar
+    const btnContainer = document.createElement("div");
+    btnContainer.classList.add("form-buttons");
+    btnContainer.innerHTML = `
+      <button type="button" id="back-btn"><i class="fa-solid fa-arrow-left"></i> Ortga qaytish</button>
+      <button type="submit" id="continue-btn">Davom etish  <i class="fa-solid fa-arrow-right"></i></button>
+    `;
+    formContainer.appendChild(btnContainer);
+  
+    // Tugmalarga event qo‘shish
+    document.getElementById("back-btn").addEventListener("click", () => {
+      window.location = 'index.html'      
+      selectedPrices.clear();
+      document.querySelectorAll(".seat.selected").forEach(el => el.classList.remove("selected"));
+    });
+  
+    document.getElementById("continue-btn").addEventListener("click", () => {
+      // alert("Ma’lumotlar bilan davom etilmoqda... (keyingi qadamni siz yozasiz)");
+      return;
+      // Keyingi qadam uchun ma’lumotlarni yig‘ish mumkin
+    });
+  }  
 });
 
 // FORMNI YUBORISH FUNKSIYASI
