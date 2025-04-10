@@ -649,3 +649,81 @@ td.driver {
   font-size: 36px;
   color: #e74c3c;
 }
+
+.ticket-passenger-form {
+  background: #fff;
+  margin: 28px auto;
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-width: 1100px;
+  width: 100%;
+}
+
+.ticket-passenger-form .form-header {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.ticket-passenger-form .form-row {
+  display: flex;
+  flex-direction: row; /* Bitta qatorda joylashish uchun */
+  flex-wrap: nowrap; /* Flex itemlar bir qatorda bo'lishi kerak */
+  gap: 10px; /* Inputlar orasidagi masofa */
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 30%; /* Inputlarning kengligini kichraytirish */
+}
+
+.input-group label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #555;
+  display: block;
+  text-align: left;
+}
+
+.ticket-passenger-form input {
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  transition: border-color 0.2s ease-in-out;
+  width: 240px; /* Inputlar kengligini to'liq bo'lishini ta'minlaydi */
+}
+
+.ticket-passenger-form input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px auto 0;
+  max-width: 1148px;
+  width: 100%;
+}
+
+.form-buttons button {
+  padding: 14px 28px;
+  background-color: rgb(0 218 65 / 80%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-buttons button:hover {
+  background-color: rgba(7, 138, 46, 0.733);
+}
