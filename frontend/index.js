@@ -157,10 +157,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 trips.forEach(trip => {
                     info += `
-                         <tr onclick="saveBusId('${trip.bus._id}')" style="cursor: pointer;">
+                         <tr onclick="saveTripId('${trip._id}')" style="cursor: pointer;">
                             <td>${trip.departure_date}<br>${trip.departure_time}</td>
                             <td>${responseData.data.name}</td>
-                            <td>${trip.bus.seats_count}</td>
+                            <td>${trip.bus.seats_count}</td>,
                             <td>${trip.ticket_price} so'm</td>
                             <td>${trip.bus.bus_model}</td>
                         </tr>
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-function saveBusId(busId) {
-    localStorage.setItem("selectedBusId", busId);
+function saveTripId(tripId) {
+    localStorage.setItem("selectedTripId", tripId);
     window.location.href = "seats.html"; // Sahifani o'zgartirish
 }
