@@ -20,18 +20,25 @@ export const jwtAccessMiddleware = (req, res, next) => {
             })
         }
 
-        const user = jwt.verify(token, process.env.JWT_KEY);
+        const user = jwt.verify(token, process.env.JWT_KEY)
 
         next()
     } catch (error) {
-        console.log(error);
+        console.log(error)
+
         if (error.name === 'TokenExpiredError') {
             return res.status(401).send({
                 error: 'Token muddati tugagan. Iltimos, qayta kirish qiling!',
-            });
+            })
+        } 
+        else if (error.name === 'JsonWebTokenError' && error.message === 'jwt malformed') {
+            return res.status(401).send({
+                error: 'Token noto‘g‘ri formatda. Iltimos, qayta kirish qiling!',
+            })
         }
+
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: 'Serverda xatolik!',
         })
     }
 }

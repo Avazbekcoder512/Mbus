@@ -108,10 +108,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 toSelect.appendChild(optionTo);
             });
         } else {
-            showErrorPopup(error.message);
+            console.log(error);
         }
     } catch (error) {
-        showErrorPopup(error.message);
+        console.log(error);
     }
 
     // Formni yuborish va natijalarni chiqarish
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 dataDiv.innerHTML = info;
             })
             .catch(error => {
-                showErrorPopup(error.message);
+                console.log(error);
             })
             .finally(() => {
                 hidePreloader(); // 🔄 Fetch tugagach, preloaderni o‘chiramiz

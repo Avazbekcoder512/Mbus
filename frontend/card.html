@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipta Qidirish</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link type="image/x-icon" href="./assets/images/favicon-3.png" rel="icon" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+</head>
+
+<body>
+
+    <div id="error-popup" class="error-popup">
+        <div class="popup-content">
+            <span id="error-close" class="popup-close"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <h3>Xatolik</h3>
+            <p id="error-message"></p>
+            <button id="popup_button" onclick="closeErrorPopup()">Close</button>
+        </div>
+    </div>
+
+    <div id="preloader">
+        <div class="circle"></div>
+        <div class="circle-small"></div>
+        <div class="circle-big"></div>
+        <div class="circle-inner-inner"></div>
+        <div class="circle-inner"></div>
+    </div>
+
+    <div class="background"></div>
+    <header class="header container">
+        <a href="./index.html" style="color: rgba(0, 0, 0, 0.486); text-decoration: none;">
+            <h1><span>M</span>BUS.UZ</h1>
+        </a>
+        <div class="about">
+            <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
+            <a href="./login.html"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
+                    Kirish</button></a>
+            <span id="user-name" style="display: none;">
+                <i class="fa-solid fa-user"></i> <!-- Foydalanuvchi ikonkasini qo'shish -->
+                <span id="username"></span> <!-- Foydalanuvchi ismi -->
+            </span>
+            <div id="user-menu" class="dropdown-menu">
+                <a href="#" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
+                <a id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Tasdiqlash kodi uchun modal -->
+        <div id="code-modal" class="code-modal">
+            <div class="modal-content">
+                <h3>SMS KODNI KIRITING</h3>
+                <p>Telefon raqamingizga yuborilgan 4 xonali kodni kiriting:</p>
+                <input type="text" id="verification-code" maxlength="4" placeholder="1234">
+                <button id="verify-code-btn">Tasdiqlash</button>
+            </div>
+        </div>
+
+        <section class="payment-container">
+            <h2>To‘lov</h2>
+
+            <div class="summary">
+                <div><span>Chiptalar soni:</span> <strong>2</strong></div>
+                <div><span>1 ta chipta narxi:</span> <strong>200 000 so'm</strong></div>
+                <div class="total"><span>Umumiy to‘lov:</span> <strong>400 000 so'm</strong></div>
+            </div>
+
+            <div class="horizontal-inputs">
+                <div class="form-group">
+                    <label for="card-number">Karta raqami</label>
+                    <input type="text" id="card-number" placeholder="8600 1234 5678 9012">
+                </div>
+
+                <div class="form-group">
+                    <label for="expiry">Amal qilish muddati</label>
+                    <input type="text" id="expiry" placeholder="MM/YY">
+                </div>
+            </div>
+
+            <button class="pay-button" id="pay-button" type="submit">To‘lovni amalga oshirish</button>
+        </section>
+
+
+    </main>
+
+    <script src="index.js"></script>
+    <script src="card.js"></script>
+    <script>
+        function showErrorPopup(message) {
+            const popup = document.getElementById('error-popup');
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            popup.style.display = 'flex';
+        }
+
+        function closeErrorPopup() {
+            const popup = document.getElementById('error-popup');
+            if (popup) {
+                popup.style.display = 'none';
+            } else {
+                console.error("Error popup element topilmadi!");
+            }
+        }
+    </script>
+</body>
+
+</html>

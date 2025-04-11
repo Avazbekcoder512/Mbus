@@ -6,6 +6,8 @@ import { config } from 'dotenv'
 import { userModel } from '../models/user.js'
 import { tempTicketModel } from '../models/tempticket.js'
 import { tripModel } from '../models/trip.js'
+import jwt from 'jsonwebtoken'
+import { ticketModel } from '../models/ticket.js'
 config()
 
 export const routeFind = async (req, res) => {
@@ -57,7 +59,7 @@ export const getTrip = async (req, res) => {
 
         const trip = await tripModel.findById(id)
             .populate('seats')
-            .populate({path: 'route'});
+            .populate({ path: 'route' });
 
         if (!trip) {
             return res.status(404).send({
@@ -76,7 +78,7 @@ export const getTrip = async (req, res) => {
     }
 }
 
-export const seatSelection = async (req, res) => {
+export const pendingTicket = async (req, res) => {
     try {
 
         const authHeader = req.headers["authorization"];
@@ -86,15 +88,14 @@ export const seatSelection = async (req, res) => {
 
         const userId = decodet.id;
 
-        const { id } = req.params
+        const body = req.body
+        const passengers = body.passengers[0]
+        console.log(body);
+        console.log("sdfsdf:", passengers);
 
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Id noto'g'ri!"
-            })
-        }
 
-        const seat = await seatModel.findById(id)
+
+        const seat = await seatModel.findById(passengers.seatId)
 
         if (!seat) {
             return res.status(404).send({
@@ -102,41 +103,46 @@ export const seatSelection = async (req, res) => {
             })
         }
 
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map(error => error.msg)
-            })
-        }
-
-        const data = matchedData(req)
-
         if (seat.status === "band") {
             return res.status(400).send({
                 error: "Bu o'rindiq band qilingan!"
             })
         }
 
-        const checkPrice = await seatModel.findOne({ price: data.price })
+        const trip = await tripModel.findById(seat.trip)
 
-        if (!checkPrice) {
-            return res.status(400).send({
-                error: "Chipta narxi to'g'ri emas!"
+        if (!trip) {
+            return res.status(404).send({
+                error: "Reys mavjud emas!"
             })
         }
 
-        const generateRandomCode = () =>
-            Math.floor(100000 + Math.random() * 900000);
+        const bus = await busModel.findById(trip.bus)
 
-        const verificationCode = generateRandomCode();
+        if (!bus) {
+            return res.status(404).send({
+                error: "Avtobus mavjud emas!"
+            })
+        }
 
-        await userModel.findByIdAndUpdate(userId, {
-            bank_card: data.bank_card,
-            verification_code: verificationCode
+        const tempTicket = await tempTicketModel.create({
+            passenger_Id: userId,
+            passenger: passengers.fullName,
+            birthday: passengers.birthday,
+            passport: passengers.passport,
+            phoneNumber: passengers.phoneNumber,
+            seat_number: passengers.seatNumber,
+            seat: seat._id,
+            bus_number: bus.bus_number,
+            from: body.from,
+            to: body.to,
+            departure_date: body.departure_date,
+            departure_time: body.departure_time,
+            price: seat.price
         })
 
         return res.status(200).send({
-            seat
+            tempTicket
         })
     } catch (error) {
         console.log(error);
@@ -146,36 +152,15 @@ export const seatSelection = async (req, res) => {
     }
 }
 
-export const seatReservation = async (req, res) => {
+export const seatBooking = async (req, res) => {
     try {
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
+        const body = req.body
+
+        const tempTicket = await tempTicketModel.findById(body.tempTicketId)
+
+        if (!tempTicket) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
-            })
-        }
-
-        const data = matchedData(req)
-
-        const seats = await seatModel.find({ _id: { $in: data.seats } })
-
-        if (seats.length !== data.seats.length) {
-            return res.status(400).send({
-                error: "No to'g'ri o'rindiqlar tanlandi!"
-            })
-        }
-
-        const anyBooked = seats.some(seat => seat.status === "band")
-        if (anyBooked) {
-            return res.status(400).send({
-                error: "Ba'zi o'rindiqlar band qilingan!"
-            })
-        }
-
-        const totalPrice = seats.reduce((sum, seat) => sum + seat.price, 0)
-        if (totalPrice !== data.price) {
-            return res.status(400).send({
-                error: "Narx chipta narxiga mos emmas!"
+                error: "tempTicket topilmadi!"
             })
         }
 
@@ -183,30 +168,69 @@ export const seatReservation = async (req, res) => {
             Math.floor(100000 + Math.random() * 900000);
 
         const verificationCode = generateRandomCode();
+        console.log(verificationCode);
 
-        const createdTempTickets = [];
 
-        for (const seat of seats) {
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
+        await userModel.findByIdAndUpdate(tempTicket.passenger_Id, { bank_card: body.bank_card, verification_code: verificationCode })
 
-            const tempTicket = await tempTicketModel.create({
-                bus_number: seat.bus,
-                seat: seat._id,
-                seat_number: seat.seatNumber,
-                passenger_Id: userId,
-                passenger: user,
-                route: rou,
-                departure_date: data,
-                cardNumber,
-                inputPrice: seat.price, // individual narx
-                code,
-            });
+        return res.status(201).send({
+            message: "Telefon raqamga sms cod yuborildi!"
+        })
 
-            await sendSmsToUser(userId, `Seat: ${seat.number} uchun kod: ${code}`);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        })
+    }
+}
 
-            createdTempTickets.push(tempTicket._id);
+export const confirmOrder = async (req, res) => {
+    try {
+        const { id } = req.params
+        const body = req.body
+
+        const user = await userModel.findById(id)
+
+        if (!user) {
+            return res.status(404).send({
+                error: "Foydalanuvchi topilmadi!"
+            })
         }
 
+        if (!user.verification_code === body.verificationCode) {
+            return res.status(400).send({
+                error: "Tasdiqlash kodi xato!"
+            })
+        }
+
+        const tempTicket = await tempTicketModel.findById(body.tempTicketId);
+
+        if (!tempTicket) {
+            return res.status(404).send({
+                error: "Tarmoqda nosozlik!"
+            })
+        }
+
+        await ticketModel.create({
+            passenger_Id: tempTicket.passenger_Id,
+            passenger: tempTicket.passenger,
+            birthday: tempTicket.birthday,
+            passport: tempTicket.passport,
+            phoneNumber: tempTicket.phoneNumber,
+            seat_number: tempTicket.seat_number,
+            seat: tempTicket.seat,
+            bus_number: tempTicket.bus_number,
+            from: tempTicket.from,
+            to: tempTicket.to,
+            departure_date: tempTicket.departure_date,
+            departure_time: tempTicket.departure_time,
+            price: tempTicket.price,
+        })
+
+        return res.status(201).send({
+            message: "Chipta yaratildi!"
+        })
 
     } catch (error) {
         console.log(error);
