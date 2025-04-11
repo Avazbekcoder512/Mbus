@@ -1,5 +1,10 @@
 // selectedPrices global scope'da bo'lishi kerak, chunki boshqa joylarda ham ishlatiladi
 const selectedPrices = new Map(); // seatId => price
+let routeFrom = "";
+let routeTo = "";
+let departureDate = "";
+let departureTime = "";
+let price = "";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
@@ -19,8 +24,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  function showTokenExpiredPopup() {
+  function showTokenExpiredPopup(message) {
     const popup = document.getElementById("token-expired-popup");
+    const messageEl = popup.querySelector("p");
+    messageEl.textContent = message;
     popup.classList.remove("hidden");
     localStorage.removeItem('token');
   }
@@ -39,20 +46,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         'Authorization': `Bearer ${token}`
       }
     });
+    const tripData = await response.json();
 
     if (response.status === 401) {
-      showTokenExpiredPopup();
+      const errorMessage = tripData.error
+      showTokenExpiredPopup(errorMessage);
       return;
     }
 
-    const tripData = await response.json();
     hidePreloader();
 
-    const routeFrom = tripData.trip.route.from;
-    const routeTo = tripData.trip.route.to;
-    const departureDate = tripData.trip.departure_date;
-    const departureTime = tripData.trip.departure_time;
-    const price = tripData.trip.ticket_price;
+    routeFrom = tripData.trip.route.from;
+    routeTo = tripData.trip.route.to;
+    departureDate = tripData.trip.departure_date;
+    departureTime = tripData.trip.departure_time;
+    price = tripData.trip.ticket_price;
 
     function formatDate(dateStr) {
       const parts = dateStr.split("-");
@@ -125,18 +133,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           td.addEventListener("click", () => {
             if (!td.classList.contains("occupied")) {
               td.classList.toggle("selected");
-          
+
               const selectedId = td.dataset.id;
               const seatObj = seatsData.find(seat => seat._id === selectedId || seat.seatNumber == value);
               const seatNumber = seatObj ? seatObj.seatNumber : value;
               // const seatPrice = seatObj?.price || 0;
-          
+
               if (td.classList.contains("selected")) {
                 selectedPrices.set(selectedId, seatNumber);
               } else {
                 selectedPrices.delete(selectedId);
               }
-          
+
               updateTotalPrice();
               showTicketForm();
             }
@@ -163,14 +171,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
     formContainer.innerHTML = ""; // oldingi formalarni tozalaymiz
-  
+
     if (selectedPrices.size === 0) {
       formContainer.style.display = "none";
       return;
     }
-  
+
     formContainer.style.display = "block";
-  
+
     selectedPrices.forEach((seatNumber, seatId) => {
       const form = document.createElement("form");
       form.classList.add("ticket-passenger-form");
@@ -183,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
           <div class="input-group">
             <label for="birthDate_${seatId}">Tug‘ilgan sana:</label>
-            <input type="date" id="birthDate_${seatId}" name="birthDate_${seatId}" placeholder="Tug‘ilgan sana" required>
+            <input type="date" id="birthDate_${seatId}" name="birthDate_${seatId}" required>
           </div>
           <div class="input-group">
             <label for="passport_${seatId}">Pasport raqam:</label>
@@ -197,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
       formContainer.appendChild(form);
     });
-  
+
     // Pastki tugmalar
     const btnContainer = document.createElement("div");
     btnContainer.classList.add("form-buttons");
@@ -206,102 +214,76 @@ document.addEventListener("DOMContentLoaded", async () => {
       <button type="submit" id="continue-btn">Davom etish  <i class="fa-solid fa-arrow-right"></i></button>
     `;
     formContainer.appendChild(btnContainer);
-  
+
     // Tugmalarga event qo‘shish
     document.getElementById("back-btn").addEventListener("click", () => {
-      window.location = 'index.html'      
+      window.location = 'index.html'
       selectedPrices.clear();
       document.querySelectorAll(".seat.selected").forEach(el => el.classList.remove("selected"));
     });
-  
-    document.getElementById("continue-btn").addEventListener("click", () => {
-      // alert("Ma’lumotlar bilan davom etilmoqda... (keyingi qadamni siz yozasiz)");
-      return;
-      // Keyingi qadam uchun ma’lumotlarni yig‘ish mumkin
-    });
-  }  
-});
 
-// FORMNI YUBORISH FUNKSIYASI
-async function submitTicketForm(e) {
-  e.preventDefault();
-  const data = new FormData(e.target);
-  const card = data.get("cardNumber");
-  const priceInput = data.get("priceInput");
+    document.getElementById("continue-btn").addEventListener("click", async () => {
+      // Har bir "ticket-passenger-form" ni tanlab olamiz
+      const forms = document.querySelectorAll(".ticket-passenger-form");
+      let passengers = [];
 
-  const selectedSeatIds = Array.from(selectedPrices.keys());
+      forms.forEach(form => {
+        const formData = new FormData(form);
+        // Input elementlar id'si formatida: fullName_{seatId}
+        // Birinchi input elementidan seatId ni aniqlaymiz:
+        const fullNameInput = form.querySelector('input[id^="fullName_"]');
+        if (!fullNameInput) return; // xavfsizlik uchun
 
-  const payload = {
-    seats: selectedSeatIds,
-    cardNumber: card,
-    totalPrice: priceInput,
-  };
+        const seatId = fullNameInput.id.split("_")[1];
+        const seatNumber = form.querySelector('.form-header')?.textContent.replace("O‘rindiq raqami: ", "").trim();
+        const fullName = formData.get(`fullName_${seatId}`);
+        const birthDate = formData.get(`birthDate_${seatId}`);
+        const passport = formData.get(`passport_${seatId}`);
+        const phone = formData.get(`phone_${seatId}`);
 
-  try {
-    const token = localStorage.getItem('token');
-
-    const response = await fetch('http://localhost:8000/tickets/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      showSMSVerificationForm(result.ticketId);
-    } else {
-      alert(result.message || 'Xatolik yuz berdi!');
-    }
-
-  } catch (err) {
-    console.error('Xatolik:', err);
-    alert('Server bilan aloqa o‘rnatilmadi');
-  }
-}
-
-function showSMSVerificationForm(ticketId) {
-  const formContainer = document.getElementById("ticket-form-container");
-
-  formContainer.innerHTML = `
-    <form id="sms-verification-form">
-      <h3>SMS orqali yuborilgan kodni kiriting:</h3>
-      <input type="text" name="smsCode" placeholder="SMS kod" required>
-      <button type="submit">Tasdiqlash</button>
-    </form>
-  `;
-
-  document.getElementById("sms-verification-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    const smsCode = data.get("smsCode");
-
-    try {
-      const token = localStorage.getItem('token');
-
-      const verifyResponse = await fetch(`http://localhost:8000/tickets/verify/${ticketId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ code: smsCode })
+        passengers.push({ seatId, seatNumber, fullName, birthDate, passport, phone });
       });
 
-      const verifyResult = await verifyResponse.json();
-
-      if (verifyResponse.ok) {
-        alert("Chipta muvaffaqiyatli tasdiqlandi!");
-        window.location.href = '/my-tickets.html';
-      } else {
-        alert(verifyResult.message || "Kod noto‘g‘ri yoki eskirgan.");
+      // Agar hech qanday forma tanlanmagan bo'lsa, form ko‘rsatilmaydi.
+      if (passengers.length === 0) {
+        alert("Iltimos, avval o‘rindiq tanlang!");
+        return;
       }
-    } catch (err) {
-      console.error('Tasdiqlash xatoligi:', err);
-      alert("Server bilan aloqa o‘rnatilmadi");
-    }
-  });
-}
+
+      // Serverga yuboriladigan umumiy payload
+      const payload = {
+        passengers: passengers,
+        from: routeFrom,
+        to: routeTo,
+        departure_date: departureDate,
+        departure_time: departureTime
+      };
+
+      console.log(payload);
+      
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:8000/ticket-pending', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          // Ma'lumotlar muvaffaqiyatli yuborilganda, boshqa sahifaga yo'naltirish
+          window.location.href = 'card.html';
+        } else {
+          alert(result.message || 'Xatolik yuz berdi!');
+        }
+      } catch (err) {
+        console.error('Xatolik:', err);
+        alert('Server bilan aloqa o‘rnatilmadi');
+      }
+    });
+  }
+});
