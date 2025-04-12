@@ -92,8 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         hidePreloader()
 
-        const cities = data.cities; // ✅ Backenddan kelayotgan massiv
-        console.log("Bekatlar:", cities);
+        const cities = data.cities;
 
         if (Array.isArray(cities)) {
             cities.forEach(city => {

@@ -13,16 +13,6 @@
 </head>
 
 <body>
-
-    <div id="error-popup" class="error-popup">
-        <div class="popup-content">
-            <span id="error-close" class="popup-close"><i class="fa-solid fa-triangle-exclamation"></i></span>
-            <h3>Xatolik</h3>
-            <p id="error-message"></p>
-            <button id="popup_button" onclick="closeErrorPopup()">Close</button>
-        </div>
-    </div>
-
     <div id="preloader">
         <div class="circle"></div>
         <div class="circle-small"></div>
@@ -92,23 +82,6 @@
 
     <script src="index.js"></script>
     <script src="card.js"></script>
-    <script>
-        function showErrorPopup(message) {
-            const popup = document.getElementById('error-popup');
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.textContent = message;
-            popup.style.display = 'flex';
-        }
-
-        function closeErrorPopup() {
-            const popup = document.getElementById('error-popup');
-            if (popup) {
-                popup.style.display = 'none';
-            } else {
-                console.error("Error popup element topilmadi!");
-            }
-        }
-    </script>
 </body>
 
 </html>

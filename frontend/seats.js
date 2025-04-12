@@ -8,7 +8,7 @@ let price = "";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   function showPreloader() {
     if (preloader) preloader.classList.remove("hidden");
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const messageEl = popup.querySelector("p");
     messageEl.textContent = message;
     popup.classList.remove("hidden");
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
   }
 
   document.getElementById("close-popup-btn").addEventListener("click", () => {
@@ -37,20 +37,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     popup.classList.add("hidden");
   });
 
-
   try {
     showPreloader();
     const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
       method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       }
     });
     const tripData = await response.json();
 
     if (response.status === 401) {
-      const errorMessage = tripData.error
-      showTokenExpiredPopup(errorMessage);
+      showTokenExpiredPopup(tripData.error);
       return;
     }
 
@@ -137,7 +135,6 @@ document.addEventListener("DOMContentLoaded", async () => {
               const selectedId = td.dataset.id;
               const seatObj = seatsData.find(seat => seat._id === selectedId || seat.seatNumber == value);
               const seatNumber = seatObj ? seatObj.seatNumber : value;
-              // const seatPrice = seatObj?.price || 0;
 
               if (td.classList.contains("selected")) {
                 selectedPrices.set(selectedId, seatNumber);
@@ -160,17 +157,71 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Ma'lumotlarni yuklashda xatolik:", error);
   }
 
-  // umumiy narxni hisoblaydigan funksiya
   function updateTotalPrice() {
     let total = 0;
     for (let price of selectedPrices.values()) {
       total += Number(price);
-    }
+    }    
   }
 
+  function formatPhoneNumber(value) {
+    let digits = value.replace(/\D/g, '');
+    
+    if (digits.length < 3) {
+      return "+998";
+    }
+    
+    if (digits.startsWith("998")) {
+      digits = digits.slice(3);
+    }
+    
+    digits = digits.slice(0, 9);
+    
+    const operator = digits.slice(0, 2);
+    const part1 = digits.slice(2, 5);
+    const part2 = digits.slice(5, 7);
+    const part3 = digits.slice(7, 9);
+    
+    let formatted = "+998";
+    
+    if (operator.length > 0) {
+      if (operator.length === 2) {
+        formatted += ` (${operator})`;
+      } else {
+        formatted += ` (${operator}`;
+      }
+    } else {
+      formatted += " (";
+    }
+    
+    if (operator.length === 2) {
+      formatted += " ";
+    }
+    
+    if (part1) {
+      formatted += part1;
+    }
+    if (part2) {
+      formatted += `-${part2}`;
+    }
+    if (part3) {
+      formatted += `-${part3}`;
+    }
+    return formatted;
+  }
+
+  // Pasport raqam formatlash funksiyasi:
+  function formatPassportNumber(value) {
+    let cleaned = value.replace(/[^a-zA-Z0-9]/g, '');
+    let letters = cleaned.slice(0, 2).replace(/[^a-zA-Z]/g, '').toUpperCase();
+    let digits = cleaned.slice(2).replace(/\D/g, '').slice(0, 7);
+    return letters + digits;
+  }
+
+  // Formani ko'rsatish funksiyasi (yagona versiya)
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
-    formContainer.innerHTML = ""; // oldingi formalarni tozalaymiz
+    formContainer.innerHTML = ""; // Oldingi formalarni tozalash
 
     if (selectedPrices.size === 0) {
       formContainer.style.display = "none";
@@ -186,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="form-header">O‘rindiq raqami: ${seatNumber}</div>
         <div class="form-row">
           <div class="input-group">
-            <label for="fullName_${seatNumber}">To‘liq ism:</label>
+            <label for="fullName_${seatId}">To‘liq ism:</label>
             <input type="text" id="fullName_${seatId}" name="fullName_${seatId}" placeholder="To‘liq ism" required>
           </div>
           <div class="input-group">
@@ -204,6 +255,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       `;
       formContainer.appendChild(form);
+
+      // Telefon raqam inputiga event listener (formatlash va +998 prefiksini majburlash)
+      const phoneInput = form.querySelector(`[id^="phone_"]`);
+      if (phoneInput) {
+        phoneInput.addEventListener("input", function () {
+          const cursorPosition = phoneInput.selectionStart;
+          const originalLength = phoneInput.value.length;
+          phoneInput.value = formatPhoneNumber(phoneInput.value);
+          const newLength = phoneInput.value.length;
+          phoneInput.selectionStart = phoneInput.selectionEnd = cursorPosition + (newLength - originalLength);
+        });
+      }
+
+      // Pasport raqam inputiga event listener (formatlash)
+      const passportInput = form.querySelector(`[id^="passport_"]`);
+      if (passportInput) {
+        passportInput.addEventListener("input", function () {
+          const cursorPosition = passportInput.selectionStart;
+          const originalLength = passportInput.value.length;
+          passportInput.value = formatPassportNumber(passportInput.value);
+          const newLength = passportInput.value.length;
+          passportInput.selectionStart = passportInput.selectionEnd = cursorPosition + (newLength - originalLength);
+        });
+      }
     });
 
     // Pastki tugmalar
@@ -215,24 +290,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
     formContainer.appendChild(btnContainer);
 
-    // Tugmalarga event qo‘shish
+    // "Ortga qaytish" tugmasi:
     document.getElementById("back-btn").addEventListener("click", () => {
-      window.location = 'index.html'
+      window.location = "index.html";
       selectedPrices.clear();
       document.querySelectorAll(".seat.selected").forEach(el => el.classList.remove("selected"));
     });
 
-    document.getElementById("continue-btn").addEventListener("click", async () => {
-      // Har bir "ticket-passenger-form" ni tanlab olamiz
+    // "Davom etish" tugmasi bosilganda:
+    document.getElementById("continue-btn").addEventListener("click", async (e) => {
+      // Har bir forma validatsiyasini tekshiramiz:
       const forms = document.querySelectorAll(".ticket-passenger-form");
-      let passengers = [];
+      for (const form of forms) {
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          e.preventDefault();
+          return;
+        }
+      }
 
+      let passengers = [];
       forms.forEach(form => {
         const formData = new FormData(form);
-        // Input elementlar id'si formatida: fullName_{seatId}
-        // Birinchi input elementidan seatId ni aniqlaymiz:
         const fullNameInput = form.querySelector('input[id^="fullName_"]');
-        if (!fullNameInput) return; // xavfsizlik uchun
+        if (!fullNameInput) return;
 
         const seatId = fullNameInput.id.split("_")[1];
         const seatNumber = form.querySelector('.form-header')?.textContent.replace("O‘rindiq raqami: ", "").trim();
@@ -244,13 +325,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         passengers.push({ seatId, seatNumber, fullName, birthDate, passport, phone });
       });
 
-      // Agar hech qanday forma tanlanmagan bo'lsa, form ko‘rsatilmaydi.
       if (passengers.length === 0) {
         alert("Iltimos, avval o‘rindiq tanlang!");
         return;
       }
 
-      // Serverga yuboriladigan umumiy payload
       const payload = {
         passengers: passengers,
         from: routeFrom,
@@ -260,29 +339,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
 
       console.log(payload);
-      
 
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8000/ticket-pending', {
-          method: 'POST',
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8000/ticket-pending", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(payload)
         });
         const result = await response.json();
 
         if (response.ok) {
-          // Ma'lumotlar muvaffaqiyatli yuborilganda, boshqa sahifaga yo'naltirish
-          window.location.href = 'card.html';
+          window.location.href = "card.html";
         } else {
-          alert(result.message || 'Xatolik yuz berdi!');
+          alert(result.message || "Xatolik yuz berdi!");
         }
       } catch (err) {
-        console.error('Xatolik:', err);
-        alert('Server bilan aloqa o‘rnatilmadi');
+        console.error("Xatolik:", err);
+        alert("Server bilan aloqa o‘rnatilmadi");
       }
     });
   }
