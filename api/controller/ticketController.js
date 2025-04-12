@@ -90,11 +90,7 @@ export const pendingTicket = async (req, res) => {
 
         const body = req.body
         const passengers = body.passengers[0]
-        console.log(body);
-        console.log("sdfsdf:", passengers);
-
-
-
+        
         const seat = await seatModel.findById(passengers.seatId)
 
         if (!seat) {
@@ -141,6 +137,8 @@ export const pendingTicket = async (req, res) => {
             price: seat.price
         })
 
+        await userModel.findByIdAndUpdate(userId, { tempTicketId: tempTicket.id })
+
         return res.status(200).send({
             tempTicket
         })
@@ -154,13 +152,21 @@ export const pendingTicket = async (req, res) => {
 
 export const seatBooking = async (req, res) => {
     try {
+
+        const authHeader = req.headers["authorization"];
+        const token = authHeader.split(" ")[1];
+
+        const decodet = jwt.verify(token, process.env.JWT_KEY);
+
+        const userId = decodet.id;
+
         const body = req.body
 
-        const tempTicket = await tempTicketModel.findById(body.tempTicketId)
+        const user = await tempTicketModel.findById(userId)
 
-        if (!tempTicket) {
+        if (!user) {
             return res.status(400).send({
-                error: "tempTicket topilmadi!"
+                error: "Foydalanuvchi topilmadi!"
             })
         }
 
@@ -171,7 +177,7 @@ export const seatBooking = async (req, res) => {
         console.log(verificationCode);
 
 
-        await userModel.findByIdAndUpdate(tempTicket.passenger_Id, { bank_card: body.bank_card, verification_code: verificationCode })
+        await userModel.findByIdAndUpdate(user.id, { bank_card: body.bank_card, verification_code: verificationCode })
 
         return res.status(201).send({
             message: "Telefon raqamga sms cod yuborildi!"
@@ -187,10 +193,16 @@ export const seatBooking = async (req, res) => {
 
 export const confirmOrder = async (req, res) => {
     try {
-        const { id } = req.params
+        const authHeader = req.headers["authorization"];
+        const token = authHeader.split(" ")[1];
+
+        const decodet = jwt.verify(token, process.env.JWT_KEY);
+
+        const userId = decodet.id;
+
         const body = req.body
 
-        const user = await userModel.findById(id)
+        const user = await userModel.findById(userId)
 
         if (!user) {
             return res.status(404).send({
@@ -204,7 +216,7 @@ export const confirmOrder = async (req, res) => {
             })
         }
 
-        const tempTicket = await tempTicketModel.findById(body.tempTicketId);
+        const tempTicket = await tempTicketModel.findById(user.tempTicketId);
 
         if (!tempTicket) {
             return res.status(404).send({
@@ -212,7 +224,7 @@ export const confirmOrder = async (req, res) => {
             })
         }
 
-        await ticketModel.create({
+        const ticket = await ticketModel.create({
             passenger_Id: tempTicket.passenger_Id,
             passenger: tempTicket.passenger,
             birthday: tempTicket.birthday,
@@ -227,6 +239,8 @@ export const confirmOrder = async (req, res) => {
             departure_time: tempTicket.departure_time,
             price: tempTicket.price,
         })
+
+        await userModel.findByIdAndUpdate(user.id, { ticket: ticket.id })
 
         return res.status(201).send({
             message: "Chipta yaratildi!"
