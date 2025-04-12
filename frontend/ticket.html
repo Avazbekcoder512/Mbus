@@ -4,18 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./assets/css/style.css">
     <title>Gorizontal Avtobus Chipta</title>
     <style>
-        body {
-            background: #f0f2f5;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100%;
-        }
+        /* display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+        gap: 30px; */
 
         .ticket {
             display: flex;
@@ -119,51 +116,34 @@
 </head>
 
 <body>
-    <div class="ticket">
-        <div class="ticket-left">
-            <h1>Avtobus Chiptasi</h1>
-            <p>BUS-123</p>
-        </div>
-        <div class="ticket-right">
-            <div class="ticket-section">
-                <div class="item">
-                    <div class="label">Ism:</div>
-                    <div class="value">Ali Valiyev</div>
-                </div>
-                <div class="item">
-                    <div class="label">Tug‘ilgan sana:</div>
-                    <div class="value">01.01.1990</div>
-                </div>
-                <div class="item">
-                    <div class="label">Pasport raqami:</div>
-                    <div class="value">AA1234567</div>
-                </div>
-                <div class="item">
-                    <div class="label">Telefon raqami:</div>
-                    <div class="value">+998901234567</div>
-                </div>
-                <div class="item">
-                    <div class="label">O‘rindiq raqami:</div>
-                    <div class="value">12A</div>
-                </div>
-                <div class="item">
-                    <div class="label">Qayerdan:</div>
-                    <div class="value">Toshkent</div>
-                </div>
-                <div class="item">
-                    <div class="label">Qayerga:</div>
-                    <div class="value">Samarqand</div>
-                </div>
-            </div>
-            <div class="ticket-footer">
-                <div class="date-time">
-                    <div>Sana: 20.04.2025</div>
-                    <div>Vaqt: 09:00</div>
-                </div>
-                <div class="price">35 000 so'm</div>
+    <div class="background"></div>
+    <header class="header container">
+        <a href="./index.html" style="color: rgba(0, 0, 0, 0.486); text-decoration: none;">
+            <h1><span>M</span>BUS.UZ</h1>
+        </a>
+        <div class="about">
+            <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
+            <a href="./login.html"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
+                    Kirish</button></a>
+            <span id="user-name" style="display: none;">
+                <i class="fa-solid fa-user"></i> <!-- Foydalanuvchi ikonkasini qo'shish -->
+                <span id="username"></span> <!-- Foydalanuvchi ismi -->
+            </span>
+            <div id="user-menu" class="dropdown-menu">
+                <a href="" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
+                <a id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
             </div>
         </div>
-    </div>
+    </header>
+
+    <main>
+        <div id="ticket-container">
+            <div class="ticket">
+            </div>
+        </div>
+    </main>
+    <script src="index.js"></script>
+    <script src="ticket.js"></script>
 </body>
 
 </html>

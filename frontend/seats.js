@@ -158,32 +158,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function updateTotalPrice() {
-    let total = 0;
-    for (let price of selectedPrices.values()) {
-      total += Number(price);
-    }    
+    let totalPrice = 0;
+    let selectedSeatsCount = 0;
+    const selectedSeatIds = [];
+
+    for (let [seatId, seatNumber] of selectedPrices.entries()) {
+      totalPrice += Number(price);
+      selectedSeatsCount++;
+      selectedSeatIds.push({ seatId, seatNumber });
+    }
+
+    localStorage.setItem("selectedSeatsCount", selectedSeatsCount.toString());
+    localStorage.setItem("totalPrice", totalPrice.toString());
+    localStorage.setItem("ticketPrice", price.toString());
   }
+
+
 
   function formatPhoneNumber(value) {
     let digits = value.replace(/\D/g, '');
-    
+
     if (digits.length < 3) {
       return "+998";
     }
-    
+
     if (digits.startsWith("998")) {
       digits = digits.slice(3);
     }
-    
+
     digits = digits.slice(0, 9);
-    
+
     const operator = digits.slice(0, 2);
     const part1 = digits.slice(2, 5);
     const part2 = digits.slice(5, 7);
     const part3 = digits.slice(7, 9);
-    
+
     let formatted = "+998";
-    
+
     if (operator.length > 0) {
       if (operator.length === 2) {
         formatted += ` (${operator})`;
@@ -193,11 +204,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       formatted += " (";
     }
-    
+
     if (operator.length === 2) {
       formatted += " ";
     }
-    
+
     if (part1) {
       formatted += part1;
     }
