@@ -47,8 +47,8 @@
         <div id="code-modal" class="code-modal">
             <div class="modal-content">
                 <h3>SMS KODNI KIRITING</h3>
-                <p>Telefon raqamingizga yuborilgan 4 xonali kodni kiriting:</p>
-                <input type="text" id="verification-code" maxlength="4" placeholder="1234">
+                <p>Telefon raqamingizga yuborilgan 6 xonali kodni kiriting:</p>
+                <input type="text" id="verification-code" maxlength="6" placeholder="123456">
                 <button id="verify-code-btn">Tasdiqlash</button>
             </div>
         </div>
@@ -57,10 +57,10 @@
             <h2>To‘lov</h2>
 
             <div class="summary">
-                <div><span>Chiptalar soni:</span> <strong>2</strong></div>
-                <div><span>1 ta chipta narxi:</span> <strong>200 000 so'm</strong></div>
-                <div class="total"><span>Umumiy to‘lov:</span> <strong>400 000 so'm</strong></div>
-            </div>
+                <div><span>Chiptalar soni:</span> <strong id="ticket-count">2</strong></div>
+                <div><span>1 ta chipta narxi:</span> <strong id="ticket-price">200 000 so'm</strong></div>
+                <div class="total"><span>Umumiy to‘lov:</span> <strong id="total-price">400 000 so'm</strong></div>
+            </div>            
 
             <div class="horizontal-inputs">
                 <div class="form-group">

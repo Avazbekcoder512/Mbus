@@ -9,8 +9,8 @@ const userSchema = new mongoose.Schema({
     bank_card: String,
     expiryDate: String,
     verification_code: Number,
-    ticket: { type: mongoose.Schema.Types.ObjectId, ref: "Ticket" },
-    tempTicketId: { type: mongoose.Schema.Types.ObjectId, ref: "tempTicket" }
+    ticket: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
+    tempTicketId: [{ type: mongoose.Schema.Types.ObjectId, ref: "tempTicket" }]
 })
 
 export const userModel = mongoose.model("User", userSchema)

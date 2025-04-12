@@ -19,28 +19,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (preloader) preloader.classList.add("hidden");
     }
 
-    // Check if user is logged in by token
     const token = localStorage.getItem("token");
 
-    // Agar token bo'lsa, foydalanuvchi nomini olish va ko'rsatish
     if (token) {
         const decodedToken = decodeJWT(token);
         const userName = decodedToken.name;
 
-        // Foydalanuvchi ismini ko'rsatish
         usernameDisplay.textContent = userName;
         userNameElement.style.display = "inline-flex";
 
-        // Kirish tugmasini yashirish va foydalanuvchi ismini ko'rsatish
         loginButton.style.display = "none";
         userNameElement.style.display = "block";
 
         userNameElement.addEventListener("click", (event) => {
             userMenu.classList.toggle("show");
-            event.stopPropagation();  // Bosishdan keyin boshqa joyga bosilganda yopilmasligi uchun
+            event.stopPropagation();
         });
     } else {
-        // Token bo'lmasa, login tugmasi ko'rinishda bo'lsin
         loginButton.style.display = "block";
         userNameElement.style.display = "none";
     }
@@ -48,16 +43,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const logoutButton = document.getElementById("logout");
     if (logoutButton) {
         logoutButton.addEventListener("click", () => {
-            localStorage.removeItem("token"); // Tokenni o'chirish
-            window.location.href = "index.html"; // Bosh sahifaga qaytish
+            localStorage.removeItem("token");
+            window.location.href = "index.html";
         });
     }
 
-    // Chiptalarim tugmasi
     const ticketsButton = document.getElementById("tickets");
     if (ticketsButton) {
         ticketsButton.addEventListener("click", () => {
-            window.location.href = "tickets.html"; // Chiptalar sahifasiga o'tish
+            window.location.href = "tickets.html";
         });
     }
 
@@ -68,9 +62,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     function decodeJWT(token) {
-        const payload = token.split('.')[1]; // Tokenning ikkinchi qismi (payload)
-        const decodedPayload = atob(payload); // base64 dekodlash
-        return JSON.parse(decodedPayload); // JSON formatga o'zgartirish
+        const payload = token.split('.')[1]; 
+        const decodedPayload = atob(payload);
+        return JSON.parse(decodedPayload);
     }
 
     // Sanani avtomatik ravishda minimal qilib qo'yish
@@ -86,7 +80,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            // Agar serverdan xato javob bo'lsa, xato message chiqaramiz
             throw new Error(data.error || "Bekatlar ro'yxatini olishda xatolik");
         }
 
@@ -99,12 +92,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const optionFrom = document.createElement("option");
                 optionFrom.value = city.name;
                 optionFrom.textContent = city.name;
-                fromSelect.appendChild(optionFrom);
+                fromSelect?.appendChild(optionFrom);
 
                 const optionTo = document.createElement("option");
                 optionTo.value = city.name;
                 optionTo.textContent = city.name;
-                toSelect.appendChild(optionTo);
+                toSelect?.appendChild(optionTo);
             });
         } else {
             console.log(error);
@@ -114,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Formni yuborish va natijalarni chiqarish
-    form.addEventListener('submit', function (event) {
+    form?.addEventListener('submit', function (event) {
         event.preventDefault();
 
         const from = fromSelect.value;
@@ -174,12 +167,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log(error);
             })
             .finally(() => {
-                hidePreloader(); // 🔄 Fetch tugagach, preloaderni o‘chiramiz
+                hidePreloader();
             });
     });
 });
 
 function saveTripId(tripId) {
     localStorage.setItem("selectedTripId", tripId);
-    window.location.href = "seats.html"; // Sahifani o'zgartirish
+    window.location.href = "seats.html";
 }
+
+document.getElementById("tickets").addEventListener("click", (e) => {
+    e.preventDefault();
+    getMyTickets();
+});
