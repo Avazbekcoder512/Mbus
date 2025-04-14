@@ -363,7 +363,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         const result = await response.json();
 
-        if (response.ok) {
+        if (response.ok && result.order) {
+          localStorage.setItem('order', result.order)
           window.location.href = "card.html";
         } else {
           alert(result.message || "Xatolik yuz berdi!");

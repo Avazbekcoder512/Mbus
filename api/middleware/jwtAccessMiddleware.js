@@ -7,7 +7,7 @@ export const jwtAccessMiddleware = (req, res, next) => {
         const authHeader = req.headers['authorization']
 
         if (!authHeader) {
-            return res.status(404).send({
+            return res.status(401).send({
                 error: 'Token not found'
             })
         }
@@ -15,7 +15,7 @@ export const jwtAccessMiddleware = (req, res, next) => {
         const token = authHeader.split(' ')[1]
 
         if (!token) {
-            return res.status(404).send({
+            return res.status(401).send({
                 error: 'Token not provided'
             })
         }

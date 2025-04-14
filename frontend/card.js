@@ -1,20 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const payButton = document.getElementById('pay-button');
+    const form = document.getElementById('payment-form');
     const modal = document.getElementById('code-modal');
     const verifyBtn = document.getElementById('verify-code-btn');
     const cardNumberInput = document.getElementById('card-number');
     const expiryInput = document.getElementById('expiry');
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
+    const order = localStorage.getItem('order')
 
     const ticketCount = localStorage.getItem('selectedSeatsCount') || 2;
     const ticketPrice = localStorage.getItem('ticketPrice') || 200000;
-    const totalPrice = localStorage.getItem('totalPrice');
+    const totalPrice = localStorage.getItem('totalPrice') || ticketCount * ticketPrice;
 
-    document.getElementById('ticket-count').innerHTML = ticketCount;
-    document.getElementById('ticket-price').innerHTML = `${Number(ticketPrice).toLocaleString()} so'm`;
-    document.getElementById('total-price').innerHTML = `${Number(totalPrice).toLocaleString()} so'm`;
+    document.getElementById('ticket-count').innerText = ticketCount;
+    document.getElementById('ticket-price').innerText = `${Number(ticketPrice).toLocaleString()} so'm`;
+    document.getElementById('total-price').innerText = `${Number(totalPrice).toLocaleString()} so'm`;
 
-    // Karta raqami formatlash
+    // Formatlash: Karta raqami
     cardNumberInput.addEventListener('input', (e) => {
         let value = e.target.value.replace(/\D/g, '').substring(0, 16);
         let formatted = '';
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.value = formatted.trim();
     });
 
-    // Expiry date formatlash (MM/YY)
+    // Formatlash: Amal muddati
     expiryInput.addEventListener('input', (e) => {
         let value = e.target.value.replace(/\D/g, '').substring(0, 4);
         if (value.length >= 3) {
@@ -33,8 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.value = value;
     });
 
-    // To‘lov tugmasi bosilganda
-    payButton.addEventListener('click', async () => {
+    // ✅ Form yuborilganda
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Sahifa yangilanmasin
+
         const cardNumber = cardNumberInput.value;
         const expiryDate = expiryInput.value;
 
@@ -43,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Expiry date format va validatsiyasi
         const [monthStr, yearStr] = expiryDate.split('/');
         const month = parseInt(monthStr, 10);
         const year = parseInt('20' + yearStr, 10); // '25' -> 2025
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             year < currentYear ||
             (year === currentYear && month < currentMonth)
         ) {
-            alert("Amal qilish muddati noto‘g‘ri. To‘g‘ri formatda kiriting (MM/YY) va amal qiladigan sana bo‘lsin.");
+            alert("Amal qilish muddati noto‘g‘ri.");
             return;
         }
 
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     bank_card: cardNumber,
-                    expiry_date: expiryDate
+                    expiryDate: expiryDate
                 })
             });
 
@@ -90,27 +92,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Kodni tekshirish tugmasi
+    // ✅ Tasdiqlash kodi
     verifyBtn.addEventListener('click', async () => {
         const code = Number(document.getElementById('verification-code').value);
-    
+
         if (!Number.isInteger(code) || String(code).length !== 6) {
             alert("Iltimos, 6 xonali raqamli kod kiriting.");
             return;
         }
-    
+
         try {
             const response = await fetch('http://localhost:8000/confirm', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
+                    orderToken: `${order}`
                 },
                 body: JSON.stringify({ verificationCode: code })
             });
-    
+
             const data = await response.json();
-    
+
             if (data.success) {
                 alert("Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
@@ -121,6 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Xatolik yuz berdi:', error);
             alert("Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.");
         }
-    });    
-
+    });
 });

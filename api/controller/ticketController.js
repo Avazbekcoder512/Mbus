@@ -10,6 +10,11 @@ import jwt from 'jsonwebtoken'
 import { ticketModel } from '../models/ticket.js'
 config()
 
+const generateToken = (ticketIds, userId) => {
+    const payload = { ticketIds, userId }
+    return jwt.sign(payload, process.env.ORDER_KEY, { expiresIn: '5m' })
+}
+
 export const routeFind = async (req, res) => {
     try {
         const from = req.query.from
@@ -88,6 +93,14 @@ export const pendingTicket = async (req, res) => {
 
         const userId = decodet.id;
 
+        const user = await userModel.findById(userId)
+
+        if (!user) {
+            return res.status(400).send({
+                error: 'Token bu foydalanuvchiga tegishli emas!'
+            })
+        }
+
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -140,11 +153,14 @@ export const pendingTicket = async (req, res) => {
 
             createdTickets.push(tempTicket);
 
-            await userModel.findByIdAndUpdate(userId, { tempTicketId: tempTicket.id });
+            await userModel.findByIdAndUpdate(user._id, { tempTicketId: tempTicket.id });
         }
+        const ticketIds = createdTickets.map(ticket => ticket._id)
+        const order = generateToken(ticketIds, userId)
 
         return res.status(200).send({
-            tempTickets: createdTickets
+            tempTickets: createdTickets,
+            order: order
         });
     } catch (error) {
         console.log(error);
@@ -193,7 +209,6 @@ export const seatBooking = async (req, res) => {
         return res.status(201).send({
             message: "Telefon raqamga sms cod yuborildi!"
         })
-
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -204,20 +219,42 @@ export const seatBooking = async (req, res) => {
 
 export const confirmOrder = async (req, res) => {
     try {
-        const authHeader = req.headers["authorization"];
-        const token = authHeader.split(" ")[1];
-        const decodet = jwt.verify(token, process.env.JWT_KEY);
-        const userId = decodet.id;
-
-        const errors = validationResult(req)
+        const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
                 error: errors.array().map(error => error.msg)
-            })
+            });
         }
 
-        const data = matchedData(req)
+        const authHeader = req.headers["authorization"];
+        const orderToken = req.headers["ordertoken"];
 
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).send({ error: "Authorization token noto‘g‘ri yoki mavjud emas!" });
+        }
+
+        if (!orderToken) {
+            return res.status(400).send({ error: "Order token topilmadi!" });
+        }
+
+        const accessToken = authHeader.split(" ")[1];
+
+        const decodedUser = jwt.verify(accessToken, process.env.JWT_KEY);
+        const decodedOrder = jwt.verify(orderToken, process.env.ORDER_KEY);
+
+        const userId = decodedUser.id;
+
+        if (decodedOrder.userId && decodedOrder.userId !== userId) {
+            return res.status(403).send({ error: "Order token foydalanuvchiga tegishli emas!" });
+        }
+
+        const tempTicketIds = decodedOrder.ticketIds;
+
+        if (!Array.isArray(tempTicketIds) || tempTicketIds.length === 0) {
+            return res.status(400).send({ error: "Order token noto‘g‘ri yoki chiptalar topilmadi!" });
+        }
+
+        const data = matchedData(req);
         const user = await userModel.findById(userId);
 
         if (!user) {
@@ -225,13 +262,16 @@ export const confirmOrder = async (req, res) => {
         }
 
         if (user.verification_code !== data.verificationCode) {
-            return res.status(400).send({ error: "Tasdiqlash kodi xato!" });
+            return res.status(400).send({ error: "Tasdiqlash kodi noto‘g‘ri!" });
         }
 
-        const tempTickets = await tempTicketModel.find({ passenger_Id: userId });
+        const tempTickets = await tempTicketModel.find({
+            _id: { $in: tempTicketIds },
+            passenger_Id: userId
+        });
 
         if (!tempTickets || tempTickets.length === 0) {
-            return res.status(404).send({ error: "Hech qanday vaqtinchalik chipta topilmadi!" });
+            return res.status(404).send({ error: "Ko‘rsatilgan vaqtinchalik chiptalar topilmadi!" });
         }
 
         const createdTickets = [];
@@ -260,7 +300,10 @@ export const confirmOrder = async (req, res) => {
             await tempTicketModel.findByIdAndDelete(temp._id);
         }
 
-        await userModel.findByIdAndUpdate(userId, { tickets: createdTickets.map(t => t._id) });
+        // 7. Foydalanuvchiga chiptalarni biriktirish
+        await userModel.findByIdAndUpdate(userId, {
+            $push: { tickets: { $each: createdTickets.map(t => t._id) } }
+        });
 
         return res.status(201).send({
             success: true,
@@ -269,13 +312,21 @@ export const confirmOrder = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).send({
+                error: 'Token muddati tugagan. Iltimos, qayta kirish qiling!',
+            });
+        } else if (error.name === 'JsonWebTokenError') {
+            return res.status(401).send({
+                error: 'Token noto‘g‘ri. Iltimos, qayta kirish qiling!',
+            });
+        }
+
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: "Serverda kutilmagan xatolik yuz berdi!"
         });
     }
 };
-
 
 export const getTicket = async (req, res) => {
     try {
