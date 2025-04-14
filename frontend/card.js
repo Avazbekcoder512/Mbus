@@ -36,19 +36,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ Form yuborilganda
     form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Sahifa yangilanmasin
+        e.preventDefault();
 
         const cardNumber = cardNumberInput.value;
         const expiryDate = expiryInput.value;
 
+        const payButton = document.getElementById('pay-button');
+        payButton.classList.add('loading'); // ✅ Loader chiqadi
+
         if (!cardNumber || !expiryDate) {
             alert("Barcha maydonlarni to'ldiring!");
+            payButton.classList.remove('loading'); // ❌ Loaderni olib tashlash
             return;
         }
 
         const [monthStr, yearStr] = expiryDate.split('/');
         const month = parseInt(monthStr, 10);
-        const year = parseInt('20' + yearStr, 10); // '25' -> 2025
+        const year = parseInt('20' + yearStr, 10);
 
         const today = new Date();
         const currentMonth = today.getMonth() + 1;
@@ -61,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             (year === currentYear && month < currentMonth)
         ) {
             alert("Amal qilish muddati noto‘g‘ri.");
+            payButton.classList.remove('loading'); // ❌ Loaderni olib tashlash
             return;
         }
 
@@ -89,18 +94,27 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Xatolik:', error);
             alert("Server bilan bog'lanishda xatolik yuz berdi!");
+        } finally {
+            // payButton.classList.remove('loading'); // ✅ Har holda loaderni olib tashlash
         }
     });
 
-    // ✅ Tasdiqlash kodi
+
+    const loader = verifyBtn.querySelector('.loader');
+    const btnText = verifyBtn.querySelector('.btn-text');
+    
     verifyBtn.addEventListener('click', async () => {
         const code = Number(document.getElementById('verification-code').value);
-
+    
         if (!Number.isInteger(code) || String(code).length !== 6) {
             alert("Iltimos, 6 xonali raqamli kod kiriting.");
             return;
         }
-
+    
+        verifyBtn.disabled = true;
+        btnText.style.display = 'none';
+        loader.style.display = 'inline-block';
+    
         try {
             const response = await fetch('http://localhost:8000/confirm', {
                 method: 'POST',
@@ -111,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ verificationCode: code })
             });
-
+    
             const data = await response.json();
-
+    
             if (data.success) {
                 alert("Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
@@ -123,6 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Xatolik yuz berdi:', error);
             alert("Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.");
+        } finally {
+            verifyBtn.disabled = false;
+            btnText.style.display = 'inline';
+            loader.style.display = 'none';
         }
     });
+    
+
 });
