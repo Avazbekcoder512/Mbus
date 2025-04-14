@@ -21,5 +21,5 @@ router
     .post('/reset-password', checkSchema(resetPasswordSchema), resetPassword)
     .post('/ticket-pending', jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
     .post('/seat-booking', jwtAccessMiddleware, checkSchema(seatBookingSchema), seatBooking)
-    .post('/confirm', jwtAccessMiddleware, checkExact(confirmOrderSchema), confirmOrder)
+    .post('/confirm', jwtAccessMiddleware, checkSchema(confirmOrderSchema), confirmOrder)
     .get('/tickets', jwtAccessMiddleware, getTicket)

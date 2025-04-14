@@ -11,7 +11,9 @@ export const registerValidate = {
         isEmail: {
             errorMessage: 'Elektron pochta manzili yaroqsiz! Iltimos qayta kiriting!'
         },
-        notEmpty: 'Elektron pochta manzilini kiriting!'
+        notEmpty: {
+            errorMessage: 'Elektron pochta manzilini kiriting!',
+        },
     },
     password: {
         isString: {
@@ -45,7 +47,9 @@ export const loginValidate = {
         isEmail: {
             errorMessage: 'Elektron pochta manzili yaroqsiz! Iltimos qayta kiriting!'
         },
-        notEmpty: 'Elektron pochta manzilini kiriting!'
+        notEmpty: {
+            errorMessage: 'Elektron pochta manzilini kiriting!',
+        },
     },
     password: {
         isString: {

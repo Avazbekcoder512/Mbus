@@ -645,11 +645,6 @@ td.driver {
   background-color: #c0392b;
 }
 
-.popup-close i {
-  font-size: 36px;
-  color: #e74c3c;
-}
-
 .ticket-passenger-form {
   background: #fff;
   margin: 28px auto;
@@ -773,10 +768,12 @@ td.driver {
   gap: 30px;
   flex-wrap: nowrap;
   margin-bottom: 35px;
+  text-align: left;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .form-group {
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
