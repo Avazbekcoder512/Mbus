@@ -45,7 +45,7 @@
                 <span id="username"></span> <!-- Foydalanuvchi ismi -->
             </span>
             <div id="user-menu" class="dropdown-menu">
-                <a href="" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
+                <a href="./ticket.html" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
                 <a id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
             </div>
         </div>
@@ -80,21 +80,7 @@
     </main>
 
     <script>
-        function showErrorPopup(message) {
-            const popup = document.getElementById('error-popup');
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.textContent = message;
-            popup.style.display = 'flex';
-        }
-
-        function closeErrorPopup() {
-            const popup = document.getElementById('error-popup');
-            if (popup) {
-                popup.style.display = 'none';
-            } else {
-                console.error("Error popup element topilmadi!");
-            }
-        }
+        
     </script>
     <script src="index.js"></script>
 </body>

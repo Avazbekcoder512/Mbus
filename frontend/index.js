@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const toSelect = document.getElementById("to");
     const dataDiv = document.getElementById("Data");
     const form = document.getElementById("ticket-search");
+    
 
     const loginButton = document.getElementById("login-btn");
     const userNameElement = document.getElementById("user-name");
@@ -11,12 +12,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const preloader = document.getElementById("preloader");
 
+    const closeBtn = document.querySelector("#error-popup button");
+    closeBtn?.addEventListener("click", closeErrorPopup);
+
     function showPreloader() {
         if (preloader) preloader.classList.remove("hidden");
     }
 
     function hidePreloader() {
         if (preloader) preloader.classList.add("hidden");
+    }
+
+    function showErrorPopup(message) {
+        const popup = document.getElementById('error-popup');
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = message;
+        popup.style.display = 'flex';
+    }
+
+    function closeErrorPopup() {
+        const popup = document.getElementById('error-popup');
+        if (popup) {
+            popup.style.display = 'none';
+        } else {
+            console.error("Error popup element topilmadi!");
+        }
     }
 
     const token = localStorage.getItem("token");
@@ -62,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     function decodeJWT(token) {
-        const payload = token.split('.')[1]; 
+        const payload = token.split('.')[1];
         const decodedPayload = atob(payload);
         return JSON.parse(decodedPayload);
     }
@@ -100,10 +120,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 toSelect?.appendChild(optionTo);
             });
         } else {
-            console.log(error);
+            showErrorPopup("Bekatlar ro'yxati noto‘g‘ri formatda.");
         }
     } catch (error) {
         console.log(error);
+        showErrorPopup(error.message || "Bekatlar ro'yxatini olishda xatolik yuz berdi.");
+    } finally {
+        hidePreloader();
     }
 
     // Formni yuborish va natijalarni chiqarish
@@ -165,6 +188,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .catch(error => {
                 console.log(error);
+                showErrorPopup(error.message || "Ma'lumotni olishda xatolik yuz berdi.");
             })
             .finally(() => {
                 hidePreloader();
@@ -176,8 +200,3 @@ function saveTripId(tripId) {
     localStorage.setItem("selectedTripId", tripId);
     window.location.href = "seats.html";
 }
-
-document.getElementById("tickets").addEventListener("click", (e) => {
-    e.preventDefault();
-    getMyTickets();
-});
