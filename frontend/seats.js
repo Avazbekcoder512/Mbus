@@ -296,8 +296,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnContainer = document.createElement("div");
     btnContainer.classList.add("form-buttons");
     btnContainer.innerHTML = `
-      <button type="button" id="back-btn"><i class="fa-solid fa-arrow-left"></i> Ortga qaytish</button>
-      <button type="submit" id="continue-btn">Davom etish  <i class="fa-solid fa-arrow-right"></i></button>
+    <button type="button" id="back-btn"><i class="fa-solid fa-arrow-left"></i> Ortga qaytish</button>
+    <button type="submit" id="continue-btn">
+      <span class="btn-text">Davom etish</span>
+      <i class="fa-solid fa-arrow-right"></i>
+      <i class="fa-solid fa-spinner fa-spin loader" style="display: none; margin-left: 5px;"></i>
+    </button>
     `;
     formContainer.appendChild(btnContainer);
 
@@ -310,6 +314,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // "Davom etish" tugmasi bosilganda:
     document.getElementById("continue-btn").addEventListener("click", async (e) => {
+      const continueBtn = e.target.closest("#continue-btn");
+      const loader = continueBtn.querySelector(".loader");
+      const btnText = continueBtn.querySelector(".btn-text");
       // Har bir forma validatsiyasini tekshiramiz:
       const forms = document.querySelectorAll(".ticket-passenger-form");
       for (const form of forms) {
@@ -319,6 +326,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
       }
+
+      continueBtn.disabled = true;
+      loader.style.display = "inline-block";
+      btnText.textContent = "Yuborilmoqda...";
 
       let passengers = [];
       forms.forEach(form => {
@@ -348,8 +359,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         departure_date: departureDate,
         departure_time: departureTime
       };
-
-      console.log(payload);
 
       try {
         const token = localStorage.getItem("token");
