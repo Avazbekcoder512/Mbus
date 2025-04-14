@@ -1,4 +1,4 @@
-import { matchedData, param, validationResult } from 'express-validator'
+import { matchedData, validationResult } from 'express-validator'
 import { busModel } from '../models/bus.js'
 import { routeModel } from '../models/route.js'
 import { seatModel } from '../models/seat.js'
@@ -88,8 +88,16 @@ export const pendingTicket = async (req, res) => {
 
         const userId = decodet.id;
 
-        const body = req.body
-        const passengers = body.passengers;
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                error: errors.array().map(error => error.msg)
+            })
+        }
+
+        const data = matchedData(req)
+
+        const passengers = data.passengers;
 
         const createdTickets = [];
 
@@ -123,10 +131,10 @@ export const pendingTicket = async (req, res) => {
                 seat_number: passenger.seatNumber,
                 seat: seat._id,
                 bus_number: bus.bus_number,
-                from: body.from,
-                to: body.to,
-                departure_date: body.departure_date,
-                departure_time: body.departure_time,
+                from: data.from,
+                to: data.to,
+                departure_date: data.departure_date,
+                departure_time: data.departure_time,
                 price: seat.price
             });
 
@@ -156,7 +164,14 @@ export const seatBooking = async (req, res) => {
 
         const userId = decodet.id;
 
-        const body = req.body
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                error: errors.array().map(error => error.msg)
+            })
+        }
+
+        const data = matchedData(req)
 
         const user = await userModel.findById(userId)
 
@@ -173,7 +188,7 @@ export const seatBooking = async (req, res) => {
         console.log(verificationCode);
 
 
-        await userModel.findByIdAndUpdate(user.id, { bank_card: body.bank_card, expiryDate: body.expiryDate, verification_code: verificationCode })
+        await userModel.findByIdAndUpdate(user.id, { bank_card: data.bank_card, expiryDate: data.expiryDate, verification_code: verificationCode })
 
         return res.status(201).send({
             message: "Telefon raqamga sms cod yuborildi!"
@@ -194,14 +209,22 @@ export const confirmOrder = async (req, res) => {
         const decodet = jwt.verify(token, process.env.JWT_KEY);
         const userId = decodet.id;
 
-        const body = req.body;
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                error: errors.array().map(error => error.msg)
+            })
+        }
+
+        const data = matchedData(req)
+
         const user = await userModel.findById(userId);
 
         if (!user) {
             return res.status(404).send({ error: "Foydalanuvchi topilmadi!" });
         }
 
-        if (user.verification_code !== body.verificationCode) {
+        if (user.verification_code !== data.verificationCode) {
             return res.status(400).send({ error: "Tasdiqlash kodi xato!" });
         }
 

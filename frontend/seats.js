@@ -329,11 +329,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const seatId = fullNameInput.id.split("_")[1];
         const seatNumber = form.querySelector('.form-header')?.textContent.replace("O‘rindiq raqami: ", "").trim();
         const fullName = formData.get(`fullName_${seatId}`);
-        const birthDate = formData.get(`birthDate_${seatId}`);
+        const birthday = formData.get(`birthDate_${seatId}`);
         const passport = formData.get(`passport_${seatId}`);
-        const phone = formData.get(`phone_${seatId}`);
+        const phoneNumber = formData.get(`phone_${seatId}`);
 
-        passengers.push({ seatId, seatNumber, fullName, birthDate, passport, phone });
+        passengers.push({ seatId, seatNumber, fullName, birthday, passport, phoneNumber });
       });
 
       if (passengers.length === 0) {

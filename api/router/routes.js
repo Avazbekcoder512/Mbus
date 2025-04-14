@@ -1,12 +1,13 @@
 import { Router } from 'express'
 import { login, register } from '../controller/authController.js'
-import { checkSchema } from 'express-validator'
+import { checkExact, checkSchema } from 'express-validator'
 import { loginValidate, registerValidate } from '../validator/authValidate.js'
 import { confirmOrder, getTicket, getTrip, pendingTicket, routeFind, seatBooking } from '../controller/ticketController.js'
 import { cityFind } from '../controller/cityController.js'
 import { jwtAccessMiddleware } from '../middleware/jwtAccessMiddleware.js'
 import { resetPasswordSchema, sendCodeSchema } from '../validator/passwordValidate.js'
 import { resetPassword, sendCode } from '../controller/passwordController.js'
+import { confirmOrderSchema, pendingTicketSchema, seatBookingSchema } from '../validator/ticketValidate.js'
 
 export const router = Router()
 
@@ -18,7 +19,7 @@ router
     .get('/trip/:id', jwtAccessMiddleware, getTrip)
     .post('/send-code', checkSchema(sendCodeSchema), sendCode)
     .post('/reset-password', checkSchema(resetPasswordSchema), resetPassword)
-    .post('/ticket-pending', jwtAccessMiddleware, pendingTicket)
-    .post('/seat-booking', jwtAccessMiddleware, seatBooking)
-    .post('/confirm', jwtAccessMiddleware, confirmOrder)
+    .post('/ticket-pending', jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
+    .post('/seat-booking', jwtAccessMiddleware, checkSchema(seatBookingSchema), seatBooking)
+    .post('/confirm', jwtAccessMiddleware, checkExact(confirmOrderSchema), confirmOrder)
     .get('/tickets', jwtAccessMiddleware, getTicket)
