@@ -381,7 +381,7 @@ export const downloadTicket = async (req, res) => {
                 error: "Chipta topilmadi!"
             })
         }
-       
+
         const doc = new PDFDocument({
             size: [600, 350],
             layout: "landscape",
@@ -454,7 +454,37 @@ export const downloadTicket = async (req, res) => {
 
         doc.end();
 
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        });
+    }
+}
 
+export const deleteTicket = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).send({
+                error: "Id noto'g'ri!"
+            })
+        }
+
+        const ticket = await ticketModel.findById(id)
+
+        if (!ticket) {
+            return res.status(404).send({
+                error: "Chipta topilmadi!"
+            })
+        }
+
+        await ticketModel.findByIdAndDelete(ticket._id)
+
+        return res.status(200).send({
+            message: "Chipta muvaffaqiyatli o'chirildi!"
+        })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
