@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Xatolik:', error);
             alert("Server bilan bog'lanishda xatolik yuz berdi!");
         } finally {
-            // payButton.classList.remove('loading'); // ✅ Har holda loaderni olib tashlash
+            payButton.classList.remove('loading'); // ✅ Har holda loaderni olib tashlash
         }
     });
 

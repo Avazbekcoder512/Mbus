@@ -8,6 +8,7 @@ import { tempTicketModel } from '../models/tempticket.js'
 import { tripModel } from '../models/trip.js'
 import jwt from 'jsonwebtoken'
 import { ticketModel } from '../models/ticket.js'
+import PDFDocument from 'pdfkit'
 config()
 
 const generateToken = (ticketIds, userId) => {
@@ -355,6 +356,73 @@ export const getTicket = async (req, res) => {
             success: true,
             tickets
         })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        });
+    }
+}
+
+export const downloadTicket = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).send({
+                error: "Id noto'g'ri!"
+            })
+        }
+
+        const ticket = await ticketModel.findById(id)
+
+        if (!ticket) {
+            return res.status(404).send({
+                error: "Chipta topilmadi!"
+            })
+        }
+        // PDF ni create qilish:
+        const doc = new PDFDocument({
+            size: [600, 300], // chipta o‘lchami (px)
+            layout: "landscape",
+            margin: 20,
+        });
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename=ticket-${ticket.departure_date}.pdf`);
+
+        doc.pipe(res);
+
+        doc.rect(0, 0, 600, 300).fill("#f5f5f5").fillColor("#000");
+        doc.rect(20, 20, 200, 260).fill("#4facfe");
+
+        doc
+            .fillColor("#fff")
+            .fontSize(18)
+            .text("Chiptangiz", 30, 40)
+            .moveDown()
+            .fontSize(14)
+            .text(`F.I.O:`)
+            .font("Helvetica-Bold")
+            .text(ticket.passenger, { indent: 10 });
+
+        // O‘ng panel
+        doc
+            .fillColor("#000")
+            .font("Helvetica")
+            .fontSize(12)
+            .text(`Yo'nalish: ${ticket.from} → ${ticket.to}`, 240, 40)
+            .text(`Jo'nash: ${ticket.departure_date}`, 240, 70)
+            .text(`Joy raqami: ${ticket.seat_number}`, 240, 100)
+            .text(`Narxi: ${ticket.price} so'm`, 240, 130)
+            // .text(`Chipta kodi: ${ticket.code}`, 240, 160);
+
+        // Pastki info
+        doc.moveTo(20, 250).lineTo(580, 250).strokeColor("#ccc").stroke();
+        doc.fontSize(10).fillColor("gray").text("Sayohatingiz yoqimli o‘tsin!", 0, 260, { align: "center" });
+
+        doc.end();
+
     } catch (error) {
         console.log(error);
         return res.status(500).send({

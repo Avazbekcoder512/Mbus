@@ -997,6 +997,7 @@ button.loading::after {
   justify-content: center;
   align-items: center;
   margin-top: 50px;
+  margin-bottom: 20px;
   gap: 30px;
 }
 
@@ -1008,6 +1009,29 @@ button.loading::after {
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.ticket.expired {
+  background: linear-gradient(135deg, #b0b0b0, #c4c4c4); /* Qoraytirilgan gradient */
+  position: relative;
+  opacity: 0.9;
+}
+
+.ticket.expired:hover {
+  transform: scale(0.98);
+}
+
+.ticket.expired::after {
+  content: "Vaqt O'tgan";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 48px;
+  color: rgba(247, 18, 18, 0.5); /* Yozuvni yanada ko'rinadigan qilish */
+  font-weight: bold;
+  pointer-events: none;
 }
 
 .ticket-left {
@@ -1079,9 +1103,64 @@ button.loading::after {
 .ticket-footer .price {
   font-size: 24px;
   font-weight: bold;
-  color: #27ae60;
+  color: #4facfe;
 }
 
+/* Tugmalar bo'limi */
+.ticket-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Tugma asosiy uslublari */
+.download-btn,
+.delete-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s, box-shadow 0.3s;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Font Awesome ikonkalari uchun umumiy qoidalar */
+.download-btn::before,
+.delete-btn::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-right: 8px;
+}
+
+/* Yuklab olish tugmasi */
+.download-btn {
+  background: #4facfe;
+  color: #fff;
+}
+.download-btn:hover {
+  background: #00f2fe;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.download-btn::before {
+  content: "\f019"; /* fa-download */
+}
+
+/* O'chirish tugmasi */
+.delete-btn {
+  background: #ff4d4f;
+  color: #fff;
+}
+.delete-btn:hover {
+  background: #ff1f1f;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.delete-btn::before {
+  content: "\f1f8"; /* fa-trash */
+}
+
+/* Mobil qurilmalar uchun moslashuvchanlik */
 @media (max-width: 768px) {
   .ticket {
     flex-direction: column;
@@ -1097,4 +1176,68 @@ button.loading::after {
   .ticket-section .item {
     width: 100%;
   }
+}
+
+/* Modal oynani umumiy uslubi */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirm-btn,
+.cancel-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.confirm-btn {
+  background: #4facfe;
+  color: #fff;
+}
+
+.confirm-btn:hover {
+  background: #00f2fe;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-btn {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background: #ff1f1f;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }

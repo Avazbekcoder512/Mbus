@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { login, register } from '../controller/authController.js'
 import { checkExact, checkSchema } from 'express-validator'
 import { loginValidate, registerValidate } from '../validator/authValidate.js'
-import { confirmOrder, getTicket, getTrip, pendingTicket, routeFind, seatBooking } from '../controller/ticketController.js'
+import { confirmOrder, downloadTicket, getTicket, getTrip, pendingTicket, routeFind, seatBooking } from '../controller/ticketController.js'
 import { cityFind } from '../controller/cityController.js'
 import { jwtAccessMiddleware } from '../middleware/jwtAccessMiddleware.js'
 import { resetPasswordSchema, sendCodeSchema } from '../validator/passwordValidate.js'
@@ -23,3 +23,4 @@ router
     .post('/seat-booking', jwtAccessMiddleware, checkSchema(seatBookingSchema), seatBooking)
     .post('/confirm', jwtAccessMiddleware, checkSchema(confirmOrderSchema), confirmOrder)
     .get('/tickets', jwtAccessMiddleware, getTicket)
+    .get('/ticket/:id/download', jwtAccessMiddleware, downloadTicket)
