@@ -381,11 +381,11 @@ export const downloadTicket = async (req, res) => {
                 error: "Chipta topilmadi!"
             })
         }
-        // PDF ni create qilish:
+       
         const doc = new PDFDocument({
-            size: [600, 300], // chipta o‘lchami (px)
+            size: [600, 350],
             layout: "landscape",
-            margin: 20,
+            margin: 30,
         });
 
         res.setHeader("Content-Type", "application/pdf");
@@ -393,35 +393,67 @@ export const downloadTicket = async (req, res) => {
 
         doc.pipe(res);
 
-        doc.rect(0, 0, 600, 300).fill("#f5f5f5").fillColor("#000");
-        doc.rect(20, 20, 200, 260).fill("#4facfe");
+        // Background
+        doc.rect(0, 0, 600, 350).fill("#ffffff");
 
+        // Title section (Left)
         doc
-            .fillColor("#fff")
-            .fontSize(18)
-            .text("Chiptangiz", 30, 40)
-            .moveDown()
-            .fontSize(14)
-            .text(`F.I.O:`)
+            .fillColor("#2c3e50")
+            .fontSize(22)
             .font("Helvetica-Bold")
-            .text(ticket.passenger, { indent: 10 });
+            .text("Avtobus Chiptasi", 40, 40);
 
-        // O‘ng panel
         doc
-            .fillColor("#000")
-            .font("Helvetica")
             .fontSize(12)
-            .text(`Yo'nalish: ${ticket.from} → ${ticket.to}`, 240, 40)
-            .text(`Jo'nash: ${ticket.departure_date}`, 240, 70)
-            .text(`Joy raqami: ${ticket.seat_number}`, 240, 100)
-            .text(`Narxi: ${ticket.price} so'm`, 240, 130)
-            // .text(`Chipta kodi: ${ticket.code}`, 240, 160);
+            .font("Helvetica")
+            .fillColor("#555")
+            .text(`Avtobus raqami: ${ticket.bus_number || "Noma'lum"}`, 40, 70);
 
-        // Pastki info
-        doc.moveTo(20, 250).lineTo(580, 250).strokeColor("#ccc").stroke();
-        doc.fontSize(10).fillColor("gray").text("Sayohatingiz yoqimli o‘tsin!", 0, 260, { align: "center" });
+        // Passenger Info
+        const infoStartY = 110;
+        const labelStyle = { width: 120, align: "left" };
+        const valueStyle = { align: "left" };
+
+        const info = [
+            ["Ism:", ticket.passenger],
+            ["Tug‘ilgan sana:", ticket.birthday],
+            ["Pasport raqami:", ticket.passport],
+            ["Telefon raqami:", ticket.phoneNumber],
+            ["Qayerdan:", ticket.from],
+            ["Qayerga:", ticket.to],
+            ["O‘rindiq raqami:", ticket.seat_number],
+        ];
+
+        let y = infoStartY;
+
+        info.forEach(([label, value]) => {
+            doc
+                .font("Helvetica-Bold").fillColor("#34495e").text(label, 40, y, labelStyle)
+                .font("Helvetica").fillColor("#000").text(value || "Noma'lum", 170, y, valueStyle);
+            y += 25;
+        });
+
+        // Footer
+        doc
+            .moveTo(30, 290).lineTo(570, 290).strokeColor("#bdc3c7").stroke();
+
+        doc
+            .font("Helvetica")
+            .fillColor("#333")
+            .fontSize(12)
+            .text(`Sana: ${ticket.departure_date || '---'}`, 40, 300)
+            .text(`Vaqt: ${ticket.departure_time || '---'}`, 200, 300)
+            .font("Helvetica-Bold")
+            .fillColor("#27ae60")
+            .text(`Narxi: ${ticket.price || '0'} so'm`, 400, 300);
+
+        doc
+            .fontSize(10)
+            .fillColor("gray")
+            .text("Sayohatingiz yoqimli o‘tsin!", 0, 330, { align: "center" });
 
         doc.end();
+
 
     } catch (error) {
         console.log(error);
