@@ -171,7 +171,7 @@ async function deleteTicket(ticketId, isExpired) {
 
 // Backendga DELETE so'rovini yuboruvchi yordamchi funksiya
 async function performDelete(ticketId, token) {
-    const response = await fetch(`http://localhost:8000/tickets/${ticketId}`, {
+    const response = await fetch(`http://localhost:8000/ticket/${ticketId}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -188,7 +188,6 @@ async function performDelete(ticketId, token) {
     if (ticketElement) ticketElement.remove();
 }
 
-// Modalni ko'rsatish va backendga so'rovni boshqarish
 function showConfirmationModal(ticketId, token) {
     const modal = document.createElement("div");
     modal.classList.add("modal-overlay");
