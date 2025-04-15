@@ -993,7 +993,8 @@ button.loading::after {
 
 #ticket-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin-top: 50px;
@@ -1013,7 +1014,7 @@ button.loading::after {
 }
 
 .ticket.expired {
-  background: linear-gradient(135deg, #b0b0b0, #c4c4c4); /* Qoraytirilgan gradient */
+  background-color: #dddbdb;
   position: relative;
   opacity: 0.9;
 }
@@ -1022,16 +1023,17 @@ button.loading::after {
   transform: scale(0.98);
 }
 
-.ticket.expired::after {
-  content: "Vaqt O'tgan";
+.ticket img {
+  display: none;
+}
+.ticket.expired img {
+  display: block;
+  max-height: 50%;
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-30deg);
-  font-size: 48px;
-  color: rgba(247, 18, 18, 0.5); /* Yozuvni yanada ko'rinadigan qilish */
-  font-weight: bold;
-  pointer-events: none;
+  left: 41%;
+  transform: translate(-50%, -50%);
+  /* pointer-events: none; */
 }
 
 .ticket-left {
@@ -1043,6 +1045,10 @@ button.loading::after {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.ticket.expired .ticket-left{
+  justify-content: start;
 }
 
 .ticket-left h1 {
@@ -1110,6 +1116,7 @@ button.loading::after {
 .ticket-actions {
   margin-top: 20px;
   display: flex;
+  justify-content: space-around;
   gap: 10px;
 }
 
