@@ -1,3 +1,49 @@
+function showPopup(type, message, errorCode) {
+    const popupContainer = document.getElementById("app-popup-container");
+    popupContainer.innerHTML = ''; // Avvalgi popupni tozalash
+
+    const popup = document.createElement("div");
+    const popupClass = type === "success" ? "app-popup-success" : "app-popup-error";
+
+    // Data atributlarini qo'shamiz
+    popup.setAttribute("data-popup-type", type);
+    if (errorCode) {
+        popup.setAttribute("data-error-code", errorCode);
+    }
+
+    popup.className = `app-popup ${popupClass}`;
+    // Popup tarkibini ikonka, xabar va tugma qilib bo‘lamiz, 
+    // tugma va ikonka uchun alohida klasslar qo'shiladi.
+    popup.innerHTML = `
+        <div class="popup-icon">
+            ${type === "success" ? `<i class="fa-solid fa-circle-check success-icon"></i>` : `<i class="fa-solid fa-circle-xmark error-icon"></i>`}
+        </div>
+        <div class="popup-message">${message}</div>
+        <button class="app-popup-btn ${type === "success" ? 'success-btn' : 'error-btn'}" onclick="closeAppPopup()">Yopish</button>
+    `;
+
+    popupContainer.appendChild(popup);
+}
+
+function closeAppPopup() {
+    const popup = document.querySelector("#app-popup-container .app-popup");
+    if (popup) {
+        const popupType = popup.getAttribute("data-popup-type");
+        const errorCode = popup.getAttribute("data-error-code");
+
+        if (popupType === "success") {
+            // Success bo'lsa sahifani yangilaydi
+            location.reload();
+        } else if (popupType === "error" && errorCode === "401") {
+            // 401 xatolikda login sahifaga yo'naltiradi
+            window.location.href = "login.html";
+        } else {
+            // Boshqa xatoliklarda faqat popupni yopadi
+            document.getElementById("app-popup-container").innerHTML = '';
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('payment-form');
     const modal = document.getElementById('code-modal');
@@ -5,7 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardNumberInput = document.getElementById('card-number');
     const expiryInput = document.getElementById('expiry');
     const token = localStorage.getItem('token');
-    const order = localStorage.getItem('order')
+    const order = localStorage.getItem('order');
+
+    // Token yoki order mavjud bo'lmasa index.htmlga yo'naltirish
+    if (!token || !order) {
+        window.location.href = "index.html";
+        return;
+    }
 
     const ticketCount = localStorage.getItem('selectedSeatsCount') || 2;
     const ticketPrice = localStorage.getItem('ticketPrice') || 200000;
@@ -44,8 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const payButton = document.getElementById('pay-button');
         payButton.classList.add('loading'); // ✅ Loader chiqadi
 
+        // Agar maydonlar bo'sh bo'lsa, alert o'rniga popup ko'rsatamiz
         if (!cardNumber || !expiryDate) {
-            alert("Barcha maydonlarni to'ldiring!");
+            showPopup('error', "Barcha maydonlarni to'ldiring!");
             payButton.classList.remove('loading'); // ❌ Loaderni olib tashlash
             return;
         }
@@ -58,13 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentMonth = today.getMonth() + 1;
         const currentYear = today.getFullYear();
 
+        // Amal qilish muddati noto'g'ri bo'lsa popup ko'rsatamiz
         if (
             isNaN(month) || isNaN(year) ||
             month < 1 || month > 12 ||
             year < currentYear ||
             (year === currentYear && month < currentMonth)
         ) {
-            alert("Amal qilish muddati noto‘g‘ri.");
+            showPopup('error', "Amal qilish muddati noto‘g‘ri.");
             payButton.classList.remove('loading'); // ❌ Loaderni olib tashlash
             return;
         }
@@ -85,36 +139,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(data.message || "SMS yuborildi!");
+                // Muvaffaqiyatli javobda popup va SMS yuborilgan xabarini ko'rsatamiz
+                showPopup('success', data.message || "SMS yuborildi!");
+                // SMS kodini kiritish modalini ochamiz
                 modal.style.display = 'flex';
+            } else if (response.status === 500) {
+                window.location.href = '500.html'
             } else {
-                alert(data.error || "Xatolik yuz berdi!");
+                // Xatolik yuz berganda, error popup ko'rsatamiz
+                showPopup('error', data.error || "Xatolik yuz berdi!");
             }
+
+
 
         } catch (error) {
             console.error('Xatolik:', error);
-            alert("Server bilan bog'lanishda xatolik yuz berdi!");
+            showPopup('error', "Server bilan bog'lanishda xatolik yuz berdi!");
         } finally {
             payButton.classList.remove('loading'); // ✅ Har holda loaderni olib tashlash
         }
     });
 
-
     const loader = verifyBtn.querySelector('.loader');
     const btnText = verifyBtn.querySelector('.btn-text');
-    
+
     verifyBtn.addEventListener('click', async () => {
         const code = Number(document.getElementById('verification-code').value);
-    
+
+        // Agar kod 6 xonali bo'lmasa popup orqali xabar beramiz
         if (!Number.isInteger(code) || String(code).length !== 6) {
-            alert("Iltimos, 6 xonali raqamli kod kiriting.");
+            showPopup('error', "Iltimos, 6 xonali raqamli kod kiriting.");
             return;
         }
-    
+
         verifyBtn.disabled = true;
         btnText.style.display = 'none';
         loader.style.display = 'inline-block';
-    
+
         try {
             const response = await fetch('http://localhost:8000/confirm', {
                 method: 'POST',
@@ -125,24 +186,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ verificationCode: code })
             });
-    
+
             const data = await response.json();
-    
+
             if (data.success) {
-                alert("Kod qabul qilindi! To‘lov yakunlandi.");
+                // Muvaffaqiyatli tasdiq bo'lsa success popup ko'rsatamiz
+                showPopup('success', "Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
+            } if (response.status === 500) {
+                window.location.href = '500.html'
             } else {
-                alert("Kod noto‘g‘ri.");
+                showPopup('error', "Kod noto‘g‘ri.");
             }
         } catch (error) {
             console.error('Xatolik yuz berdi:', error);
-            alert("Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.");
+            showPopup('error', "Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.");
         } finally {
             verifyBtn.disabled = false;
             btnText.style.display = 'inline';
             loader.style.display = 'none';
         }
     });
-    
-
 });

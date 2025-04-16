@@ -33,7 +33,7 @@ export const jwtAccessMiddleware = (req, res, next) => {
         } 
         else if (error.name === 'JsonWebTokenError' && error.message === 'jwt malformed') {
             return res.status(401).send({
-                error: 'Token noto‘g‘ri formatda. Iltimos, qayta kirish qiling!',
+                error: 'Token mavjud emas. Iltimos, qayta kirish qiling!',
             })
         }
 

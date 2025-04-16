@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("close-popup-btn").addEventListener("click", () => {
     const popup = document.getElementById("token-expired-popup");
     popup.classList.add("hidden");
+    window.location.href = "index.html"
   });
 
   try {
@@ -50,6 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (response.status === 401) {
       showTokenExpiredPopup(tripData.error);
       return;
+    }
+    if (response.status === 500) {
+      window.location.href = '500.html'
     }
 
     hidePreloader();
@@ -300,7 +304,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     <button type="submit" id="continue-btn">
       <span class="btn-text">Davom etish</span>
       <i class="fa-solid fa-arrow-right"></i>
-      <i class="fa-solid fa-spinner fa-spin loader" style="display: none; margin-left: 5px;"></i>
+      <i class="fa-solid fa-spinner-third fa-spin" id="loader" style="display: none; margin-left: 5px; animation-duration: 1s;"></i>
     </button>
     `;
     formContainer.appendChild(btnContainer);
@@ -315,7 +319,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // "Davom etish" tugmasi bosilganda:
     document.getElementById("continue-btn").addEventListener("click", async (e) => {
       const continueBtn = e.target.closest("#continue-btn");
-      const loader = continueBtn.querySelector(".loader");
+      const loader = continueBtn.querySelector("#loader");
       const btnText = continueBtn.querySelector(".btn-text");
       // Har bir forma validatsiyasini tekshiramiz:
       const forms = document.querySelectorAll(".ticket-passenger-form");
@@ -375,6 +379,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (response.ok && result.order) {
           localStorage.setItem('order', result.order)
           window.location.href = "card.html";
+        } else if (response.status === 500) {
+          window.location.href = '500.html'
         } else {
           alert(result.message || "Xatolik yuz berdi!");
         }
