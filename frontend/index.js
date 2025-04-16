@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const toSelect = document.getElementById("to");
     const dataDiv = document.getElementById("Data");
     const form = document.getElementById("ticket-search");
-    
+
 
     const loginButton = document.getElementById("login-btn");
     const userNameElement = document.getElementById("user-name");
@@ -103,6 +103,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error(data.error || "Bekatlar ro'yxatini olishda xatolik");
         }
 
+        if (response.status === 500) {
+            window.location.href = '500.html'
+        }
+
         hidePreloader()
 
         const cities = data.cities;
@@ -150,6 +154,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return response.json().then(errorData => {
                         throw new Error(errorData.error);
                     });
+                }
+                if (response.status === 500) {
+                    window.location.href = '500.html'
                 }
                 return response.json();
             })

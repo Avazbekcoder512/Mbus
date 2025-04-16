@@ -109,6 +109,9 @@ document.getElementById('register_button').addEventListener('click', async funct
             localStorage.setItem('token', result.token);
             window.location.href = 'index.html';
         } else {
+            if (response.status === 500) {
+                window.location.href = '500.html'
+            }
             if (result.error && result.error.length > 0) {
                 showErrorPopup(result.error[0]);
             } else {
@@ -152,6 +155,9 @@ document.getElementById('login_buttton').addEventListener('click', async functio
             localStorage.setItem('token', result.token);
             window.location.href = 'index.html';
         } else {
+            if ( response.status === 500) {
+                window.location.href = '500.html'
+            }
             if (result.error && typeof result.error === 'string') {
                 showErrorPopup(result.error);
             } else if (result.error && Array.isArray(result.error) && result.error.length > 0) {
@@ -276,6 +282,9 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                             if (responseReset.ok) {
                                 showSuccessPopup(resultReset.message);
                             } else {
+                                if (response.status === 500) {
+                                    window.location.href = '500.html'
+                                }
                                 if (resultReset.error) {
                                     showErrorPopup(typeof resultReset.error === 'string' ? resultReset.error : resultReset.error[0]);
                                 } else {
