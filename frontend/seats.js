@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       continueBtn.disabled = true;
       loader.style.display = "inline-block";
-      btnText.textContent = "Yuborilmoqda...";
+      btnText.textContent = "Yuborilmoqda";
 
       let passengers = [];
       forms.forEach(form => {
