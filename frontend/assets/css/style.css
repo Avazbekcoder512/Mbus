@@ -1023,7 +1023,7 @@ button.loading::after {
   transform: scale(0.98);
 }
 
-.ticket img {
+.ticket > img {
   display: none;
 }
 .ticket.expired img {
@@ -1045,6 +1045,10 @@ button.loading::after {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.ticket-left > img{
+  margin-top: 20px;
 }
 
 .ticket.expired .ticket-left {

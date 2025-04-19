@@ -10,7 +10,7 @@ export const createPdf = async (ticket, res, next) => {
         });
 
         res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `inline; filename=ticket-${ticket.departure_date}.pdf`);
+        res.setHeader("Content-Disposition", `inline; filename=ticket-${ticket._id}.pdf`);
 
         doc.pipe(res);
 
