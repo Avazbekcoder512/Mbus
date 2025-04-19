@@ -189,12 +189,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if (data.success) {
+            if (response.ok) {
                 // Muvaffaqiyatli tasdiq bo'lsa success popup ko'rsatamiz
                 showPopup('success', "Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
             } if (response.status === 500) {
-                window.location.href = '500.html'
+                console.log(data.error)
+                // window.location.href = '500.html'
             } else {
                 showPopup('error', "Kod noto‘g‘ri.");
             }

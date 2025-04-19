@@ -299,36 +299,12 @@ export const confirmOrder = async (req, res) => {
                 departure_time: temp.departure_time,
                 price: temp.price,
             });
-
             createdTickets.push(ticket);
 
-            await seatModel.findByIdAndUpdate(temp.seat, { status: "band" });
+            await seatModel.findByIdAndUpdate(temp.seat, { status: "busy" });
 
             await tempTicketModel.findByIdAndDelete(temp._id);
-
-            const pdfBuffer = await createPdf(ticket);
-
-            // ✅ 2. Fayl nomi yaratamiz
-            const fileName = `pdf/tickets/ticket-${ticket._id}.pdf`;
-
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from("mbus_bucket")
-                .upload(fileName, buffer, {
-                    cacheControl: "3600",
-                    upsert: false,
-                    contentType: "application/pdf",
-                });
-
-            if (uploadError) {
-                throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
-            }
-
-            const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
-
-            ticket.pdfUrl = fileUrl
-            await ticket.save()
         }
-
 
         // 7. Foydalanuvchiga chiptalarni biriktirish
         await userModel.findByIdAndUpdate(userId, {
