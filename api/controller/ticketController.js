@@ -12,11 +12,6 @@ import { createPdf } from '../middleware/ticketMiddleware.js'
 import { createClient } from '@supabase/supabase-js'
 config()
 
-const supabase = createClient(
-    process.env.Supabase_Url,
-    process.env.Anon_key,
-);
-
 const generateToken = (ticketIds, userId) => {
     const payload = { ticketIds, userId }
     return jwt.sign(payload, process.env.ORDER_KEY, { expiresIn: '5m' })
