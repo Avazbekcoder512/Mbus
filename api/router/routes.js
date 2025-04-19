@@ -23,5 +23,5 @@ router
     .post('/seat-booking', jwtAccessMiddleware, checkSchema(seatBookingSchema), seatBooking)
     .post('/confirm', jwtAccessMiddleware, checkSchema(confirmOrderSchema), confirmOrder)
     .get('/tickets', jwtAccessMiddleware, getTicket)
-    .get('/ticket/:id/download', jwtAccessMiddleware, downloadTicket)
+    .get('/ticket/:id/download', downloadTicket)
     .delete('/ticket/:id/delete', jwtAccessMiddleware, deleteTicket)
