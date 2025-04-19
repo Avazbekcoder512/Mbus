@@ -117,6 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="ticket-left">
                         <h1>Avtobus Chiptasi</h1>
                         <p>Avtobus raqami: ${ticket.bus_number || "Noma'lum"}</p>
+                        <img src="${ticket.qrImage}" alt="QRCode"/>
                     </div>
                     <img src='./assets/images/expired.png' alt='expired'/>
                     <div class="ticket-right">

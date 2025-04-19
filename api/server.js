@@ -16,7 +16,7 @@ app.use(cors())
 app.use('/', router)
 
 app.get('/qr', async (req, res) => {
-    const data = req.query.text || 'https://mbus.onrender.com/68038544f75a2304f0cfc5d9/download';
+    const data = req.query.text || 'https://mbus.onrender.com/ticket/68038544f75a2304f0cfc5d9/download';
     try {
         const qr = await QRCode.toDataURL(data);
         res.send(`<img src="${qr}">`);
