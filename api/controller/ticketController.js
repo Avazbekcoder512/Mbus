@@ -10,7 +10,14 @@ import jwt from 'jsonwebtoken'
 import { ticketModel } from '../models/ticket.js'
 import { createPdf } from '../middleware/ticketMiddleware.js'
 import { createClient } from '@supabase/supabase-js'
+import QRCode from 'qrcode'
+
 config()
+
+const supabase = createClient(
+    process.env.Supabase_Url,
+    process.env.Anon_key,
+);
 
 const generateToken = (ticketIds, userId) => {
     const payload = { ticketIds, userId }
@@ -294,11 +301,34 @@ export const confirmOrder = async (req, res) => {
                 departure_time: temp.departure_time,
                 price: temp.price,
             });
-            createdTickets.push(ticket);
 
+            const downloadUrl = `${process.env.BASE_URL}/${ticket._id}/download`;
+            const qrBuffer = await QRCode.toBuffer(downloadUrl, { type: 'png' });
+
+            const fileName = `qr/${ticket._id}.png`;
+
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from("mbus_bucket")
+                .upload(fileName, qrBuffer, {
+                    contentType: 'image/png',
+                    upsert: false,
+                });
+
+            if (uploadError) {
+                throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
+            }
+
+            const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
+
+            ticket.qrImage = fileUrl;
+            await ticket.save();
+
+
+            
             await seatModel.findByIdAndUpdate(temp.seat, { status: "busy" });
-
+            
             await tempTicketModel.findByIdAndDelete(temp._id);
+            createdTickets.push(ticket);
         }
 
         // 7. Foydalanuvchiga chiptalarni biriktirish
