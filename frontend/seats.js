@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let bookedSeats = 0;
 
     seats.forEach(seat => {
-      if (seat.status === "bo'sh") freeSeats++;
-      else if (seat.status === "band") bookedSeats++;
+      if (seat.status === "empty") freeSeats++;
+      else if (seat.status === "busy") bookedSeats++;
     });
 
     document.getElementById("free-seats").textContent = freeSeats;
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const seatsData = tripData.trip.seats;
     const occupiedSeats = new Set(
-      seatsData.filter(seat => seat.status === "band").map(seat => seat.seatNumber)
+      seatsData.filter(seat => seat.status === "busy").map(seat => seat.seatNumber)
     );
 
     const seatLayout = [
