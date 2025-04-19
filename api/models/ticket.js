@@ -15,6 +15,7 @@ const ticketSchema = new mongoose.Schema({
     departure_time: String,
     price: Number,
     status: { type: String, enum: ["booked", "canceled"], default: "booked" },
+    pdfUrl: String
 }, { timestamps: true })
 
 export const ticketModel = mongoose.model("Ticket", ticketSchema)
