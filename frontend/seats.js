@@ -271,6 +271,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
       formContainer.appendChild(form);
 
+      const dateInput = form.querySelector(`input[type="date"]`);
+
+      // 1. Bugungi sana:
+      const today = new Date().toISOString().split('T')[0];
+
+      // 2. 100 yil oldingi sana:
+      const past = new Date();
+      past.setFullYear(past.getFullYear() - 100);
+      const hundredYearsAgo = past.toISOString().split('T')[0];
+
+      // 3. Restriktsiyalarni o‘rnatish:
+      dateInput.min = hundredYearsAgo;
+      dateInput.max = today;
+
+      formContainer.appendChild(form);
+
       // Telefon raqam inputiga event listener (formatlash va +998 prefiksini majburlash)
       const phoneInput = form.querySelector(`[id^="phone_"]`);
       if (phoneInput) {

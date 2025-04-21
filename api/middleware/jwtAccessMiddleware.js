@@ -23,9 +23,7 @@ export const jwtAccessMiddleware = (req, res, next) => {
         const user = jwt.verify(token, process.env.JWT_KEY)
 
         next()
-    } catch (error) {
-        console.log(error)
-
+    } catch (error) {  
         if (error.name === 'TokenExpiredError') {
             return res.status(401).send({
                 error: 'Token muddati tugagan. Iltimos, qayta kirish qiling!',
@@ -35,8 +33,8 @@ export const jwtAccessMiddleware = (req, res, next) => {
             return res.status(401).send({
                 error: 'Token mavjud emas. Iltimos, qayta kirish qiling!',
             })
-        }
-
+        }   
+        console.log(error)
         return res.status(500).send({
             error: 'Serverda xatolik!',
         })

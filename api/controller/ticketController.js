@@ -324,9 +324,9 @@ export const confirmOrder = async (req, res) => {
             await ticket.save();
 
 
-            
+
             await seatModel.findByIdAndUpdate(temp.seat, { status: "busy" });
-            
+
             await tempTicketModel.findByIdAndDelete(temp._id);
             createdTickets.push(ticket);
         }
@@ -337,8 +337,7 @@ export const confirmOrder = async (req, res) => {
         });
 
         return res.status(201).send({
-            success: true,
-            message: "Barcha chiptalar yaratildi!",
+            message: "Chiptalar yaratildi!",
             tickets: createdTickets
         });
 
@@ -444,6 +443,47 @@ export const deleteTicket = async (req, res) => {
 
         return res.status(200).send({
             message: "Chipta muvaffaqiyatli o'chirildi!"
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        });
+    }
+}
+
+export const cancelTicket = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).send({
+                error: "Id noto'g'ri!"
+            })
+        }
+
+        const ticket = await ticketModel.findById(id)
+
+        if (!ticket) {
+            return res.status(404).send({
+                error: "Chipta topilmadi!"
+            })
+        }
+
+        const seat = seatModel.findById(ticket.seat)
+
+        if (!seat) {
+            return res.status(404).send({
+                error: "O'rindiq topilmadi!"
+            })
+        }
+
+        await seatModel.findByIdAndUpdate(ticket.seat, { status: "empty" })
+
+        await ticketModel.findByIdAndDelete(ticket._id)
+
+        return res.status(200).send({
+            message: "Chipta bekor qilindi!"
         })
     } catch (error) {
         console.log(error);

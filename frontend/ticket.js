@@ -1,66 +1,53 @@
+// --- Popup funksiyalari ---
 function showPopup(type, message, errorCode) {
     const popupContainer = document.getElementById("app-popup-container");
-    popupContainer.innerHTML = ''; // Avvalgi popupni tozalash
+    popupContainer.innerHTML = '';
 
     const popup = document.createElement("div");
     const popupClass = type === "success" ? "app-popup-success" : "app-popup-error";
 
-    // Data atributlarini qo'shamiz
     popup.setAttribute("data-popup-type", type);
-    if (errorCode) {
-        popup.setAttribute("data-error-code", errorCode);
-    }
+    if (errorCode) popup.setAttribute("data-error-code", errorCode);
 
     popup.className = `app-popup ${popupClass}`;
-    // Popup tarkibini ikonka, xabar va tugma qilib bo‘lamiz, 
-    // tugma va ikonka uchun alohida klasslar qo'shiladi.
     popup.innerHTML = `
         <div class="popup-icon">
-            ${type === "success" ? `<i class="fa-solid fa-circle-check success-icon"></i>` : `<i class="fa-solid fa-circle-xmark error-icon"></i>`}
+            ${type === "success"
+                ? `<i class="fa-solid fa-circle-check success-icon"></i>`
+                : `<i class="fa-solid fa-circle-xmark error-icon"></i>`}
         </div>
         <div class="popup-message">${message}</div>
-        <button class="app-popup-btn ${type === "success" ? 'success-btn' : 'error-btn'}" onclick="closeAppPopup()">Yopish</button>
+        <button class="app-popup-btn ${type === "success" ? "success-btn" : "error-btn"}" onclick="closeAppPopup()">Yopish</button>
     `;
-
     popupContainer.appendChild(popup);
 }
 
 function closeAppPopup() {
     const popup = document.querySelector("#app-popup-container .app-popup");
-    if (popup) {
-        const popupType = popup.getAttribute("data-popup-type");
-        const errorCode = popup.getAttribute("data-error-code");
+    if (!popup) return;
 
-        if (popupType === "success") {
-            // Success bo'lsa sahifani yangilaydi
-            location.reload();
-        } else if (popupType === "error" && errorCode === "401") {
-            // 401 xatolikda login sahifaga yo'naltiradi
-            window.location.href = "login.html";
-        } else {
-            // Boshqa xatoliklarda faqat popupni yopadi
-            document.getElementById("app-popup-container").innerHTML = '';
-        }
+    const popupType = popup.getAttribute("data-popup-type");
+    const errorCode = popup.getAttribute("data-error-code");
+
+    if (popupType === "success") {
+        location.reload();
+    } else if (popupType === "error" && errorCode === "401") {
+        window.location.href = "login.html";
+    } else {
+        document.getElementById("app-popup-container").innerHTML = '';
     }
 }
 
-
-
+// --- Sahifa yuklanayotganda ticketlarni olish va render qilish ---
 document.addEventListener("DOMContentLoaded", async () => {
     const preloader = document.getElementById("preloader");
-
-    function showPreloader() {
-        if (preloader) preloader.classList.remove("hidden");
-    }
-
-    function hidePreloader() {
-        if (preloader) preloader.classList.add("hidden");
-    }
+    const showPreloader = () => preloader && preloader.classList.remove("hidden");
+    const hidePreloader = () => preloader && preloader.classList.add("hidden");
 
     try {
         const token = localStorage.getItem("token");
+        showPreloader();
 
-        showPreloader()
         const response = await fetch("http://localhost:8000/tickets", {
             method: "GET",
             headers: {
@@ -68,13 +55,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "Authorization": `Bearer ${token}`
             }
         });
-
         const data = await response.json();
 
         if (!response.ok) {
-            if (response.status === 500) {
-                window.location.href = '500.html'
-            }
+            if (response.status === 500) return window.location.href = '500.html';
             if (response.status === 401) {
                 showPopup("error", data.error || "Xatolik yuz berdi!", 401);
             } else {
@@ -83,73 +67,69 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        hidePreloader()
-
+        hidePreloader();
         const container = document.getElementById("ticket-container");
+        container.innerHTML = "";
 
-        // Agar ticketlar ro'yxati bo'sh bo'lsa
         if (!data.tickets || data.tickets.length === 0) {
             container.innerHTML = "<p class='no-ticket-message'>Sizda chipta mavjud emas!</p>";
-        } else {
-            const oneDayInMs = 86400000; // 1 kun = 86400000 ms
+            return;
+        }
 
-            data.tickets.forEach(ticket => {
-                const ticketId = ticket._id;
-                const departureDate = ticket.departure_date || "";
-                const departureTime = ticket.departure_time || "";
-                const ticketDateTime = new Date(`${departureDate} ${departureTime}`);
-                const now = new Date();
-                // Chipta muddati chipta vaqtiga 1 kun qo'shilgandan keyin o'tgan bo'lsa expired deb hisoblanadi
-                const isExpired = (ticketDateTime.getTime() + oneDayInMs) < now.getTime();
+        const oneDayInMs = 86400000;
+        data.tickets.forEach(ticket => {
+            const ticketId = ticket._id;
+            const departureDate = ticket.departure_date || "";
+            const departureTime = ticket.departure_time || "";
+            const ticketDateTime = new Date(`${departureDate} ${departureTime}`);
+            const now = new Date();
+            const isExpired = (ticketDateTime.getTime() + oneDayInMs) < now.getTime();
 
-                // Agar chipta muddati o'tgan bo'lsa, faqat o'chirish tugmasi ko'rsatiladi,
-                // aks holda, ham yuklab olish, ham o'chirish tugmalari ko'rsatiladi.
-                const downloadButtonHTML = isExpired
-                    ? ""
-                    : `<button class="download-btn" onclick="downloadTicket('${ticketId}')">Yuklab olish</button>`;
+            // Tugmalarni tayyorlaymiz
+            let actionButtonsHTML;
+            if (isExpired) {
+                actionButtonsHTML = `
+                    <button class="delete-btn"
+                            onclick="deleteExpiredTicket('${ticketId}')">
+                        O‘chirish
+                    </button>
+                `;
+            } else {
+                actionButtonsHTML = `
+                    <button class="download-btn"
+                            onclick="downloadTicket('${ticketId}')">
+                        Yuklab olish
+                    </button>
+                    <button class="cancel-btn"
+                            onclick="showCancelModal('${ticketId}')">
+                        <i class="fa-solid fa-xmark-large"></i> 
+                        Bekor qilish
+                    </button>
+                `;
+            }
 
-                // deleteTicket funksiyasiga chipta muddati haqida ma'lumot (isExpired) uzatamiz.
-                const deleteButtonHTML = `<button class="delete-btn" onclick="deleteTicket('${ticketId}', ${isExpired})">O'chirish</button>`;
+            const expiredImage = isExpired
+                ? `<img src='./assets/images/expired.png' alt='expired'/>`
+                : "";
 
-                // Ticket HTML blokiga noyob id qo'shamiz
-                const ticketHTML = `
+            // Yakuniy HTML
+            const ticketHTML = `
                 <div id="ticket-${ticketId}" class="ticket ${isExpired ? "expired" : ""}">
                     <div class="ticket-left">
                         <h1>Avtobus Chiptasi</h1>
                         <p>Avtobus raqami: ${ticket.bus_number || "Noma'lum"}</p>
                         <img src="${ticket.qrImage}" alt="QRCode"/>
                     </div>
-                    <img src='./assets/images/expired.png' alt='expired'/>
+                    ${expiredImage}
                     <div class="ticket-right">
                         <div class="ticket-section">
-                            <div class="item">
-                                <div class="label">Ism:</div>
-                                <div class="value">${ticket.passenger || "Noma'lum"}</div>
-                            </div>
-                            <div class="item">
-                                <div class="label">Tug‘ilgan sana:</div>
-                                <div class="value">${ticket.birthday || "Noma'lum"}</div>
-                            </div>
-                            <div class="item">
-                                <div class="label">Pasport raqami:</div>
-                                <div class="value">${ticket.passport || "Noma'lum"}</div>
-                            </div>
-                            <div class="item">
-                                <div class="label">Telefon raqami:</div>
-                                <div class="value">${ticket.phoneNumber || "Noma'lum"}</div>
-                            </div>
-                            <div class="item">
-                                <div class="label">Qayerdan:</div>
-                                <div class="value">${ticket.from || "Noma'lum"}</div>
-                            </div>
-                            <div class="item">
-                                <div class="label">O‘rindiq raqami:</div>
-                                <div class="value">${ticket.seat_number || "Noma'lum"}</div>
-                            </div>
-                            <div class="item">
-                                <div class="label">Qayerga:</div>
-                                <div class="value">${ticket.to || "Noma'lum"}</div>
-                            </div>
+                            <div class="item"><div class="label">Ism:</div><div class="value">${ticket.passenger || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Tug‘ilgan sana:</div><div class="value">${ticket.birthday || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Pasport raqami:</div><div class="value">${ticket.passport || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Telefon raqami:</div><div class="value">${ticket.phoneNumber || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Qayerdan:</div><div class="value">${ticket.from || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">O‘rindiq raqami:</div><div class="value">${ticket.seat_number || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Qayerga:</div><div class="value">${ticket.to || "Noma'lum"}</div></div>
                         </div>
                         <div class="ticket-footer">
                             <div class="date-time">
@@ -159,149 +139,119 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <div class="price">${ticket.price || '0'} so'm</div>
                         </div>
                         <div class="ticket-actions">
-                            ${downloadButtonHTML}
-                            ${deleteButtonHTML}
+                            ${actionButtonsHTML}
                         </div>
                     </div>
                 </div>
-                `;
-                container.innerHTML += ticketHTML;
-            });
-        }
+            `;
+            container.innerHTML += ticketHTML;
+        });
+
     } catch (error) {
-        console.error("Xatolik:", error.message);
-        showPopup("error", error.message);
+        console.error("Xatolik:", error);
+        showPopup("error", error.message || "Noma'lum xatolik yuz berdi!");
     }
 });
 
-// Yuklab olish funksiyasi (backendga so'rov yuborish bilan)
+// --- Download funksiyasi ---
 async function downloadTicket(ticketId) {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
+
     try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Token topilmadi. Iltimos, qayta kiring.");
-            return;
-        }
-
-        // PDF faylni yuklab olish uchun backendga so'rov
-        const response = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            headers: { "Authorization": `Bearer ${token}` }
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            if (response.status === 500) {
-                window.location.href = '500.html'
-            }
-            if (response.status === 401) {
-                showPopup("error", errorData.error || "Yuklab olishda xatolik!", 401);
-            } else {
-                showPopup("error", errorData.error || "Yuklab olishda xatolik!");
-            }
-            return;
+        if (!res.ok) {
+            const err = await res.json();
+            if (res.status === 500) return window.location.href = '500.html';
+            if (res.status === 401) return showPopup("error", err.error || "Yuklab olishda xatolik!", 401);
+            return showPopup("error", err.error || "Yuklab olishda xatolik!");
         }
-
-        // Blob ma'lumotni qayta ishlash
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-
-        // Yuklab olishni boshlash
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
         a.download = `chipta-${ticketId}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-
-    } catch (error) {
-        console.error("Xatolik:", error.message);
-        showPopup("error", error.message);
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        console.error(e);
+        showPopup("error", e.message);
     }
 }
 
-// O'chirish funksiyasi (backendga so'rov yuborish bilan)
-async function deleteTicket(ticketId, isExpired) {
+// --- Expired bo'lgan chiptani o'chirish ---
+async function deleteExpiredTicket(ticketId) {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
+
     try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Token topilmadi. Iltimos, qayta kiring.");
-            return;
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            if (res.status === 500) return window.location.href = '500.html';
+            if (res.status === 401) return showPopup("error", err.error || "O‘chirishda xatolik!", 401);
+            throw new Error(err.error || "O‘chirishda xatolik!");
         }
-
-        // Agar chipta muddati o'tgan bo'lsa darhol o'chirish
-        if (isExpired) {
-            await performDelete(ticketId, token);
-            showPopup("success", "Chipta muvaffaqiyatli o'chirildi!");
-        } else {
-            showConfirmationModal(ticketId, token);
-        }
-
-    } catch (error) {
-        console.error("Xatolik:", error.message);
-        showPopup("error", error.message);
+        document.getElementById(`ticket-${ticketId}`)?.remove();
+        showPopup("success", "Chipta muvaffaqiyatli o‘chirildi!");
+    } catch (e) {
+        console.error(e);
+        showPopup("error", e.message || "O‘chirishda xatolik!");
     }
 }
 
-// Backendga DELETE so'rovini yuboruvchi yordamchi funksiya
-async function performDelete(ticketId, token) {
-    const response = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 500) {
-            window.location.href = '500.html'
-        }
-        if (response.status === 401) {
-            showPopup("error", errorData.error || "Oʻchirishda xatolik!", 401);
-        } else {
-            showPopup("error", errorData.error || "Oʻchirishda xatolik!");
-        }
-        throw new Error(errorData.error || "Oʻchirishda xatolik!");
-    }
-
-    // Elementni DOMdan o'chirish
-    const ticketElement = document.getElementById(`ticket-${ticketId}`);
-    if (ticketElement) ticketElement.remove();
-}
-
-function showConfirmationModal(ticketId, token) {
+// --- Non‑expired uchun “Bekor qilish” modal va PUT so‘rovi ---
+function showCancelModal(ticketId) {
     const modal = document.createElement("div");
-    modal.classList.add("modal-overlay");
+    modal.className = "modal-overlay";
     modal.innerHTML = `
       <div class="modal">
-        <p>Chiptani o'chirishni xohlaysizmi?</p>
+        <p>Chiptani bekor qilishni xohlaysizmi?</p>
         <div class="modal-actions">
-          <button id="modal-confirm" class="confirm-btn">Ha</button>
-          <button id="modal-cancel" class="cancel-btn">Yo'q</button>
+          <button id="modal-yes" class="confirm-btn">Ha</button>
+          <button id="modal-no" class="cancel-btn">Yo‘q</button>
         </div>
       </div>
     `;
-
     document.body.appendChild(modal);
 
-    // Bekor qilish tugmasi
-    document.getElementById("modal-cancel").addEventListener("click", () => {
+    document.getElementById("modal-no").onclick = () => document.body.removeChild(modal);
+    document.getElementById("modal-yes").onclick = async () => {
         document.body.removeChild(modal);
-    });
+        await cancelTicketPut(ticketId);
+    };
+}
 
-    // Tasdiqlash tugmasi
-    document.getElementById("modal-confirm").addEventListener("click", async () => {
-        try {
-            await performDelete(ticketId, token);
-            document.body.removeChild(modal);
-            showPopup("success", "Chipta muvaffaqiyatli o'chirildi!");
-        } catch (error) {
-            document.body.removeChild(modal);
-            showPopup("error", error.message);
+async function cancelTicketPut(ticketId) {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
+
+    try {
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            if (res.status === 500) return window.location.href = '500.html';
+            if (res.status === 401) return showPopup("error", err.error || "Bekor qilishda xatolik!", 401);
+            throw new Error(err.error || "Bekor qilishda xatolik!");
         }
-    });
+        document.getElementById(`ticket-${ticketId}`)?.remove();
+        showPopup("success", "Chipta muvaffaqiyatli bekor qilindi!");
+    } catch (e) {
+        console.error(e);
+        showPopup("error", e.message || "Bekor qilishda xatolik!");
+    }
 }
