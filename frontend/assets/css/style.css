@@ -1019,7 +1019,7 @@ button.loading::after {
   opacity: 0.9;
 }
 
-.ticket.expired:hover {
+.ticket:hover {
   transform: scale(0.98);
 }
 
