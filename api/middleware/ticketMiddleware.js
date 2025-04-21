@@ -55,9 +55,9 @@ export const createPdf = async (ticket, res) => {
 
         // Title section
         doc
-            .fillColor('#2c3e50')
+            .fillColor('#000')
             .fontSize(24)
-            .font(fontPath)
+            .font('Helvetica-Bold')
             .text('Avtobus Chiptasi', 40, 40)
 
         doc
@@ -85,7 +85,7 @@ export const createPdf = async (ticket, res) => {
         let y = infoStartY
         info.forEach(([label, value]) => {
             doc
-                .font('Helvetica-Bold').fillColor('#34495e').fontSize(14).text(label, 40, y, labelStyle)
+                .font('Helvetica-Bold').fillColor('#000').fontSize(14).text(label, 40, y, labelStyle)
                 .font(fontPath).fillColor('#000').fontSize(14).text(value || "Noma'lum", 190, y, valueStyle)
             y += lineSpacing
         })
@@ -113,7 +113,7 @@ export const createPdf = async (ticket, res) => {
         doc
             .moveTo(30, lineY)
             .lineTo(doc.page.width - 30, lineY)
-            .strokeColor('#bdc3c7')
+            .strokeColor('#000')
             .stroke()
 
         // QR kod
