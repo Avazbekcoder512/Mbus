@@ -1023,15 +1023,12 @@ button.loading::after {
   transform: scale(0.98);
 }
 
-.ticket > img {
-  display: none;
-}
 .ticket.expired img {
   display: block;
   max-height: 50%;
   position: absolute;
   top: 50%;
-  left: 41%;
+  left: 43%;
   transform: translate(-50%, -50%);
   /* pointer-events: none; */
 }
@@ -1047,8 +1044,10 @@ button.loading::after {
   align-items: center;
 }
 
-.ticket-left > img{
+.ticket .ticket-left > img{
   margin-top: 20px;
+  left: 21%;
+  top: 60%;
 }
 
 .ticket.expired .ticket-left {

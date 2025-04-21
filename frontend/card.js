@@ -190,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Muvaffaqiyatli tasdiq bo'lsa success popup ko'rsatamiz
                 showPopup('success', "Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
             } if (response.status === 500) {
