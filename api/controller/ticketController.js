@@ -439,6 +439,32 @@ export const deleteTicket = async (req, res) => {
             })
         }
 
+        const fileUrl = ticket.qrImage
+        
+
+        if (fileUrl) {
+            const filePath = fileUrl.replace(`${supabase.storageUrl}/object/public/mbus_bucket/`, '');
+            
+
+            const { data: fileExists, error: checkError } = await supabase
+                .storage
+                .from('mbus_bucket')
+                .list('', { prefix: filePath });
+
+            if (checkError) {
+                console.error(`Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`);
+            } else if (fileExists && fileExists.length > 0) {
+                const { error: deleteError } = await supabase
+                    .storage
+                    .from('mbus_bucket')
+                    .remove([filePath]);
+
+                if (deleteError) {
+                    throw new Error(`Faylni o'chirishda xatolik: ${deleteError.message}`);
+                }
+            }
+        }
+
         await ticketModel.findByIdAndDelete(ticket._id)
 
         return res.status(200).send({

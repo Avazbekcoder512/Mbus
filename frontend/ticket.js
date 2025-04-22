@@ -90,8 +90,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (isExpired) {
                 actionButtonsHTML = `
                     <button class="delete-btn"
-                            onclick="deleteExpiredTicket('${ticketId}')">
-                        O‘chirish
+                    onclick="deleteExpiredTicket('${ticketId}')">
+                    <i class="fa-solid fa-trash-xmark"></i>
+                        <span>O‘chirish</span>
                     </button>
                 `;
             } else {
@@ -99,6 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 actionButtonsHTML = `
                     <button class="download-btn"
                             onclick="downloadTicket('${ticketId}', this)">
+                            <i class="fa-regular fa-download"></i>
                         Yuklab olish
                     </button>
                     <button class="cancel-btn"

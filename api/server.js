@@ -3,7 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import { Connect } from './database/connect.js'
 import { router } from './router/routes.js'
-import QRCode from 'qrcode'
+import https from 'https'
 
 dotenv.config()
 Connect()
@@ -15,17 +15,15 @@ app.use(cors())
 
 app.use('/', router)
 
-app.get('/qr', async (req, res) => {
-    const data = req.query.text || 'https://mbus.onrender.com/ticket/68038544f75a2304f0cfc5d9/download';
-    try {
-        const qr = await QRCode.toDataURL(data);
-        res.send(`<img src="${qr}">`);
-    } catch (err) {
-        res.status(500).send('Xatolik yuz berdi.');
-    }
-});
-
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
     console.log(`Server ishga tushdi... PORT: ${PORT}`);
 })
+
+setInterval(() => {
+    https.get('https://mbus.onrender.com/cities', (res) => {
+        console.log(`Status Code: ${res.statusCode}`);
+    }).on('error', (e) => {
+        console.error(`Error: ${e.message}`);
+    })
+}, 5 * 60 * 1000);
