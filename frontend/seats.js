@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const tripData = await response.json();
 
+    if (response.status === 429) {
+      window.location.href = 'index.html'
+    }
+
     if (response.status === 401) {
       showTokenExpiredPopup(tripData.error);
       return;
@@ -395,6 +399,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (response.ok && result.order) {
           localStorage.setItem('order', result.order)
           window.location.href = "card.html";
+        } else if (response.status === 429) {
+          window.location.href = 'index.html'
         } else if (response.status === 500) {
           window.location.href = '500.html'
         } else {

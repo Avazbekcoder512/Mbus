@@ -143,6 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 showPopup('success', data.message || "SMS yuborildi!");
                 // SMS kodini kiritish modalini ochamiz
                 modal.style.display = 'flex';
+
+            } else if (response.status === 429) {
+                window.location.href = 'index.html'
             } else if (response.status === 500) {
                 window.location.href = '500.html'
             } else {
@@ -192,11 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 showPopup('success', "Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
-            } if (response.status === 500) {
-                console.log(data.error)
-                // window.location.href = '500.html'
+            } else if (response.status === 429) {
+                window.location.href = 'index.html'
+            } else if (response.status === 500) {
+                window.location.href = '500.html'
             } else {
-                showPopup('error', "Kod noto‘g‘ri.");
+                showPopup('error', "Kod  :).");
             }
         } catch (error) {
             console.error('Xatolik yuz berdi:', error);
