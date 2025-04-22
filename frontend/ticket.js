@@ -13,8 +13,8 @@ function showPopup(type, message, errorCode) {
     popup.innerHTML = `
         <div class="popup-icon">
             ${type === "success"
-                ? `<i class="fa-solid fa-circle-check success-icon"></i>`
-                : `<i class="fa-solid fa-circle-xmark error-icon"></i>`}
+            ? `<i class="fa-solid fa-circle-check success-icon"></i>`
+            : `<i class="fa-solid fa-circle-xmark error-icon"></i>`}
         </div>
         <div class="popup-message">${message}</div>
         <button class="app-popup-btn ${type === "success" ? "success-btn" : "error-btn"}" onclick="closeAppPopup()">Yopish</button>
@@ -95,9 +95,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </button>
                 `;
             } else {
+                // ticket render qilinayotgan joyda
                 actionButtonsHTML = `
                     <button class="download-btn"
-                            onclick="downloadTicket('${ticketId}')">
+                            onclick="downloadTicket('${ticketId}', this)">
                         Yuklab olish
                     </button>
                     <button class="cancel-btn"
@@ -106,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         Bekor qilish
                     </button>
                 `;
+
             }
 
             const expiredImage = isExpired
@@ -154,9 +156,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // --- Download funksiyasi ---
-async function downloadTicket(ticketId) {
+async function downloadTicket(ticketId, btn) {
     const token = localStorage.getItem("token");
     if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
+
+    // Tugmani disable qilib, matnini spinner bilan almashtiramiz
+    btn.disabled = true;
+    // originalText saqlaymiz, keyin qaytarish uchun
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="loader"></span>';
 
     try {
         const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
@@ -180,7 +188,11 @@ async function downloadTicket(ticketId) {
         URL.revokeObjectURL(url);
     } catch (e) {
         console.error(e);
-        showPopup("error", e.message);
+        showPopup("error", e.message || "Noma'lum xatolik yuz berdi!");
+    } finally {
+        // tugmani qayta yoqib, matnini tiklaymiz
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 }
 
