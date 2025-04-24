@@ -84,29 +84,26 @@ form#ticket-search {
 form > div {
   display: flex;
   flex-direction: column;
-  gap: 5px; /* Inputlar orasidagi masofa */
+  gap: 5px;
 }
 
 form select,
 form input,
 form button {
-  padding: 15px; /* Kattaroq padding */
+  padding: 15px;
   background: white;
   color: black;
   border-radius: 6px;
   border: none;
   outline: none;
   width: 260px;
-  font-size: 16px; /* Kattaroq shrift */
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
 form button {
   background-color: #6abf45;
-  border: none;
   color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease;
 }
 
 form button:hover {
@@ -144,8 +141,8 @@ form button:hover {
 }
 
 .trip-table th {
-  background: none; /* Removed blue background */
-  color: black; /* Changed text color to black */
+  background: none;
+  color: black;
   font-weight: bold;
   padding: 12px;
 }
@@ -153,7 +150,7 @@ form button:hover {
 .trip-table td {
   padding: 12px;
   border-bottom: 1px solid #ddd;
-  color: black; /* Ensured text color is black */
+  color: black;
 }
 
 .trip-table tr:nth-child(even) {
@@ -169,11 +166,84 @@ form button:hover {
   border-right: none;
 }
 
+/* Tablet and smaller devices */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .header {
+    flex-wrap: wrap;
+    padding: 15px;
+  }
+  .about {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  form#ticket-search {
+    flex-wrap: wrap;
+    max-width: 80%;
+    gap: 10px;
+    justify-content: center;
+  }
+  form select,
+  form input,
+  form button {
+    width: calc(50% - 10px);
+    padding: 14px;
+    font-size: 15px;
+  }
+  main.container {
+    padding: 40px 15px;
+  }
+  .trip-table th,
+  .trip-table td {
+    padding: 10px;
+    font-size: 15px;
+  }
+  .background {
+    height: auto;
+    min-height: 100vh;
+  }
+}
+
+/* Mobile devices */
 @media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+  .about {
+    flex-direction: column;
+    gap: 10px;
+  }
+  form#ticket-search {
+    flex-direction: column;
+    max-width: 90%;
+    width: 100%;
+    padding: 10px;
+  }
+  form select,
+  form input,
+  form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+  main.container {
+    padding: 30px 10px;
+  }
+  .trip-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
   .trip-table th,
   .trip-table td {
     padding: 8px;
     font-size: 14px;
+  }
+  .background {
+    background-attachment: scroll;
+    height: auto;
+    min-height: 100vh;
   }
 }
 
@@ -1164,7 +1234,6 @@ button.loading::after {
   background: #ff1f1f;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 /* Mobil qurilmalar uchun moslashuvchanlik */
 @media (max-width: 768px) {
