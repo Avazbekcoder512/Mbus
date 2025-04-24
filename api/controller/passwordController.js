@@ -57,7 +57,13 @@ export const resetPassword = async (req, res) => {
 
         if (!user) {
             return res.status(404).send({
-                error: "Parol noto'g'ri!"
+                error: "Foydalanuvchi topilmadi!"
+            })
+        }
+
+        if (user.smsCode != data.smsCode) {
+            return res.status(400).send({
+                error: "Sms Kod xato!"
             })
         }
 

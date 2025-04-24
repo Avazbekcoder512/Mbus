@@ -88,9 +88,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Sanani avtomatik ravishda minimal qilib qo'yish
-    // let today = new Date();
-    // let minDate = today.toISOString().split("T")[0];
-    // document.getElementById("departure_date").setAttribute("min", minDate);
+    let today = new Date();
+    let minDate = today.toISOString().split("T")[0];
+    document.getElementById("departure_date").setAttribute("min", minDate);
 
     // Backenddan bekatlar ro‘yxatini olish va select option'ga qo‘shish
     try {
