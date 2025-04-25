@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const token = localStorage.getItem("token");
         showPreloader();
 
-        const response = await fetch("http://localhost:8000/tickets", {
+        const response = await fetch("https://mbus.onrender.com/tickets", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -169,7 +169,7 @@ async function downloadTicket(ticketId, btn) {
     btn.innerHTML = '<span class="loader"></span>';
 
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
+        const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/download`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });
@@ -204,7 +204,7 @@ async function deleteExpiredTicket(ticketId) {
     if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
 
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
+        const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/delete`, {
             method: "DELETE",
             headers: { "Authorization": `Bearer ${token}` }
         });
@@ -249,7 +249,7 @@ async function cancelTicketPut(ticketId) {
     if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
 
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel`, {
+        const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/cancel`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
