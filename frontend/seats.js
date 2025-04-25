@@ -38,6 +38,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "index.html"
   });
 
+  // 1) Error-popup elementlarini olish
+  const errorPopup = document.getElementById("error-popup");
+  const errorMessage = document.getElementById("error-message");
+  const closeErrorBtn = document.getElementById("close-error-btn");
+
+  // 2) Popupni ko‘rsatish funksiyasi
+  function showErrorPopup(msg) {
+    errorMessage.textContent = msg;
+    errorPopup.classList.remove("hidden");
+  }
+
+  // 3) Yopish tugmasi (YANGI): faqat ekran ko‘rinishini yashiradi
+  closeErrorBtn.addEventListener("click", () => {
+    errorPopup.classList.add("hidden");
+    window.location.href = 'index.html'
+  });
+
   try {
     showPreloader();
     const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
@@ -400,7 +417,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           localStorage.setItem('order', result.order)
           window.location.href = "card.html";
         } else if (response.status === 429) {
-          window.location.href = 'index.html'
+          showErrorPopup(result.error)
         } else if (response.status === 500) {
           window.location.href = '500.html'
         } else {
