@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     showPreloader();
-    const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
+    // const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
+      const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
@@ -67,17 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (response.status === 429) {
       window.location.href = 'index.html'
-    }
-
-    if (response.status === 401) {
+    } else if (response.status === 401) {
+      console.log(tripData.error);
       showTokenExpiredPopup(tripData.error);
       return;
-    }
-    if (response.status === 500) {
+    } else if (response.status === 500) {
       window.location.href = '500.html'
     }
 
-    hidePreloader();
+    // hidePreloader();
 
     routeFrom = tripData.trip.route.from;
     routeTo = tripData.trip.route.to;
