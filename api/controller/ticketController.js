@@ -27,40 +27,57 @@ const generateToken = (ticketIds, userId) => {
 
 export const routeFind = async (req, res) => {
     try {
-        const from = req.query.from
-        const to = req.query.to
-        const departure_date = req.query.departure_date
+        const { from, to, departure_date } = req.query;
 
         if (!from || !to || !departure_date) {
             return res.status(400).send({
                 error: 'Iltimos, 3 ta maydonni ham kiriting!'
-            })
+            });
         }
 
-        const data = await routeModel.findOne({ from: from, to: to }).populate({
+        const now = new Date();
+        const todayISO = now.toISOString().split('T')[0];
+
+        // Marshrut va unga tegishli reyslarni sana bo'yicha topish
+        const data = await routeModel.findOne(
+            { from, to }
+        ).populate({
             path: 'trips',
             match: { departure_date },
-            populate: [
-                { path: 'bus' }
-            ]
-        })
+            populate: [{ path: 'bus' }]
+        });
 
         if (!data || !data.trips.length) {
-            return res.status(404).send({
-                error: "Bunday reys mavjud emas!"
-            })
+            return res.status(404).send({ error: 'Bunday reys mavjud emas!' });
         }
 
-        return res.status(200).send({
-            data
-        })
+        // Agar qidirilayotgan sana bugun bo'lsa, faqat hozirgi vaqtdan keyingi reyslarni ajratish
+        let validTrips = data.trips;
+        if (departure_date === todayISO) {
+            validTrips = data.trips.filter(trip => {
+                // trip.departure_time formatini 'HH:mm' deb hisoblaymiz
+                const [hh, mm] = trip.departure_time.split(':').map(Number);
+                const departureDateTime = new Date(now);
+                departureDateTime.setHours(hh, mm, 0, 0);
+                return departureDateTime >= now;
+            });
+        }
+
+        if (!validTrips.length) {
+            return res.status(404).send({ error: 'Bunday reys mavjud emas!' });
+        }
+
+        // Faqat haqiqiy reyslarni qaytarish
+        const result = data.toObject();
+        result.trips = validTrips;
+
+        return res.status(200).send({ data: result });
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        console.error(error);
+        return res.status(500).send({ error: 'Serverda xatolik!' });
     }
-}
+};
+
 
 export const getTrip = async (req, res) => {
     try {
@@ -215,19 +232,19 @@ export const seatBooking = async (req, res) => {
 
         const Token = process.env.Token
         const Phone = user.phoneNumber
-        const Message = `Bu Eskiz dan test`
+        const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${verificationCode}`
 
-        // axios.post('https://notify.eskiz.uz/api/message/sms/send', {
-        //     mobile_phone: Phone,
-        //     message: Message,
-        //     from: '4546'
-        // }, {
-        //     headers: {
-        //         Authorization: `Bearer ${Token}`
-        //     }
-        // })
-        // .then(res => console.log(res.data))
-        // .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
+        axios.post('https://notify.eskiz.uz/api/message/sms/send', {
+            mobile_phone: Phone,
+            message: Message,
+            from: '4546'
+        }, {
+            headers: {
+                Authorization: `Bearer ${Token}`
+            }
+        })
+            .then(res => console.log(res.data))
+            .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
 
 
         await userModel.findByIdAndUpdate(user.id, { bank_card: data.bank_card, expiryDate: data.expiryDate, verification_code: verificationCode })
@@ -457,11 +474,11 @@ export const deleteTicket = async (req, res) => {
         }
 
         const fileUrl = ticket.qrImage
-        
+
 
         if (fileUrl) {
             const filePath = fileUrl.replace(`${supabase.storageUrl}/object/public/mbus_bucket/`, '');
-            
+
 
             const { data: fileExists, error: checkError } = await supabase
                 .storage

@@ -1,6 +1,9 @@
 import { matchedData, validationResult } from "express-validator"
 import { userModel } from "../models/user.js"
 import bcrypt from 'bcrypt'
+import { config } from 'dotenv'
+import axios from "axios"
+config()
 
 
 export const sendCode = async (req, res) => {
@@ -27,6 +30,23 @@ export const sendCode = async (req, res) => {
 
         const resetCode = generateRandomCode();
         console.log(resetCode);
+
+        const Token = process.env.Token
+        const Phone = user.phoneNumber
+        const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${resetCode}`
+
+        axios.post('https://notify.eskiz.uz/api/message/sms/send', {
+            mobile_phone: Phone,
+            message: Message,
+            from: '4546'
+        }, {
+            headers: {
+                Authorization: `Bearer ${Token}`
+            }
+        })
+            .then(res => console.log(res.data))
+            .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
+
 
 
         await userModel.findByIdAndUpdate(user._id, { smsCode: resetCode })
@@ -72,7 +92,7 @@ export const resetPassword = async (req, res) => {
 
         await userModel.findByIdAndUpdate(user._id, {
             password: newPassword,
-            $unset: {smsCode: ''}
+            $unset: { smsCode: '' }
         })
 
         return res.status(201).send({

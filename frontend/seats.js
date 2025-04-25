@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     showPreloader();
-    const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
+    const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/ticket-pending", {
+        const response = await fetch("https://mbus.onrender.com/ticket-pending", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
