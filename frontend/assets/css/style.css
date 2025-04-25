@@ -104,6 +104,7 @@ form button {
 form button {
   background-color: #6abf45;
   color: white;
+  cursor: pointer;
 }
 
 form button:hover {
@@ -560,7 +561,7 @@ td.driver {
 }
 
 /*==============ANIMATIONS=================*/
-
+/* 
 /*==============ROTATE=====================*/
 
 @-moz-keyframes rotate {
@@ -590,7 +591,7 @@ td.driver {
   }
 }
 
-/*==============ROTATE-REV=================*/
+/*==============ROTATE-REV================= */
 
 @-moz-keyframes rotate-rev {
   0% {
@@ -620,7 +621,6 @@ td.driver {
 }
 
 /*==============PULSE======================*/
-
 @-moz-keyframes pulse {
   0% {
     -moz-transform: scale(0.1);
@@ -870,7 +870,7 @@ td.driver {
 }
 
 .pay-button {
-  position: relative;           /* pseudo-element markazlashishi uchun */
+  position: relative; /* pseudo-element markazlashishi uchun */
   display: inline-block;
   padding: 0.75rem 1.5rem;
   background: #007bff;
@@ -891,17 +891,19 @@ td.driver {
 
 /* --- Loading holatida matnni yashirish va pseudo-spinnerni yoqish --- */
 .pay-button.loading {
-  color: transparent !important;   /* matnni yashiradi */
-  pointer-events: none;            /* bosishni bloklaydi */
+  color: transparent !important; /* matnni yashiradi */
+  pointer-events: none; /* bosishni bloklaydi */
 }
 
 /* Pseudo-spinner */
 .pay-button.loading::after {
   content: "";
   position: absolute;
-  top: 50%; left: 50%;
-  width: 20px; height: 20px;
-  margin: -10px 0 0 -10px;         /* width/2 va height/2 uchun */
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px; /* width/2 va height/2 uchun */
   border: 2px solid #fff;
   border-top-color: transparent;
   border-radius: 50%;
@@ -911,10 +913,13 @@ td.driver {
 
 /* Aylanish animatsiyasi */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
-
 
 #verify-code-btn {
   position: relative;
