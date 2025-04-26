@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     showPreloader();
     // const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
-      const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
+    const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tripData = await response.json();
 
     if (response.status === 429) {
-      window.location.href = 'index.html'
+      showErrorPopup(result.error)
     } else if (response.status === 401) {
       console.log(tripData.error);
       showTokenExpiredPopup(tripData.error);
@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = '500.html'
     }
 
-    // hidePreloader();
 
     routeFrom = tripData.trip.route.from;
     routeTo = tripData.trip.route.to;
@@ -179,6 +178,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   } catch (error) {
     console.error("Ma'lumotlarni yuklashda xatolik:", error);
+  } finally {
+    hidePreloader()
   }
 
   function updateTotalPrice() {
