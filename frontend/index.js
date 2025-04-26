@@ -107,8 +107,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.location.href = '500.html'
         }
 
-        hidePreloader()
-
         const cities = data.cities;
 
         if (Array.isArray(cities)) {
