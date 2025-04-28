@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch('https://mbus.onrender.com/seat-booking', {
-                // const response = await fetch('http://localhost:8000/seat-booking', {
+            // const response = await fetch('http://localhost:8000/seat-booking', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch('https://mbus.onrender.com/confirm', {
+            // const response = await fetch('http://localhost:8000/confirm', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

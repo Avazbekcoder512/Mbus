@@ -12,6 +12,7 @@ import { createPdf } from '../middleware/ticketMiddleware.js'
 import { createClient } from '@supabase/supabase-js'
 import QRCode from 'qrcode'
 import axios from 'axios'
+import { getNewToken } from '../middleware/tokenMiddleware.js'
 
 config()
 
@@ -230,14 +231,16 @@ export const seatBooking = async (req, res) => {
         const verificationCode = generateRandomCode();
         console.log(verificationCode);
 
-        const Token = process.env.Token
+        const Token = await getNewToken()
+        console.log(Token);
+        
         const Phone = user.phoneNumber
         const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${verificationCode}`
 
         axios.post('https://notify.eskiz.uz/api/message/sms/send', {
             mobile_phone: Phone,
             message: Message,
-            from: '4546'
+            from: process.env.Eskiz_From
         }, {
             headers: {
                 Authorization: `Bearer ${Token}`
