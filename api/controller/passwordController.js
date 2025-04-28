@@ -31,14 +31,14 @@ export const sendCode = async (req, res) => {
         const resetCode = generateRandomCode();
         console.log(resetCode);
 
-        const Token = process.env.Token
+        const Token = await getNewToken()
         const Phone = user.phoneNumber
         const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${resetCode}`
 
         axios.post('https://notify.eskiz.uz/api/message/sms/send', {
             mobile_phone: Phone,
             message: Message,
-            from: '4546'
+            from: process.env.Eskiz_From
         }, {
             headers: {
                 Authorization: `Bearer ${Token}`
