@@ -232,7 +232,6 @@ export const seatBooking = async (req, res) => {
         console.log(verificationCode);
 
         const Token = await getNewToken()
-        console.log(Token);
         
         const Phone = user.phoneNumber
         const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${verificationCode}`
