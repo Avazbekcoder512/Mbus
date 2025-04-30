@@ -3,21 +3,27 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipta Qidirish</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link type="image/x-icon" href="./assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
-    <title>Avtobus Chiptasi</title>
-    <style>
-
-    </style>
 </head>
 
 <body>
-    <!-- Popuplar konteyneri -->
-    <div id="app-popup-container"></div>
 
-    <div id="preloader">
+    <div id="error-popup" class="error-popup">
+        <div class="popup-content">
+            <span id="error-close" class="popup-close"></span>
+            <i class="fa-solid fa-triangle-exclamation" style=" font-size: 36px; color: #e74c3c;"></i>
+            <h3>Xatolik</h3>
+            <p id="error-message"></p>
+            <button id="popup_button" onclick="closeErrorPopup()">Yopish</button>
+        </div>
+    </div>
+
+    {{!-- <div id="preloader">
         <div class="background1">
             <div class="bus-body ">
                 <div class="bus-body2">
@@ -93,10 +99,9 @@
                 </div>
             </div>
             <div class="bus_loading"> <span>L</span> <span>O</span> <span>A</span> <span>D</span> <span>I</span>
-                <span>N</span> <span>G</span>
-            </div>
+                <span>N</span> <span>G</span> </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="background"></div>
     <header class="header container">
@@ -105,26 +110,51 @@
         </a>
         <div class="about">
             <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
-            <a href="./login.html"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
+            <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
                     Kirish</button></a>
             <span id="user-name" style="display: none;">
                 <i class="fa-solid fa-user"></i> <!-- Foydalanuvchi ikonkasini qo'shish -->
                 <span id="username"></span> <!-- Foydalanuvchi ismi -->
             </span>
             <div id="user-menu" class="dropdown-menu">
-                <a href="" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
+                <a href="./ticket.html" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
                 <a id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
             </div>
         </div>
     </header>
 
-    <main>
-        <div id="ticket-container">
+    <main class="container">
+        <h1>
+            O’zbekiston bo’ylab avtobus qatnovlari uchun <br> chiptalarni <span>ONLAYN</span> xarid qiling!
+        </h1>
 
+        <p>O’zingizga mos hududni va sanani tanlang!</p>
+        <form id="ticket-search">
+            <div>
+                <select name="from" id="from" required>
+                    <option disabled selected value="">Bekatni tanlang</option>
+                </select>
+            </div>
+            <div>
+                <select name="to" id="to" required>
+                    <option disabled selected value="">Bekatni tanlang</option>
+                </select>
+            </div>
+            <div>
+                <input type="date" name="departure_date" id="departure_date" required>
+            </div>
+            <button type="submit">Chipta izlash</button>
+        </form>
+
+        <div id="Data">
+            <!-- Backenddan kelgan ma'lumotlar shu joyda ko'rsatiladi -->
         </div>
     </main>
-    <script src="index.js"  defer></script>
-    <script src="ticket.js" defer></script>
+
+    <script>
+
+    </script>
+    <script src="../../js/index.js" defer></script>
 </body>
 
 </html>

@@ -39,7 +39,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    const token = localStorage.getItem("token");
+    function getCookie(name) {
+        const cookies = document.cookie.split("; ");
+        for (let cookie of cookies) {
+            const [key, value] = cookie.split("=");
+            if (key === name) {
+                return decodeURIComponent(value);
+            }
+        }
+        return null;
+    }
+
+
+    const token = getCookie("token");
 
     if (token) {
         const decodedToken = decodeJWT(token);
@@ -95,8 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Backenddan bekatlar ro‘yxatini olish va select option'ga qo‘shish
     try {
         showPreloader()
-        // const response = await fetch("http://localhost:8000/cities");
-        const response = await fetch("https://mbus.onrender.com/cities");
+        const response = await fetch("http://localhost:8000/cities");
+        // const response = await fetch("https://mbus.onrender.com/cities");
         const data = await response.json();
 
         if (!response.ok) {
@@ -104,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (response.status === 500) {
-            window.location.href = '500.html'
+            window.location.href = '/500'
         }
 
         const cities = data.cities;
@@ -140,8 +152,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const departure_date = document.getElementById('departure_date').value;
 
         const queryString = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure_date=${encodeURIComponent(departure_date)}`;
-        // const url = `http://localhost:8000/findroute?${queryString}`;
-        const url = `https://mbus.onrender.com/findroute?${queryString}`;
+        const url = `http://localhost:8000/findroute?${queryString}`;
+        // const url = `https://mbus.onrender.com/findroute?${queryString}`;
 
         showPreloader();
 
@@ -154,7 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                 }
                 if (response.status === 500) {
-                    window.location.href = '500.html'
+                    window.location.href = '/500'
                 }
                 return response.json();
             })
@@ -203,5 +215,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function saveTripId(tripId) {
     localStorage.setItem("selectedTripId", tripId);
-    window.location.href = "seats.html";
+    window.location.href = `/trip`;
 }

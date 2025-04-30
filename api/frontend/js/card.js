@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (response.status === 429) {
                 window.location.href = 'index.html'
             } else if (response.status === 500) {
-                window.location.href = '500.html'
+                window.location.href = '/500'
             } else {
                 // Xatolik yuz berganda, error popup ko'rsatamiz
                 showPopup('error', data.error || "Xatolik yuz berdi!");
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (response.status === 429) {
                 window.location.href = 'index.html'
             } else if (response.status === 500) {
-                window.location.href = '500.html'
+                window.location.href = '/500'
             } else {
                 showPopup('error', "Kod  :).");
             }
