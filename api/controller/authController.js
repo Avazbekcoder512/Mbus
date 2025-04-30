@@ -45,9 +45,10 @@ export const register = async (req, res) => {
 
         const token = generateToken(userId, email, name)
 
+        res.cookie('token', token)
+
         return res.status(201).send({
             message: "Registratsiya muvaffaqiyatli amalga oshirildi!",
-            token
         })
     } catch (error) {
         console.log(error);
@@ -55,6 +56,12 @@ export const register = async (req, res) => {
             errorMessage: "Serverda xatolik!"
         })
     }
+}
+
+export const loginPage = async (req, res) => {
+    return res.render('login.hbs', {
+        layout: false
+    })
 }
 
 export const login = async (req, res) => {
@@ -89,10 +96,11 @@ export const login = async (req, res) => {
         const name = user.name
 
         const token = generateToken(userId, email, name)
+        
+        res.cookie('token', token)
 
         return res.status(200).send({
             message: "Login muvaffaqiyatli amalga oshirildi!",
-            token
         })
     } catch (error) {
         console.log(error);

@@ -1,5 +1,10 @@
 import { cityModel } from '../models/city.js'
 
+export const get = async (req, res) => {
+    return res.render('index', {
+        layout: false
+    })
+}
 
 export const cityFind = async (req, res) => {
     try {

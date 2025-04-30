@@ -48,7 +48,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         const token = localStorage.getItem("token");
         showPreloader();
 
-        const response = await fetch("https://mbus.onrender.com/tickets", {
+        // const response = await fetch("https://mbus.onrender.com/tickets", {
+        //     method: "GET",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": `Bearer ${token}`
+        //     }
+        // });
+        // const data = await response.json();
+        const response = await fetch("http://localhost:8000/tickets", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -57,8 +65,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         const data = await response.json();
 
+
         if (!response.ok) {
-            if (response.status === 500) return window.location.href = '500.html';
+            if (response.status === 500) return window.location.href = '/500';
+
             if (response.status === 401) {
                 showPopup("error", data.error || "Xatolik yuz berdi!", 401);
             } else {
@@ -169,13 +179,17 @@ async function downloadTicket(ticketId, btn) {
     btn.innerHTML = '<span class="loader"></span>';
 
     try {
-        const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/download`, {
+        // const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/download`, {
+        //     method: "GET",
+        //     headers: { "Authorization": `Bearer ${token}` }
+        // });
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '500.html';
+            if (res.status === 500) return window.location.href = '/500';
             if (res.status === 401) return showPopup("error", err.error || "Yuklab olishda xatolik!", 401);
             return showPopup("error", err.error || "Yuklab olishda xatolik!");
         }
@@ -204,13 +218,17 @@ async function deleteExpiredTicket(ticketId) {
     if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
 
     try {
-        const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/delete`, {
+        // const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/delete`, {
+        //     method: "DELETE",
+        //     headers: { "Authorization": `Bearer ${token}` }
+        // });
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
             method: "DELETE",
             headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '500.html';
+            if (res.status === 500) return window.location.href = '/500';
             if (res.status === 401) return showPopup("error", err.error || "O‘chirishda xatolik!", 401);
             throw new Error(err.error || "O‘chirishda xatolik!");
         }
@@ -249,7 +267,14 @@ async function cancelTicketPut(ticketId) {
     if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
 
     try {
-        const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/cancel`, {
+        // const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/cancel`, {
+        //     method: "PUT",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": `Bearer ${token}`
+        //     }
+        // });
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -258,7 +283,7 @@ async function cancelTicketPut(ticketId) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '500.html';
+            if (res.status === 500) return window.location.href = '/500';
             if (res.status === 401) return showPopup("error", err.error || "Bekor qilishda xatolik!", 401);
             throw new Error(err.error || "Bekor qilishda xatolik!");
         }

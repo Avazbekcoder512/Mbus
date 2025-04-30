@@ -92,25 +92,24 @@ document.getElementById('register_button').addEventListener('click', async funct
     };
 
     try {
-        // const response = await fetch('http://localhost:8000/register', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
-        const response = await fetch('https://mbus.onrender.com/register', {
+        const response = await fetch('http://localhost:8000/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        // const response = await fetch('https://mbus.onrender.com/register', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // });
 
         const result = await response.json();
 
-        if (response.ok && result.token) {
-            localStorage.setItem('token', result.token);
-            window.location.href = 'index.html';
+        if (response.ok) {
+            window.location.href = '/';
         } else {
             if (response.status === 500) {
-                window.location.href = '500.html'
+                window.location.href = '/500'
             }
             if (result.error && result.error.length > 0) {
                 showErrorPopup(result.error[0]);
@@ -138,25 +137,25 @@ document.getElementById('login_buttton').addEventListener('click', async functio
     };
 
     try {
-        // const response = await fetch('http://localhost:8000/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
-        const response = await fetch('https://mbus.onrender.com/login', {
+        const response = await fetch('http://localhost:8000/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        // const response = await fetch('https://mbus.onrender.com/login', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // });
 
         const result = await response.json();
 
-        if (response.ok && result.token) {
+        if (response.ok) {
             localStorage.setItem('token', result.token);
-            window.location.href = 'index.html';
+            window.location.href = '/';
         } else {
             if ( response.status === 500) {
-                window.location.href = '500.html'
+                window.location.href = '/500'
             }
             if (result.error && typeof result.error === 'string') {
                 showErrorPopup(result.error);
@@ -231,7 +230,14 @@ document.getElementById('b-form').addEventListener('click', function (e) {
             }
 
             try {
-                const response = await fetch('https://mbus.onrender.com/send-code', {
+                // const response = await fetch('https://mbus.onrender.com/send-code', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ phoneNumber: phone })
+                // });
+                // const result = await response.json();
+
+                const response = await fetch('http://localhost:8000/send-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phoneNumber: phone })
@@ -272,7 +278,13 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                         const smsCode = form.querySelector("input[name='smsCode']").value;
 
                         try {
-                            const responseReset = await fetch('https://mbus.onrender.com/reset-password', {
+                            // const responseReset = await fetch('https://mbus.onrender.com/reset-password', {
+                            //     method: 'POST',
+                            //     headers: { 'Content-Type': 'application/json' },
+                            //     body: JSON.stringify({ phoneNumber: phone, password, smsCode })
+                            // });
+                            // const resultReset = await responseReset.json();
+                            const responseReset = await fetch('http://localhost:8000/reset-password', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ phoneNumber: phone, password, smsCode })
@@ -283,7 +295,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                                 showSuccessPopup(resultReset.message);
                             } else {
                                 if (response.status === 500) {
-                                    window.location.href = '500.html'
+                                    window.location.href = '/500'
                                 }
                                 if (resultReset.error) {
                                     showErrorPopup(typeof resultReset.error === 'string' ? resultReset.error : resultReset.error[0]);

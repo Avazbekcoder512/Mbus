@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("close-popup-btn").addEventListener("click", () => {
     const popup = document.getElementById("token-expired-popup");
     popup.classList.add("hidden");
-    window.location.href = "index.html"
+    window.location.href = "/"
   });
 
   // 1) Error-popup elementlarini olish
@@ -52,13 +52,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 3) Yopish tugmasi (YANGI): faqat ekran ko‘rinishini yashiradi
   closeErrorBtn.addEventListener("click", () => {
     errorPopup.classList.add("hidden");
-    window.location.href = 'index.html'
+    window.location.href = '/'
   });
 
   try {
     showPreloader();
-    // const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
-    const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
+    const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
+      // const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showTokenExpiredPopup(tripData.error);
       return;
     } else if (response.status === 500) {
-      window.location.href = '500.html'
+      window.location.href = '/500'
     }
 
 
@@ -348,7 +348,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // "Ortga qaytish" tugmasi:
     document.getElementById("back-btn").addEventListener("click", () => {
-      window.location = "index.html";
+      window.location = "/";
       selectedPrices.clear();
       document.querySelectorAll(".seat.selected").forEach(el => el.classList.remove("selected"));
     });
@@ -402,12 +402,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
 
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("https://mbus.onrender.com/ticket-pending", {
+        // const response = await fetch("https://mbus.onrender.com/ticket-pending", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(payload)
+        // });
+        // const result = await response.json();
+        const response = await fetch("http://localhost:8000/ticket-pending", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(payload)
         });
@@ -415,13 +421,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (response.ok && result.order) {
           localStorage.setItem('order', result.order)
-          window.location.href = "card.html";
+          window.location.href = "/card";
         } else if (response.status === 429) {
           showErrorPopup(result.error)
         } else if (response.status === 500) {
-          window.location.href = '500.html'
+          window.location.href = '/500'
         } else {
-          alert(result.message || "Xatolik yuz berdi!");
+          alert(result.data || "Xatolik yuz berdi!");
         }
       } catch (err) {
         console.error("Xatolik:", err);
