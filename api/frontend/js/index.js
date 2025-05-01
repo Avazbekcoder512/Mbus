@@ -55,13 +55,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (token) {
         const decodedToken = decodeJWT(token);
-        const userName = decodedToken.name;
+        const first_Name = decodedToken.first_Name;
+        const last_Name = decodedToken.last_Name;
 
-        usernameDisplay.textContent = userName;
-        userNameElement.style.display = "inline-flex";
+        // Shu yerda to'liq ism- familiya o'rniga bosh harflarni olamiz
+        const initials = (first_Name.charAt(0) + last_Name.charAt(0)).toUpperCase();
 
+        // usernameDisplay butun satr emas, faqat initials chiqadi
+        usernameDisplay.textContent = initials;
+
+        userNameElement.style.display = "flex";
         loginButton.style.display = "none";
-        userNameElement.style.display = "block";
+        // userNameElement.style.display = "block";
 
         userNameElement.addEventListener("click", (event) => {
             userMenu.classList.toggle("show");

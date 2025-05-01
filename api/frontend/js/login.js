@@ -7,34 +7,37 @@ let aContainer = document.querySelector("#a-container");
 let bContainer = document.querySelector("#b-container");
 let allButtons = document.querySelectorAll(".submit");
 
-let getButtons = (e) => e.preventDefault()
+let getButtons = e => e.preventDefault();
 
-let changeForm = (e) => {
-
+let changeForm = e => {
     switchCtn.classList.add("is-gx");
-    setTimeout(function () {
-        switchCtn.classList.remove("is-gx");
-    }, 1500)
+    setTimeout(() => switchCtn.classList.remove("is-gx"), 1500);
 
     switchCtn.classList.toggle("is-txr");
     switchCircle[0].classList.toggle("is-txr");
     switchCircle[1].classList.toggle("is-txr");
-
     switchC1.classList.toggle("is-hidden");
     switchC2.classList.toggle("is-hidden");
     aContainer.classList.toggle("is-txl");
     bContainer.classList.toggle("is-txl");
     bContainer.classList.toggle("is-z200");
-}
+};
 
-let mainF = (e) => {
-    for (var i = 0; i < allButtons.length; i++)
-        allButtons[i].addEventListener("click", getButtons);
-    for (var i = 0; i < switchBtn.length; i++)
-        switchBtn[i].addEventListener("click", changeForm)
-}
+let mainF = e => {
+    allButtons.forEach(btn => btn.addEventListener("click", getButtons));
+    switchBtn.forEach(btn => btn.addEventListener("click", changeForm));
+
+    // Sahifa yuklanganda login old tomonda bo‘lsin:
+    switchCtn.classList.add("is-txr");
+    switchCircle.forEach(c => c.classList.add("is-txr"));
+    switchC1.classList.add("is-hidden");
+    switchC2.classList.remove("is-hidden");
+    aContainer.classList.add("is-txl");
+    bContainer.classList.add("is-txl", "is-z200");
+};
 
 window.addEventListener("load", mainF);
+
 
 function createLoader() {
     const loader = document.createElement('span');
@@ -78,51 +81,95 @@ function closeSuccessPopup() {
     location.reload(); // Sahifani yangilash
 }
 
+// ————— ro'yxatdan o'tish tugmasi —————
 document.getElementById('register_button').addEventListener('click', async function (e) {
     e.preventDefault();
-    const button = this;
-    showLoader(button);
+    const btn = this;
+    const originalText = btn.textContent;
+    showLoader(btn);
 
-    const inputs = button.closest('form').querySelectorAll('input');
+    // forma ma'lumotlari
+    const inputs = btn.closest('form').querySelectorAll('input');
     const data = {
-        name: inputs[0].value,
-        email: inputs[1].value,
-        password: inputs[2].value,
-        phoneNumber: inputs[3].value
+        first_Name: inputs[0].value,
+        last_Name: inputs[1].value,
+        phoneNumber: inputs[2].value,
+        password: inputs[3].value
     };
 
     try {
-        const response = await fetch('http://localhost:8000/register', {
+        const res = await fetch('http://localhost:8000/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        // const response = await fetch('https://mbus.onrender.com/register', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
+        const json = await res.json();
 
-        const result = await response.json();
-
-        if (response.ok) {
-            window.location.href = '/';
-        } else {
-            if (response.status === 500) {
-                window.location.href = '/500'
-            }
-            if (result.error && result.error.length > 0) {
-                showErrorPopup(result.error[0]);
-            } else {
-                showErrorPopup(result.error || 'Xatolik yuz berdi. Iltimos qayta urinib ko\'ring.');
-            }
+        if (!res.ok) {
+            // xatolikni modal yoki popup orqali ko'rsatish
+            showErrorPopup(json.error?.[0] || json.error || 'Roʻyxatdan oʻtishda xatolik');
+            hideLoader(btn, originalText);
+            return;
         }
+
+        // agar register muvaffaqiyatli bo'lsa, backend dan userId yoki token kelsin
+        const { _id } = json.user;
+        // userId ni globalga yoki closure ga olamiz
+        window.__pendingUserId = _id;
+
+        // modalni ochish
+        document.getElementById('verification-modal').classList.remove('hidden');
     } catch (err) {
         showErrorPopup('Tarmoq xatosi: ' + err.message);
     }
-
-    hideLoader(button, "RO'YXATDAN O'TISH");
+    hideLoader(btn, originalText);
 });
+
+// ————— modal "Bekor qilish" tugmasi —————
+document.getElementById('cancel-verify-btn').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('verification-modal').classList.add('hidden');
+});
+
+// ————— modal "Tasdiqlash" tugmasi —————
+document.getElementById('verify-code-btn').addEventListener('click', async function (e) {
+    e.preventDefault();
+    const btn = this;
+    const originalText = btn.textContent;
+    showLoader(btn);
+
+    const register_code = document.getElementById('verification-code-input').value.trim();
+    if (!/^\d{6}$/.test(register_code)) {
+        showErrorPopup('Iltimos, 6 xonali kodni toʻgʻri kiriting.');
+        hideLoader(btn, originalText);
+        return;
+    }
+
+    try {
+        const res = await fetch('http://localhost:8000/confirmregistration', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: window.__pendingUserId,
+                register_code
+            })
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+            showErrorPopup(json.error || 'Kod tasdiqlanmadi');
+            hideLoader(btn, originalText);
+            return;
+        }
+
+        // hamma narsa OK — boshqa sahifaga yo'naltiramiz
+        window.location.href = '/';
+    } catch (err) {
+        showErrorPopup('Tarmoq xatosi: ' + err.message);
+    }
+    hideLoader(btn, originalText);
+});
+
 
 // LOGIN button
 document.getElementById('login_buttton').addEventListener('click', async function (e) {
@@ -132,7 +179,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
 
     const inputs = button.closest('form').querySelectorAll('input');
     const data = {
-        email: inputs[0].value,
+        phoneNumber: inputs[0].value,
         password: inputs[1].value
     };
 
@@ -154,7 +201,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
             localStorage.setItem('token', result.token);
             window.location.href = '/';
         } else {
-            if ( response.status === 500) {
+            if (response.status === 500) {
                 window.location.href = '/500'
             }
             if (result.error && typeof result.error === 'string') {
