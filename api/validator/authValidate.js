@@ -1,19 +1,19 @@
 export const registerValidate = {
-    name: {
+    first_Name: {
         isString: {
-            errorMessage: "Ism Familiyani stringda kiriting!"
+            errorMessage: "Ismni matnda kiriting!"
         },
         notEmpty: {
-            errorMessage: "Ism Familiyani kiriting!"
+            errorMessage: "Ismni kiriting!"
         }
     },
-    email: {
-        isEmail: {
-            errorMessage: 'Elektron pochta manzili yaroqsiz! Iltimos qayta kiriting!'
+    last_Name: {
+        isString: {
+            errorMessage: "Familiyani matnda kiriting!"
         },
         notEmpty: {
-            errorMessage: 'Elektron pochta manzilini kiriting!',
-        },
+            errorMessage: "Familiyani kiriting!"
+        }
     },
     password: {
         isString: {
@@ -30,7 +30,7 @@ export const registerValidate = {
     phoneNumber: {
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan, +998901234567)"
+            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
@@ -43,13 +43,18 @@ export const registerValidate = {
 }
 
 export const loginValidate = {
-    email: {
-        isEmail: {
-            errorMessage: 'Elektron pochta manzili yaroqsiz! Iltimos qayta kiriting!'
+    phoneNumber: {
+        isMobilePhone: {
+            options: ["uz-UZ"],
+            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
+        },
+        matches: {
+            options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
+            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
         },
         notEmpty: {
-            errorMessage: 'Elektron pochta manzilini kiriting!',
-        },
+            errorMessage: 'Telefon raqamni kiriting!'
+        }
     },
     password: {
         isString: {
@@ -61,6 +66,26 @@ export const loginValidate = {
         },
         notEmpty: {
             errorMessage: "Parolni kiriting!"
+        }
+    }
+}
+
+export const confirmRegistrationSchema = {
+    userId: {
+        notEmpty: {
+            errorMessage: "Foydalanuvchi id si talab qilinadi!"
+        }
+    },
+    register_code: {
+        isString: {
+            errorMessage: "Tasdiqlash kodi matn bo'lishi kerak!"
+        },
+        notEmpty: {
+            errorMessage: "Tasdiqlash kodini kiritish shart!"
+        },
+        isLength: {
+            options: { min: 6 },
+            errorMessage: "Tasdiqlash kodi 6 ta raqamdan iborat bo'lishi kaerak"
         }
     }
 }

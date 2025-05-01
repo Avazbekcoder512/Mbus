@@ -413,25 +413,33 @@ td.driver {
   font-size: 20px;
 }
 
-/* Foydalanuvchi ismi uchun button stil (ozgina shaffof) */
+/* == CSS: style.css ichiga qo‘shing yoki #user-name qismiga o‘zgartiring == */
+
 #user-name {
-  background-color: rgba(0, 218, 65, 0.8); /* Orqa fon rangini shaffof qilish */
-  color: white; /* Yozuv rangini oq qilish */
-  padding: 8px 16px; /* Ichki bo'shliq */
-  border-radius: 5px; /* Burchaklarni yumshatish */
-  cursor: pointer; /* Kursorni pointer qilib qo'yish */
-  font-size: 16px; /* Matn o'lchamini sozlash */
-  display: inline-block; /* Inline-block qilish */
+  /* aylana o‘lchami */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  /* matnni markazga joylashtirish */
+  display: flex;
   align-items: center;
+  justify-content: center;
+
+  /* agar eski line-height bo‘lsa, uni tozalaymiz */
+  line-height: normal;
+
+  /* rang va shrift sozlamalari */
+  background-color: rgba(0, 218, 65, 0.8);
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
 }
 
 #user-name:hover {
-  background-color: rgba(
-    0,
-    255,
-    85,
-    0.397
-  ); /* Hover holatida fon rangini o'zgartirish */
+  background-color: rgba(0, 255, 85, 0.4);
 }
 
 /* Dropdown menyu */
@@ -482,7 +490,7 @@ td.driver {
 }
 
 .background1 {
-  background-color: #3D90D7;
+  background-color: #3d90d7;
   width: 220px;
   position: fixed;
   display: flex;
@@ -527,7 +535,7 @@ div[class*="bus-body2"] {
   top: -14px;
   left: 34px;
 }
-.wheel svg{
+.wheel svg {
   animation: spin1 0.4s linear infinite;
 }
 .wheel.back {
@@ -539,10 +547,10 @@ div[class*="bus-body2"] {
   right: 34.5%;
 }
 @keyframes spin1 {
-  from{
+  from {
     rotate: 0;
   }
-  to{
+  to {
     rotate: -360deg;
   }
 }

@@ -125,6 +125,10 @@
             box-shadow: inset 4px 4px 4px #d1d9e6, inset -4px -4px 4px #f9f9f9;
         }
 
+        .form__input::placeholder {
+            color: #181818;
+        }
+
         .form__span {
             margin-top: 30px;
             margin-bottom: 12px;
@@ -150,6 +154,7 @@
             letter-spacing: .25px;
             text-align: center;
             line-height: 1.6;
+            color: #181818;
         }
 
         .button {
@@ -412,6 +417,53 @@
         .popup-button:hover {
             background-color: #218838;
         }
+
+        /* oddiy modal uchun */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            background: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+        }
+
+        .modal-title {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 
@@ -434,22 +486,37 @@
         </div>
     </div>
 
+    <!-- Verification Modal -->
+    <div id="verification-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h2 class="modal-title">Tasdiqlash kodi</h2>
+            <p>Iltimos, SMS orqali yuborilgan 6 xonali kodni kiriting:</p>
+            <input id="verification-code-input" type="text" maxlength="6" pattern="\d{6}" placeholder="123456"
+                class="form__input" />
+            <div class="modal-buttons">
+                <button id="verify-code-btn" class="form__button button">Tasdiqlash</button>
+                <button id="cancel-verify-btn" class="form__button button">Bekor qilish</button>
+            </div>
+        </div>
+    </div>
+
 
     <div class="main">
         <div class="container a-container" id="a-container">
             <form class="form" id="a-form">
                 <h2 class="form_title title">Hisob yaratish</h2>
-                <input class="form__input" type="text" name="name" placeholder="Ism, Familiya" required>
-                <input class="form__input" type="text" name="email" placeholder="Email" required>
-                <input class="form__input" type="password" name="password" placeholder="Parol" required>
+                <input class="form__input" type="text" name="first_Name" placeholder="Ism" required>
+                <input class="form__input" type="text" name="last_Name" placeholder="Familiya" required>
                 <input class="form__input" type="tel" name="phoneNumber" placeholder="Telefon raqam" required>
+                <input class="form__input" type="password" name="password" placeholder="Parol" required>
                 <button type="submit" id="register_button" class="form__button button submit">RO'YXATDAN O'TISH</button>
             </form>
         </div>
         <div class="container b-container" id="b-container">
             <form class="form" id="b-form">
                 <h2 class="form_title title">Veb-saytga Kiring</h2>
-                <input class="form__input" type="text" name="email" placeholder="Email" required>
+                <input class="form__input" type="text" name="phoneNumber" placeholder="Telefon raqam" required>
                 <input class="form__input" type="password" name="password" placeholder="Parol" required>
                 <a class="form__link" id="forgot-password-link" style="cursor: pointer;">Parolingiz esdan chiqdimi?</a>
                 <!-- Yangi parol va tasdiqlash kodi inputlari -->
@@ -460,13 +527,12 @@
             <div class="switch__circle"></div>
             <div class="switch__circle switch__circle--t"></div>
             <div class="switch__container" id="switch-c1">
-                <h2 class="switch__title title">Qaytib kelganingizdan xursandmiz !</h2>
                 <p class="switch__description description">Tizimga kirish uchun KIRISH tugmasini bosing!</p>
                 <button class="switch__button button switch-btn">KIRISH</button>
             </div>
             <div class="switch__container is-hidden" id="switch-c2">
-                <h2 class="switch__title title">Salom Do'stim!</h2>
-                <p class="switch__description description">Ro'yhatdan o'tish uchun RO'YXATDAN O'TISH tugmasini bosing!
+                <p class="switch__description description">Ro'yhatdan o'tmagan bo'lsangiz iltimos odin ro'yhatdan
+                    o'ting!
                 </p>
                 <button class="switch__button button switch-btn">RO'YXATDAN O'TISH</button>
             </div>
