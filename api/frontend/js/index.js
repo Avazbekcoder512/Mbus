@@ -1,224 +1,198 @@
-document.addEventListener("DOMContentLoaded", async () => {
+// ../js/index.js
+
+document.addEventListener("DOMContentLoaded", () => {
     const fromSelect = document.getElementById("from");
     const toSelect = document.getElementById("to");
-    const dataDiv = document.getElementById("Data");
+    const dateInput = document.getElementById("departure_date");
     const form = document.getElementById("ticket-search");
+    const dataDiv = document.getElementById("Data");
+    const errorPopup = document.getElementById("error-popup");
+    const errorMessage = document.getElementById("error-message");
+    // const preloader = document.getElementById("preloader");
+    let fpInstance = null;
 
+    const API_BASE = "http://localhost:8000";  // yoki https://mbus.onrender.com
 
-    const loginButton = document.getElementById("login-btn");
-    const userNameElement = document.getElementById("user-name");
-    const usernameDisplay = document.getElementById("username");
-    const userMenu = document.getElementById("user-menu");
+    // Yordamchi: preloader
+    // const showPreloader = () => preloader?.classList.remove("hidden");
+    // const hidePreloader = () => preloader?.classList.add("hidden");
 
-    const preloader = document.getElementById("preloader");
-
-    const closeBtn = document.querySelector("#error-popup button");
-    closeBtn?.addEventListener("click", closeErrorPopup);
-
-    function showPreloader() {
-        if (preloader) preloader.classList.remove("hidden");
+    // Yordamchi: xatoni ko‘rsatish
+    function showError(msg) {
+        errorMessage.textContent = msg;
+        errorPopup.style.display = "flex";
     }
+    document.querySelector("#error-popup button")
+        .addEventListener("click", () => errorPopup.style.display = "none");
 
-    function hidePreloader() {
-        if (preloader) preloader.classList.add("hidden");
-    }
-
-    function showErrorPopup(message) {
-        const popup = document.getElementById('error-popup');
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = message;
-        popup.style.display = 'flex';
-    }
-
-    function closeErrorPopup() {
-        const popup = document.getElementById('error-popup');
-        if (popup) {
-            popup.style.display = 'none';
-        } else {
-            console.error("Error popup element topilmadi!");
+    // 1) “from” select’ga bekatlarni yuklaymiz
+    (async function loadCities() {
+        try {
+            // showPreloader();
+            const res = await fetch(`${API_BASE}/cities`);
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || "Bekatlar ro‘yxatini olishda xato");
+            j.cities.forEach(c => {
+                const opt = new Option(c.name, c.name);
+                fromSelect.append(opt);
+            });
+        } catch (e) {
+            console.error(e);
+            showError(e.message);
+        } finally {
+            // hidePreloader();
         }
-    }
+    })();
 
-    function getCookie(name) {
-        const cookies = document.cookie.split("; ");
-        for (let cookie of cookies) {
-            const [key, value] = cookie.split("=");
-            if (key === name) {
-                return decodeURIComponent(value);
-            }
-        }
-        return null;
-    }
+    // 2) “from” o‘zgarganda → to’larni so‘raymiz
+    fromSelect.addEventListener("change", async () => {
+        toSelect.innerHTML = `<option disabled selected value="">Bekatni tanlang</option>`;
+        dateInput.value = "";
+        dateInput.setAttribute("disabled", "disabled");
+        dataDiv.innerHTML = "";
 
+        const from = fromSelect.value;
+        if (!from) return;
 
-    const token = getCookie("token");
-
-    if (token) {
-        const decodedToken = decodeJWT(token);
-        const first_Name = decodedToken.first_Name;
-        const last_Name = decodedToken.last_Name;
-
-        // Shu yerda to'liq ism- familiya o'rniga bosh harflarni olamiz
-        const initials = (first_Name.charAt(0) + last_Name.charAt(0)).toUpperCase();
-
-        // usernameDisplay butun satr emas, faqat initials chiqadi
-        usernameDisplay.textContent = initials;
-
-        userNameElement.style.display = "flex";
-        loginButton.style.display = "none";
-        // userNameElement.style.display = "block";
-
-        userNameElement.addEventListener("click", (event) => {
-            userMenu.classList.toggle("show");
-            event.stopPropagation();
-        });
-    } else {
-        loginButton.style.display = "block";
-        userNameElement.style.display = "none";
-    }
-
-    const logoutButton = document.getElementById("logout");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
-            localStorage.removeItem("token");
-            window.location.href = "index.html";
-        });
-    }
-
-    const ticketsButton = document.getElementById("tickets");
-    if (ticketsButton) {
-        ticketsButton.addEventListener("click", () => {
-            window.location.href = "tickets.html";
-        });
-    }
-
-    document.addEventListener("click", (event) => {
-        if (!userNameElement.contains(event.target) && !userMenu.contains(event.target)) {
-            userMenu.classList.remove("show");
+        try {
+            // showPreloader();
+            const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}`);
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || "Yo‘nalish topilmadi");
+            j.to.forEach(dest => toSelect.append(new Option(dest, dest)));
+            toSelect.removeAttribute("disabled");
+        } catch (e) {
+            console.error(e);
+            showError(e.message);
+        } finally {
+            // hidePreloader();
         }
     });
 
-    function decodeJWT(token) {
-        const payload = token.split('.')[1];
-        const decodedPayload = atob(payload);
-        return JSON.parse(decodedPayload);
-    }
-
-    // Sanani avtomatik ravishda minimal qilib qo'yish
-    let today = new Date();
-    let minDate = today.toISOString().split("T")[0];
-    document.getElementById("departure_date").setAttribute("min", minDate);
-
-    // Backenddan bekatlar ro‘yxatini olish va select option'ga qo‘shish
-    try {
-        showPreloader()
-        const response = await fetch("http://localhost:8000/cities");
-        // const response = await fetch("https://mbus.onrender.com/cities");
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Bekatlar ro'yxatini olishda xatolik");
+    // 3) “to” o‘zgarganda → sanalarni so‘raymiz
+    toSelect.addEventListener("change", async () => {
+        // 1) Oldingi flatpickr bo‘lsa, oʻchiramiz
+        if (fpInstance) {
+            fpInstance.destroy();
+            fpInstance = null;
         }
 
-        if (response.status === 500) {
-            window.location.href = '/500'
-        }
+        // 2) inputni disable va placeholder ga qaytarish
+        dateInput.value = "";
+        dateInput.setAttribute("disabled", "disabled");
+        dateInput.setAttribute("placeholder", "Yuklanmoqda…");
+        dataDiv.innerHTML = "";
 
-        const cities = data.cities;
+        // 3) fetch qilish
+        const from = fromSelect.value;
+        const to = toSelect.value;
+        try {
+            // preloader.classList.remove("hidden");
+            const url = `${API_BASE}/findroute?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+            const res = await fetch(url);
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || "Sanalar topilmadi");
 
-        if (Array.isArray(cities)) {
-            cities.forEach(city => {
-                const optionFrom = document.createElement("option");
-                optionFrom.value = city.name;
-                optionFrom.textContent = city.name;
-                fromSelect?.appendChild(optionFrom);
-
-                const optionTo = document.createElement("option");
-                optionTo.value = city.name;
-                optionTo.textContent = city.name;
-                toSelect?.appendChild(optionTo);
+            // 4) responddagi dd-mm-yyyy ni iso (yyyy-mm-dd) ga aylantiramiz
+            const enabledDates = j.departure_date.map(d => {
+                const [yyyy, mm, dd] = d.split("-");
+                return `${yyyy}-${mm}-${dd}`;
             });
-        } else {
-            showErrorPopup("Bekatlar ro'yxati noto‘g‘ri formatda.");
-        }
-    } catch (error) {
-        console.log(error);
-        showErrorPopup(error.message || "Bekatlar ro'yxatini olishda xatolik yuz berdi.");
-    } finally {
-        hidePreloader();
-    }
 
-    // Formni yuborish va natijalarni chiqarish
-    form?.addEventListener('submit', function (event) {
-        event.preventDefault();
+            // 5) inputni aktiv qilib, flatpickr o‘rnatamiz
+            dateInput.removeAttribute("disabled");
+            dateInput.setAttribute("placeholder", "Kunni tanlang");
+
+            fpInstance = flatpickr(dateInput, {
+                dateFormat: "Y-m-d",    // value va UI uchun ISO
+                altInput: true,         // altInput orqali DD-MM-YYYY ham ko‘rsatish mumkin
+                altFormat: "d-m-Y",     // altInput turi
+                enable: enabledDates,   // faqat shu sanalar tanlanadi
+                disableMobile: true,    // mobil brauzer native datepicker’ini o‘chiradi
+            });
+
+        } catch (e) {
+            console.error(e);
+            alert(e.message);
+        } finally {
+            // preloader.classList.add("hidden");
+        }
+    });
+
+    // 4) Sana tanlanganida → form’ni aktif qilamiz
+    dateInput.addEventListener("change", () => {
+        dataDiv.innerHTML = "";
+    });
+
+    // 5) Form yuborilganda → trips so‘rovini yuboramiz
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+        dataDiv.innerHTML = "";
 
         const from = fromSelect.value;
         const to = toSelect.value;
-        const departure_date = document.getElementById('departure_date').value;
+        const departure_date = dateInput.value;  // bu "2025-05-04" singari YYYY-MM-DD
 
-        const queryString = `from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure_date=${encodeURIComponent(departure_date)}`;
-        const url = `http://localhost:8000/findroute?${queryString}`;
-        // const url = `https://mbus.onrender.com/findroute?${queryString}`;
+        if (!from || !to || !departure_date) {
+            showError("Iltimos, barcha maydonlarni to‘ldiring");
+            return;
+        }
 
-        showPreloader();
+        try {
+            // showPreloader();
+            const url = `${API_BASE}/findroute`
+                + `?from=${encodeURIComponent(from)}`
+                + `&to=${encodeURIComponent(to)}`
+                + `&departure_date=${encodeURIComponent(departure_date)}`;  // ISO-format yuboriladi
+            const res = await fetch(url);
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || "Reys topilmadi");
 
-        fetch(url)
-            .then(response => {
-                console.log(response);
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.error);
-                    });
-                }
-                if (response.status === 500) {
-                    window.location.href = '/500'
-                }
-                return response.json();
-            })
-            .then(responseData => {
-                const trips = responseData.data.trips;
+            const trips = j.data;
+            if (!trips.length) {
+                dataDiv.innerHTML = "<p>Reyslar topilmadi.</p>";
+                return;
+            }
 
-                let info = `
-                    <table class="trip-table">
-                        <thead>
-                            <tr>
-                                <th>Ketish vaqti</th>
-                                <th>Reys nomi</th>
-                                <th>Umumiy o‘rinlar</th>
-                                <th>Chipta narxi</th>
-                                <th>Avtobus modeli</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                trips.forEach(trip => {
-                    info += `
-                         <tr onclick="saveTripId('${trip._id}')" style="cursor: pointer;">
-                            <td>${trip.departure_date}<br>${trip.departure_time}</td>
-                            <td>${responseData.data.name}</td>
-                            <td>${trip.bus.seats_count}</td>,
-                            <td>${trip.ticket_price} so'm</td>
-                            <td>${trip.bus.bus_model}</td>
-                        </tr>
-                    `;
-                });
-
-
-                info += `</tbody></table>`;
-                dataDiv.innerHTML = info;
-            })
-            .catch(error => {
-                console.log(error);
-                showErrorPopup(error.message || "Ma'lumotni olishda xatolik yuz berdi.");
-            })
-            .finally(() => {
-                hidePreloader();
+            // Jadvalni hosil qilamiz
+            let html = `
+          <table class="trip-table">
+            <thead>
+              <tr>
+                <th>Ketish vaqti</th>
+                <th>Yo‘nalish</th>
+                <th>O‘rinlar</th>
+                <th>Narx</th>
+                <th>Model</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+            trips.forEach(trip => {
+                html += `
+            <tr onclick="saveTripId('${trip._id}')" style="cursor:pointer">
+              <td>${trip.departure_date}<br>${trip.departure_time}</td>
+              <td>${trip.route.from} → ${trip.route.to}</td>
+              <td>${trip.bus?.seats_count ?? '-'}</td>
+              <td>${trip.ticket_price ?? '-'} so‘m</td>
+              <td>${trip.bus?.bus_model ?? '-'}</td>
+            </tr>
+          `;
             });
+            html += `</tbody></table>`;
+            dataDiv.innerHTML = html;
+
+        } catch (e) {
+            console.error(e);
+            showError(e.message);
+        } finally {
+            // hidePreloader();
+        }
     });
 });
 
-function saveTripId(tripId) {
-    localStorage.setItem("selectedTripId", tripId);
-    window.location.href = `/trip`;
+// Global funksiyani ochiq qilamiz
+function saveTripId(id) {
+    localStorage.setItem("selectedTripId", id);
+    window.location.href = "/trip";
 }

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link type="image/x-icon" href="../assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
@@ -22,7 +23,7 @@
             <button id="popup_button" onclick="closeErrorPopup()">Yopish</button>
         </div>
     </div>
-{{!-- 
+    {{!--
     <div id="preloader">
         <div class="background1">
             <div class="bus-body ">
@@ -99,7 +100,8 @@
                 </div>
             </div>
             <div class="bus_loading"> <span>L</span> <span>O</span> <span>A</span> <span>D</span> <span>I</span>
-                <span>N</span> <span>G</span> </div>
+                <span>N</span> <span>G</span>
+            </div>
         </div>
     </div> --}}
 
@@ -140,7 +142,8 @@
                 </select>
             </div>
             <div>
-                <input type="date" name="departure_date" id="departure_date" required>
+                <input type="text" name="departure_date" id="departure_date" placeholder="Kunni tanlang" required
+                    disabled>
             </div>
             <button type="submit">Chipta izlash</button>
         </form>
@@ -150,6 +153,7 @@
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="../js/index.js" defer></script>
 </body>
 

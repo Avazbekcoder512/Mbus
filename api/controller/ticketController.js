@@ -30,49 +30,49 @@ export const routeFind = async (req, res) => {
     try {
         const { from, to, departure_date } = req.query;
 
-        if (!from || !to || !departure_date) {
+        if (!from) {
             return res.status(400).send({
-                error: 'Iltimos, 3 ta maydonni ham kiriting!'
-            });
+                error: 'iltoms  qayerdan ekanligini belgilang!'
+            })
         }
 
-        const now = new Date();
-        const todayISO = now.toISOString().split('T')[0];
-
-        // Marshrut va unga tegishli reyslarni sana bo'yicha topish
-        const data = await routeModel.findOne(
-            { from, to }
-        ).populate({
-            path: 'trips',
-            match: { departure_date },
-            populate: [{ path: 'bus' }]
-        });
-
-        if (!data || !data.trips.length) {
-            return res.status(404).send({ error: 'Bunday reys mavjud emas!' });
+        if (!to) {
+            const destinations = await routeModel.distinct('to', { from })
+            return res.status(200).send({
+                to: destinations
+            })
         }
 
-        // Agar qidirilayotgan sana bugun bo'lsa, faqat hozirgi vaqtdan keyingi reyslarni ajratish
-        let validTrips = data.trips;
-        if (departure_date === todayISO) {
-            validTrips = data.trips.filter(trip => {
-                // trip.departure_time formatini 'HH:mm' deb hisoblaymiz
-                const [hh, mm] = trip.departure_time.split(':').map(Number);
-                const departureDateTime = new Date(now);
-                departureDateTime.setHours(hh, mm, 0, 0);
-                return departureDateTime >= now;
-            });
+        const routeDoc = await routeModel.findOne({ from, to })
+        if (!routeDoc) {
+            return res.status(404).send({
+                error: "Bunday yo'nalish topilmadi!"
+            })
         }
 
-        if (!validTrips.length) {
-            return res.status(404).send({ error: 'Bunday reys mavjud emas!' });
+        if (!departure_date) {
+            const dates = await tripModel.distinct('departure_date', { route: routeDoc._id })
+
+            return res.status(200).send({
+                departure_date: dates
+            })
         }
 
-        // Faqat haqiqiy reyslarni qaytarish
-        const result = data.toObject();
-        result.trips = validTrips;
+        const trips = await tripModel.find({
+            route: routeDoc._id,
+            departure_date: departure_date 
+        }).populate('bus')
+        .populate({
+            path: "route", select: 'from to -_id',
+        })
 
-        return res.status(200).send({ data: result });
+        if (trips.length === 0) {
+            return res.status(404).send({
+                error: "Bu sanada reyslar mavjud emas!"
+            })
+        }
+
+        return res.status(200).send({ data: trips });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ error: 'Serverda xatolik!' });
@@ -242,7 +242,7 @@ export const seatBooking = async (req, res) => {
         console.log(verificationCode);
 
         // const Token = await getNewToken()
-        
+
         // const Phone = user.phoneNumber
         // const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${verificationCode}`
 
