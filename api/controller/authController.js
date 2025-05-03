@@ -77,48 +77,58 @@ export const register = async (req, res) => {
 }
 
 export const confirmRegistration = async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).send({
-            error: errors.array().map(error => error.msg)
+    try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).send({
+                error: errors.array().map(error => error.msg)
+            })
+        }
+
+        const data = matchedData(req)
+        const id = data.userId
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).send({
+                error: "Id noto'g'ri!"
+            })
+        }
+
+        const user = await userModel.findById(id)
+
+        if (!user) {
+            return res.status(404).send({
+                error: "Foydalanuvchi topilmadi!"
+            })
+        }
+
+        if (user.register_code !== data.register_code) {
+
+            await userModel.findByIdAndDelete(user._id)
+
+            return res.status(400).send({
+                error: "Tasdiqlash kodi xato!"
+            })
+        }
+
+        const userId = user._id
+        const phoneNumber = user.phoneNumber
+        const first_Name = user.first_Name
+        const last_Name = user.last_Name
+
+        const token = generateToken(userId, phoneNumber, first_Name, last_Name)
+
+        res.cookie('token', token)
+
+        return res.status(201).send({
+            message: "Ro'yhatdan o'tish muvaffaqiyatli amalga oshirildi!"
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            errorMessage: "Serverda xatolik!"
         })
     }
-
-    const data = matchedData(req)
-    const id = data.userId
-
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-        return res.status(400).send({
-            error: "Id noto'g'ri!"
-        })
-    }
-
-    const user = await userModel.findById(id)
-
-    if (!user) {
-        return res.status(404).send({
-            error: "Foydalanuvchi topilmadi!"
-        })
-    }
-
-    if (user.register_code !== data.register_code) {
-        return res.status(400).send({
-            error: "Tasdiqlash kodi xato!"
-        })
-    }
-
-    const userId = user._id
-    const phoneNumber = user.phoneNumber
-    const first_Name = user.first_Name
-    const last_Name = user.last_Name
-
-    const token = generateToken(userId, phoneNumber, first_Name, last_Name)
-
-    res.cookie('token', token)
-
-    return res.status(201).send({
-        message: "Ro'yhatdan o'tish muvaffaqiyatli amalga oshirildi!"
-    })
 }
 
 export const loginPage = async (req, res) => {
@@ -168,6 +178,23 @@ export const login = async (req, res) => {
         return res.status(200).send({
             message: "Login muvaffaqiyatli amalga oshirildi!",
         })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            errorMessage: "Serverda xatolik!"
+        })
+    }
+}
+
+export const logout = async (req, res) => {
+    try {
+        const token = req.cookies.token
+        if (!token) {
+            return res.redirect('/login')
+        }
+
+        res.clearCookie('token')
+        return res.redirect('/login')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
