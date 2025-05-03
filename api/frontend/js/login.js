@@ -9,6 +9,13 @@ let allButtons = document.querySelectorAll(".submit");
 
 let getButtons = e => e.preventDefault();
 
+// const modal = document.querySelector('.modal')
+// const button = document.querySelector('#cancel-verify-btn')
+
+// button.addEventListener('click', (e) => {
+//     modal.classList.add('hidden')
+// })
+
 let changeForm = e => {
     switchCtn.classList.add("is-gx");
     setTimeout(() => switchCtn.classList.remove("is-gx"), 1500);
@@ -107,7 +114,7 @@ document.getElementById('register_button').addEventListener('click', async funct
 
         if (!res.ok) {
             // xatolikni modal yoki popup orqali ko'rsatish
-            showErrorPopup(json.error?.[0] || json.error || 'Roʻyxatdan oʻtishda xatolik');
+            showErrorPopup(Array.isArray(json.error) ? json.error[0] : (json.error || 'Roʻyxatdan oʻtishda xatolik'));
             hideLoader(btn, originalText);
             return;
         }

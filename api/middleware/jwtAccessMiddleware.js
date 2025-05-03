@@ -8,7 +8,7 @@ export const jwtAccessMiddleware = (req, res, next) => {
 
         if (!token) {
             return res.status(404).send({
-                error: 'Token topilmadi!'
+                error: 'Iltimos, qayta kirish qiling!'
             })
         }
 
@@ -18,12 +18,12 @@ export const jwtAccessMiddleware = (req, res, next) => {
     } catch (error) {  
         if (error.name === 'TokenExpiredError') {
             return res.status(401).send({
-                error: 'Token muddati tugagan. Iltimos, qayta kirish qiling!',
+                error: 'Iltimos, qayta kirish qiling!',
             })
         } 
         else if (error.name === 'JsonWebTokenError' && error.message === 'jwt malformed') {
             return res.status(401).send({
-                error: 'Token mavjud emas. Iltimos, qayta kirish qiling!',
+                error: 'Iltimos, qayta kirish qiling!',
             })
         }   
         console.log(error)
