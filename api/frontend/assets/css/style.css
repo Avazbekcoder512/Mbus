@@ -1480,3 +1480,23 @@ div.bus_loading {
     transform: rotate(360deg);
   }
 }
+
+/* 1. Avval barcha kunlarning default uslubini sozlang (ixtiyoriy) */
+.flatpickr-day {
+  color: #555;
+  background-color: #fff;
+}
+
+/* 2. Enabled sanalarni (disabled bo‘lmaganlarni) alohida rangla */
+.flatpickr-day:not(.flatpickr-disabled) {
+  background-color: #ffe066 !important;
+  color: #1a1a1a !important;
+  border-color: #ffd43b !important;
+}
+
+/* 3. Hover va selected holatlari uchun qo‘shimcha effekt */
+.flatpickr-day:not(.flatpickr-disabled):hover,
+.flatpickr-day:not(.flatpickr-disabled).selected {
+  background-color: #ffdd57 !important;
+  color: #000 !important;
+}
