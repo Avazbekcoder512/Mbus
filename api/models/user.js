@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     smsCode: String,
     bank_card: String,
     expiryDate: String,
+    passport: String,
     verification_code: Number,
     last_Login: { type: Date, default: null },
     ticket: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
