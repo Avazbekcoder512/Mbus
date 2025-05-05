@@ -11,6 +11,7 @@ import { confirmOrderSchema, pendingTicketSchema, seatBookingSchema } from '../v
 import { loginLimit } from '../middleware/loginLimit.js'
 import { limit } from '../middleware/limit.js'
 import { page404, page500 } from '../controller/errorController.js'
+import { updateProfile, userPage, userProfile } from '../controller/userController.js'
 
 export const router = Router()
 
@@ -25,6 +26,11 @@ router
     .get('/logout', logout)
     .post('/send-code', checkSchema(sendCodeSchema), sendCode)
     .post('/reset-password', checkSchema(resetPasswordSchema), resetPassword)
+
+    // user router
+    .get('/profile', jwtAccessMiddleware, userPage)
+    .get('/profile/:id', jwtAccessMiddleware, userProfile)
+    .put('/profile/:id/update', jwtAccessMiddleware, updateProfile)
 
     // ticket router
     .get('/findroute', routeFind)

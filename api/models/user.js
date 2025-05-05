@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     expiryDate: String,
     passport: String,
     verification_code: Number,
+    image: String,
     last_Login: { type: Date, default: null },
     ticket: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
     tempTicketId: [{ type: mongoose.Schema.Types.ObjectId, ref: "tempTicket" }]

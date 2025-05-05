@@ -177,6 +177,7 @@ export const login = async (req, res) => {
 
         return res.status(200).send({
             message: "Login muvaffaqiyatli amalga oshirildi!",
+            user
         })
     } catch (error) {
         console.log(error);
