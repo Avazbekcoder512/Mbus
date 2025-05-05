@@ -1,46 +1,101 @@
-// ../js/index.js
-
 document.addEventListener("DOMContentLoaded", () => {
     const fromSelect = document.getElementById("from");
     const toSelect = document.getElementById("to");
     const dateInput = document.getElementById("departure_date");
     const form = document.getElementById("ticket-search");
     const dataDiv = document.getElementById("Data");
-    const errorPopup = document.getElementById("error-popup");
-    const errorMessage = document.getElementById("error-message");
-    // const preloader = document.getElementById("preloader");
+    const loginButton = document.getElementById("login-btn");
+    const userNameElement = document.getElementById("user-name");
+    const usernameDisplay = document.getElementById("username");
+    const userMenu = document.getElementById("user-menu");
     let fpInstance = null;
-
     const API_BASE = "http://localhost:8000";  // yoki https://mbus.onrender.com
 
-    // Yordamchi: preloader
-    // const showPreloader = () => preloader?.classList.remove("hidden");
-    // const hidePreloader = () => preloader?.classList.add("hidden");
-
-    // Yordamchi: xatoni ko‘rsatish
-    function showError(msg) {
-        errorMessage.textContent = msg;
-        errorPopup.style.display = "flex";
+    function showErrorPopup(message) {
+        const popup = document.getElementById('error-popup');
+        const errorMessage = document.getElementById('error-message');
+        if (popup && errorMessage) {
+            errorMessage.textContent = message;
+            popup.style.display = 'flex';
+        }
     }
-    document.querySelector("#error-popup button")
-        .addEventListener("click", () => errorPopup.style.display = "none");
+    function closeErrorPopup() {
+        const popup = document.getElementById('error-popup');
+        if (popup) popup.style.display = 'none';
+    }
+    window.closeErrorPopup = closeErrorPopup;
+
+    // Yordamchi: backenddan kelgan xabarni ajratish (array yoki string)
+    function extractError(err) {
+        if (!err) return '';
+        return Array.isArray(err) ? err[0] : err;
+    }
+
+    function getCookie(name) {
+        const cookies = document.cookie.split("; ");
+        for (let cookie of cookies) {
+            const [key, value] = cookie.split("=");
+            if (key === name) return decodeURIComponent(value);
+        }
+        return null;
+    }
+    function decodeJWT(token) {
+        try {
+            const payload = token.split('.')[1];
+            const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+            return JSON.parse(decoded);
+        } catch (e) {
+            console.error("JWT decode error:", e);
+            return {};
+        }
+    }
+
+    // --- User login/display logic unchanged ---
+    const token = getCookie("token");
+    if (token) {
+        const { first_Name, last_Name } = decodeJWT(token);
+        if (first_Name && last_Name) {
+            const initials = (first_Name.charAt(0) + last_Name.charAt(0)).toUpperCase();
+            usernameDisplay.textContent = initials;
+            userNameElement.style.display = "flex";
+            loginButton.style.display = "none";
+            userNameElement.addEventListener("click", e => {
+                userMenu.classList.toggle("show");
+                e.stopPropagation();
+            });
+            document.addEventListener("click", e => {
+                if (!userNameElement.contains(e.target) && !userMenu.contains(e.target)) {
+                    userMenu.classList.remove("show");
+                }
+            });
+        }
+    } else {
+        loginButton.style.display = "block";
+        userNameElement.style.display = "none";
+    }
+    document.getElementById("logout")?.addEventListener("click", () => {
+        document.cookie = "token=; max-age=0; path=/";
+        window.location.href = "/";
+    });
+    document.getElementById("tickets")?.addEventListener("click", () => {
+        window.location.href = "/ticket";
+    });
 
     // 1) “from” select’ga bekatlarni yuklaymiz
     (async function loadCities() {
         try {
-            // showPreloader();
+            if (!form) return;
             const res = await fetch(`${API_BASE}/cities`);
             const j = await res.json();
-            if (!res.ok) throw new Error(j.error || "Bekatlar ro‘yxatini olishda xato");
+            if (!res.ok) {
+                throw new Error(extractError(j.error) || "Bekatlar ro‘yxatini olishda xato");
+            }
             j.cities.forEach(c => {
-                const opt = new Option(c.name, c.name);
-                fromSelect.append(opt);
+                fromSelect.append(new Option(c.name, c.name));
             });
         } catch (e) {
             console.error(e);
-            showError(e.message);
-        } finally {
-            // hidePreloader();
+            showErrorPopup(e.message);
         }
     })();
 
@@ -55,71 +110,61 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!from) return;
 
         try {
-            // showPreloader();
             const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}`);
             const j = await res.json();
-            if (!res.ok) throw new Error(j.error || "Yo‘nalish topilmadi");
+            if (!res.ok) {
+                throw new Error(extractError(j.error) || "Yo‘nalish topilmadi");
+            }
             j.to.forEach(dest => toSelect.append(new Option(dest, dest)));
             toSelect.removeAttribute("disabled");
         } catch (e) {
             console.error(e);
-            showError(e.message);
-        } finally {
-            // hidePreloader();
+            showErrorPopup(e.message);
         }
     });
 
     // 3) “to” o‘zgarganda → sanalarni so‘raymiz
     toSelect.addEventListener("change", async () => {
-        // 1) Oldingi flatpickr bo‘lsa, oʻchiramiz
         if (fpInstance) {
             fpInstance.destroy();
             fpInstance = null;
         }
-
-        // 2) inputni disable va placeholder ga qaytarish
         dateInput.value = "";
         dateInput.setAttribute("disabled", "disabled");
         dateInput.setAttribute("placeholder", "Yuklanmoqda…");
         dataDiv.innerHTML = "";
 
-        // 3) fetch qilish
         const from = fromSelect.value;
         const to = toSelect.value;
         try {
-            // preloader.classList.remove("hidden");
             const url = `${API_BASE}/findroute?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
             const res = await fetch(url);
             const j = await res.json();
-            if (!res.ok) throw new Error(j.error || "Sanalar topilmadi");
+            if (!res.ok) {
+                throw new Error(extractError(j.error) || "Sanalar topilmadi");
+            }
 
-            // 4) responddagi dd-mm-yyyy ni iso (yyyy-mm-dd) ga aylantiramiz
             const enabledDates = j.departure_date.map(d => {
                 const [yyyy, mm, dd] = d.split("-");
                 return `${yyyy}-${mm}-${dd}`;
             });
 
-            // 5) inputni aktiv qilib, flatpickr o‘rnatamiz
             dateInput.removeAttribute("disabled");
             dateInput.setAttribute("placeholder", "Kunni tanlang");
-
             fpInstance = flatpickr(dateInput, {
-                dateFormat: "Y-m-d",    // value va UI uchun ISO
-                altInput: true,         // altInput orqali DD-MM-YYYY ham ko‘rsatish mumkin
-                altFormat: "d-m-Y",     // altInput turi
-                enable: enabledDates,   // faqat shu sanalar tanlanadi
-                disableMobile: true,    // mobil brauzer native datepicker’ini o‘chiradi
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d-m-Y",
+                enable: enabledDates,
+                disableMobile: true,
             });
-
         } catch (e) {
             console.error(e);
-            alert(e.message);
-        } finally {
-            // preloader.classList.add("hidden");
+            showErrorPopup(e.message);
         }
     });
 
-    // 4) Sana tanlanganida → form’ni aktif qilamiz
+    // 4) Sana tanlanganida → trips uchun tayyor
     dateInput.addEventListener("change", () => {
         dataDiv.innerHTML = "";
     });
@@ -131,22 +176,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const from = fromSelect.value;
         const to = toSelect.value;
-        const departure_date = dateInput.value;  // bu "2025-05-04" singari YYYY-MM-DD
+        const departure_date = dateInput.value;
 
         if (!from || !to || !departure_date) {
-            showError("Iltimos, barcha maydonlarni to‘ldiring");
+            showErrorPopup("Iltimos, barcha maydonlarni to‘ldiring");
             return;
         }
 
         try {
-            // showPreloader();
             const url = `${API_BASE}/findroute`
                 + `?from=${encodeURIComponent(from)}`
                 + `&to=${encodeURIComponent(to)}`
-                + `&departure_date=${encodeURIComponent(departure_date)}`;  // ISO-format yuboriladi
+                + `&departure_date=${encodeURIComponent(departure_date)}`;
             const res = await fetch(url);
             const j = await res.json();
-            if (!res.ok) throw new Error(j.error || "Reys topilmadi");
+            if (!res.ok) {
+                throw new Error(extractError(j.error) || "Reys topilmadi");
+            }
 
             const trips = j.data;
             if (!trips.length) {
@@ -154,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Jadvalni hosil qilamiz
             let html = `
           <table class="trip-table">
             <thead>
@@ -184,9 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (e) {
             console.error(e);
-            showError(e.message);
-        } finally {
-            // hidePreloader();
+            showErrorPopup(e.message);
         }
     });
 });

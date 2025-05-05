@@ -122,6 +122,7 @@ document.getElementById('register_button').addEventListener('click', async funct
         // agar register muvaffaqiyatli bo'lsa, backend dan userId yoki token kelsin
         const { _id } = json.user;
         // userId ni globalga yoki closure ga olamiz
+        localStorage.setItem('userId', _id)
         window.__pendingUserId = _id;
 
         // modalni ochish
@@ -205,7 +206,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
         const result = await response.json();
 
         if (response.ok) {
-            localStorage.setItem('token', result.token);
+            localStorage.setItem('userId', result.user._id)
             window.location.href = '/';
         } else {
             if (response.status === 500) {
