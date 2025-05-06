@@ -3,7 +3,17 @@
 // Popup funksiyalari
 function showError(message) {
   const popup = document.getElementById('error-popup');
-  popup.querySelector('h3').textContent = 'Xatolik';
+  // 1) success klassini olib tashlaymiz
+  popup.classList.remove('success');
+  // 2) ikonkani exclamation-ga qaytaramiz
+  const iconEl = popup.querySelector('.popup-content i');
+  iconEl.className = 'fa-solid fa-triangle-exclamation';
+  iconEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
+  // 3) sarlavha rangini ham qaytaramiz
+  const titleEl = popup.querySelector('h3');
+  titleEl.textContent = 'Xatolik';
+  titleEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
+  // 4) xabar matni
   document.getElementById('error-message').textContent = message;
   delete popup.dataset.reload;
   popup.classList.add('visible');
@@ -11,7 +21,18 @@ function showError(message) {
 
 function showSuccess(message) {
   const popup = document.getElementById('error-popup');
-  popup.querySelector('h3').textContent = 'Muvaffaqiyat';
+  // 1) error klassini olib tashlab, success klassini qo‘shamiz (CSS-da .success ishlaydi)
+  popup.classList.remove('error');
+  popup.classList.add('success');
+  // 2) ikonkani check-ga o‘zgartiramiz
+  const iconEl = popup.querySelector('.popup-content i');
+  iconEl.className = 'fa-solid fa-circle-check';
+  iconEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
+  // 3) sarlavha matni va rangini o‘zgartiramiz
+  const titleEl = popup.querySelector('h3');
+  titleEl.textContent = 'Muvaffaqiyat';
+  titleEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
+  // 4) xabar
   document.getElementById('error-message').textContent = message;
   popup.dataset.reload = 'true';
   popup.classList.add('visible');
@@ -39,32 +60,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Elementlar
-  const avatar               = document.getElementById('avatar');
-  const imgInput             = document.getElementById('pic-upload');
-  const imgEditBtn           = document.getElementById('img-edit-btn');
-  const imgSaveBtn           = document.getElementById('img-save-btn');
-  const imgCancelBtn         = document.getElementById('img-cancel-btn');
+  const avatar = document.getElementById('avatar');
+  const imgInput = document.getElementById('pic-upload');
+  const imgEditBtn = document.getElementById('img-edit-btn');
+  const imgSaveBtn = document.getElementById('img-save-btn');
+  const imgCancelBtn = document.getElementById('img-cancel-btn');
   const imgDeleteExistingBtn = document.getElementById('img-delete-existing-btn');
-  const imgActions           = document.getElementById('img-action-buttons');
-  const displayName          = document.getElementById('display-name');
-  const inputs               = document.querySelectorAll('.field input');
-  const errors               = {
-    'first-name':   document.getElementById('error-first-name'),
-    'last-name':    document.getElementById('error-last-name'),
-    'phone':        document.getElementById('error-phone'),
-    'passport':     document.getElementById('error-passport'),
-    'card-number':  document.getElementById('error-card-number'),
-    'card-expiry':  document.getElementById('error-card-expiry'),
+  const imgActions = document.getElementById('img-action-buttons');
+  const displayName = document.getElementById('display-name');
+  const inputs = document.querySelectorAll('.field input');
+  const errors = {
+    'first-name': document.getElementById('error-first-name'),
+    'last-name': document.getElementById('error-last-name'),
+    'phone': document.getElementById('error-phone'),
+    'passport': document.getElementById('error-passport'),
+    'card-number': document.getElementById('error-card-number'),
+    'card-expiry': document.getElementById('error-card-expiry'),
   };
-  const editBtn   = document.getElementById('edit-btn');
-  const saveBtn   = document.getElementById('save-btn');
+  const editBtn = document.getElementById('edit-btn');
+  const saveBtn = document.getElementById('save-btn');
   const cancelBtn = document.getElementById('cancel-btn');
 
   const fieldMap = {
-    'first-name':  'first_Name',
-    'last-name':   'last_Name',
-    'phone':       'phoneNumber',
-    'passport':    'passport',
+    'first-name': 'first_Name',
+    'last-name': 'last_Name',
+    'phone': 'phoneNumber',
+    'passport': 'passport',
     'card-number': 'bank_card',
     'card-expiry': 'expiryDate'
   };
@@ -108,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Loader funksiyasi
   function withLoader(button, fn) {
-    return async function(...args) {
+    return async function (...args) {
       const originalHtml = button.innerHTML;
       button.disabled = true;
       button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
@@ -211,12 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (!valid) return;
     const payload = {
-      first_Name:  document.getElementById('first-name').value.trim(),
-      last_Name:   document.getElementById('last-name').value.trim(),
+      first_Name: document.getElementById('first-name').value.trim(),
+      last_Name: document.getElementById('last-name').value.trim(),
       phoneNumber: document.getElementById('phone').value.trim(),
-      passport:    document.getElementById('passport').value.trim(),
-      bank_card:   document.getElementById('card-number').value.trim(),
-      expiryDate:  document.getElementById('card-expiry').value.trim()
+      passport: document.getElementById('passport').value.trim(),
+      bank_card: document.getElementById('card-number').value.trim(),
+      expiryDate: document.getElementById('card-expiry').value.trim()
     };
     const res = await fetch(`http://localhost:8000/profile/${userId}/update`, {
       method: 'PUT',
@@ -235,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
 
   // Popup close handlers
-  document.getElementById('error-close').onclick  = closeErrorPopup;
+  document.getElementById('error-close').onclick = closeErrorPopup;
   document.getElementById('popup_button').onclick = closeErrorPopup;
 });
 

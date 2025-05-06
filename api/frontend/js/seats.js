@@ -8,7 +8,20 @@ let price = "";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
-  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem('userId')
+
+  let userData = {};  
+  // ② userId bo‘lsa, ma’lumotni olish
+  if (userId) {
+    try {
+      const userRes = await fetch(`http://localhost:8000/profile/${userId}`);
+      if (userRes.ok) {
+        userData = await userRes.json();
+      }
+    } catch (err) {
+      console.error("Foydalanuvchi ma’lumotini olishda xato:", err);
+    }
+  }
 
   function showPreloader() {
     if (preloader) preloader.classList.remove("hidden");
@@ -59,10 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     showPreloader();
     const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
       // const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      method: "GET"
     });
     const tripData = await response.json();
 
@@ -254,81 +264,88 @@ document.addEventListener("DOMContentLoaded", async () => {
     return letters + digits;
   }
 
-  // Formani ko'rsatish funksiyasi (yagona versiya)
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
-    formContainer.innerHTML = ""; // Oldingi formalarni tozalash
-
+    formContainer.innerHTML = "";
     if (selectedPrices.size === 0) {
       formContainer.style.display = "none";
       return;
     }
-
     formContainer.style.display = "block";
 
     selectedPrices.forEach((seatNumber, seatId) => {
       const form = document.createElement("form");
       form.classList.add("ticket-passenger-form");
       form.innerHTML = `
-        <div class="form-header">O‘rindiq raqami: ${seatNumber}</div>
-        <div class="form-row">
-          <div class="input-group">
-            <label for="fullName_${seatId}">To‘liq ism:</label>
-            <input type="text" id="fullName_${seatId}" name="fullName_${seatId}" placeholder="To‘liq ism" required>
-          </div>
-          <div class="input-group">
-            <label for="birthDate_${seatId}">Tug‘ilgan sana:</label>
-            <input type="date" id="birthDate_${seatId}" name="birthDate_${seatId}" required>
-          </div>
-          <div class="input-group">
-            <label for="passport_${seatId}">Pasport raqam:</label>
-            <input type="text" id="passport_${seatId}" name="passport_${seatId}" placeholder="Pasport raqam" required>
-          </div>
-          <div class="input-group">
-            <label for="phone_${seatId}">Telefon raqam:</label>
-            <input type="text" id="phone_${seatId}" name="phone_${seatId}" placeholder="Telefon raqam" required>
-          </div>
+      <div class="form-header">O‘rindiq raqami: ${seatNumber}</div>
+      <div class="form-row">
+        <div class="input-group">
+          <label for="fullName_${seatId}">To‘liq ism:</label>
+          <input
+            type="text"
+            id="fullName_${seatId}"
+            name="fullName_${seatId}"
+            placeholder="To‘liq ism"
+            required
+            value="${(userData.user.first_Name ?? '') + (userData.user.last_Name ? ' ' + userData.user.last_Name : '')}"
+          >
         </div>
-      `;
+        <div class="input-group">
+          <label for="gender_${seatId}">Jins:</label>
+          <select
+            id="gender_${seatId}"
+            name="gender_${seatId}"
+            required
+          >
+            <option value="" disabled selected>Jinsni tanlang</option>
+            <option value="male"   ${userData.user.gender === 'male' ? 'selected' : ''}>Erkak</option>
+            <option value="female" ${userData.user.gender === 'female' ? 'selected' : ''}>Ayol</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="passport_${seatId}">Pasport raqam:</label>
+          <input
+            type="text"
+            id="passport_${seatId}"
+            name="passport_${seatId}"
+            placeholder="Pasport raqam"
+            required
+            value="${userData.user.passport ?? ''}"
+          >
+        </div>
+        <div class="input-group">
+          <label for="phone_${seatId}">Telefon raqam:</label>
+          <input
+            type="text"
+            id="phone_${seatId}"
+            name="phone_${seatId}"
+            placeholder="Telefon raqam"
+            required
+            value="${userData.user.phoneNumber ? formatPhoneNumber(userData.user.phoneNumber) : ''}"
+          >
+        </div>
+      </div>
+    `;
       formContainer.appendChild(form);
 
-      const dateInput = form.querySelector(`input[type="date"]`);
-
-      // 1. Bugungi sana:
-      const today = new Date().toISOString().split('T')[0];
-
-      // 2. 100 yil oldingi sana:
-      const past = new Date();
-      past.setFullYear(past.getFullYear() - 100);
-      const hundredYearsAgo = past.toISOString().split('T')[0];
-
-      // 3. Restriktsiyalarni o‘rnatish:
-      dateInput.min = hundredYearsAgo;
-      dateInput.max = today;
-
-      formContainer.appendChild(form);
-
-      // Telefon raqam inputiga event listener (formatlash va +998 prefiksini majburlash)
-      const phoneInput = form.querySelector(`[id^="phone_"]`);
+      const phoneInput = form.querySelector(`#phone_${seatId}`);
       if (phoneInput) {
         phoneInput.addEventListener("input", function () {
-          const cursorPosition = phoneInput.selectionStart;
-          const originalLength = phoneInput.value.length;
-          phoneInput.value = formatPhoneNumber(phoneInput.value);
-          const newLength = phoneInput.value.length;
-          phoneInput.selectionStart = phoneInput.selectionEnd = cursorPosition + (newLength - originalLength);
+          const pos = this.selectionStart;
+          const origLen = this.value.length;
+          this.value = formatPhoneNumber(this.value);
+          const newLen = this.value.length;
+          this.selectionStart = this.selectionEnd = pos + (newLen - origLen);
         });
       }
-
-      // Pasport raqam inputiga event listener (formatlash)
-      const passportInput = form.querySelector(`[id^="passport_"]`);
+      const passportInput = form.querySelector(`#passport_${seatId}`);
       if (passportInput) {
         passportInput.addEventListener("input", function () {
-          const cursorPosition = passportInput.selectionStart;
-          const originalLength = passportInput.value.length;
-          passportInput.value = formatPassportNumber(passportInput.value);
-          const newLength = passportInput.value.length;
-          passportInput.selectionStart = passportInput.selectionEnd = cursorPosition + (newLength - originalLength);
+          const pos = this.selectionStart;
+          const origLen = this.value.length;
+          this.value = formatPassportNumber(this.value);
+          const newLen = this.value.length;
+          this.selectionStart = this.selectionEnd = pos + (newLen - origLen);
         });
       }
     });
@@ -381,11 +398,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const seatId = fullNameInput.id.split("_")[1];
         const seatNumber = form.querySelector('.form-header')?.textContent.replace("O‘rindiq raqami: ", "").trim();
         const fullName = formData.get(`fullName_${seatId}`);
-        const birthday = formData.get(`birthDate_${seatId}`);
+        const gender = formData.get(`gender_${seatId}`);
         const passport = formData.get(`passport_${seatId}`);
         const phoneNumber = formData.get(`phone_${seatId}`);
 
-        passengers.push({ seatId, seatNumber, fullName, birthday, passport, phoneNumber });
+        passengers.push({ seatId, seatNumber, fullName, gender, passport, phoneNumber });
       });
 
       if (passengers.length === 0) {
