@@ -37,6 +37,7 @@
                 <span id="username"></span> <!-- Foydalanuvchi ismi -->
             </span>
             <div id="user-menu" class="dropdown-menu">
+                <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
                 <a href="/logout" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
             </div>
@@ -46,16 +47,28 @@
     <div class="profile-layout">
         <div class="profile-sidebar">
             <div class="avatar-wrapper">
-                <img src="../assets/images/avatar.avif" alt="Profile Picture" id="avatar">
+                <img src="" alt="Profile Picture" id="avatar">
             </div>
             <input type="file" id="pic-upload" accept="image/*" hidden>
-            <button id="img-edit-btn" class="btn-upload">
+
+            <button type="button" id="img-edit-btn" class="btn-upload">
                 <i class="fa-solid fa-camera"></i> Rasmni yangilash
             </button>
+
+            <!-- Yangi: backenddagi rasmi bo'lsa ko'rinadigan o'chirish tugmasi -->
+            <button type="button" id="img-delete-existing-btn" class="btn-delete-existing hidden">
+                <i class="fa-solid fa-trash"></i> Rasmi o‘chirish
+            </button>
+
             <div id="img-action-buttons" class="hidden">
-                <button id="img-save-btn" class="btn-img-save"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
-                <button id="img-cancel-btn" class="btn-img-cancel"><i class="fa-solid fa-xmark-large"></i> Bekor qilish</button>
+                <button type="button" id="img-save-btn" class="btn-img-save">
+                    <i class="fa-solid fa-floppy-disk"></i> Saqlash
+                </button>
+                <button type="button" id="img-cancel-btn" class="btn-img-cancel">
+                    <i class="fa-solid fa-xmark-large"></i> Bekor qilish
+                </button>
             </div>
+            <!-- … mavjud kod … -->
             <div class="display-name" id="display-name">—</div>
         </div>
         <div class="profile-details">
@@ -66,25 +79,31 @@
                 <div class="field"><label>Familiya</label><input type="text" id="last-name" disabled>
                     <div class="error-text hidden" id="error-last-name">Majburiy</div>
                 </div>
-                <div class="field"><label>Telefon raqam</label><input type="text" id="phone" disabled placeholder="+(998) __ ___ __ __">
+                <div class="field"><label>Telefon raqam</label><input type="text" id="phone" disabled
+                        placeholder="+(998) __ ___ __ __">
                     <div class="error-text hidden" id="error-phone">Majburiy</div>
                 </div>
-                <div class="field"><label>Passport №</label><input type="text" id="passport" disabled placeholder="AS#######">
+                <div class="field"><label>Passport №</label><input type="text" id="passport" disabled
+                        placeholder="AS#######">
                     <div class="error-text hidden" id="error-passport">Majburiy</div>
                 </div>
                 <div class="field-group">
-                    <div class="field"><label>Karta №</label><input type="text" id="card-number" disabled placeholder="#### #### #### ####">
+                    <div class="field"><label>Karta №</label><input type="text" id="card-number" disabled
+                            placeholder="#### #### #### ####">
                         <div class="error-text hidden" id="error-card-number">Majburiy</div>
                     </div>
-                    <div class="field"><label>Amal qilish muddati</label><input type="text" id="card-expiry" disabled placeholder="MM/YY">
+                    <div class="field"><label>Amal qilish muddati</label><input type="text" id="card-expiry" disabled
+                            placeholder="MM/YY">
                         <div class="error-text hidden" id="error-card-expiry">Majburiy</div>
                     </div>
                 </div>
             </div>
             <div class="buttons">
                 <button class="btn btn-edit" id="edit-btn"><i class="fa-solid fa-pen-to-square"></i> Tahrirlash</button>
-                <button class="btn btn-save hidden" id="save-btn"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
-                <button class="btn btn-cancel hidden" id="cancel-btn"><i class="fa-solid fa-xmark-large"></i> Bekor qilish</button>
+                <button class="btn btn-save hidden" id="save-btn"><i class="fa-solid fa-floppy-disk"></i>
+                    Saqlash</button>
+                <button class="btn btn-cancel hidden" id="cancel-btn"><i class="fa-solid fa-xmark-large"></i> Bekor
+                    qilish</button>
             </div>
         </div>
     </div>

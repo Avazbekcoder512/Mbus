@@ -1676,6 +1676,42 @@ div.bus_loading {
   margin-top: 0.25rem;
   font-family: sans-serif;
 }
+
+/* Rasmi o‘chirish tugmasi */
+.btn-delete-existing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  background-color: #e74c3c; /* qizil fon */
+  color: #fff; /* oq matn */
+  border: none;
+  border-radius: 8px; /* ustki burchaklar yumaloq */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 1rem 0;
+}
+
+.btn-delete-existing i {
+  font-size: 1rem;
+}
+
+/* Hover effekti */
+.btn-delete-existing:hover {
+  background-color: #c0392b; /* biroz to‘qroq qizil */
+}
+
+/* Disabled holatda (so‘rov ketayotganda) */
+.btn-delete-existing:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-delete-existing.hidden {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
   .profile-layout {
     flex-direction: column;

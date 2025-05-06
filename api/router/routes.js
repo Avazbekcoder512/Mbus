@@ -11,7 +11,10 @@ import { confirmOrderSchema, pendingTicketSchema, seatBookingSchema } from '../v
 import { loginLimit } from '../middleware/loginLimit.js'
 import { limit } from '../middleware/limit.js'
 import { page404, page500 } from '../controller/errorController.js'
-import { updateProfile, userPage, userProfile } from '../controller/userController.js'
+import { profileImageDelete, profileImageUpdate, updateProfile, userPage, userProfile } from '../controller/userController.js'
+import multer from 'multer'
+import { profileUpdateSchema } from '../validator/userValidate.js'
+const upload = multer()
 
 export const router = Router()
 
@@ -30,7 +33,10 @@ router
     // user router
     .get('/profile', jwtAccessMiddleware, userPage)
     .get('/profile/:id', jwtAccessMiddleware, userProfile)
-    .put('/profile/:id/update', jwtAccessMiddleware, updateProfile)
+    .put('/profile/:id/update', jwtAccessMiddleware, checkSchema(profileUpdateSchema), updateProfile)
+    .put('/profile/:id/avatar', jwtAccessMiddleware, upload.single('image'), profileImageUpdate)
+    .delete('/profile/:id/avatar', jwtAccessMiddleware, profileImageDelete)
+
 
     // ticket router
     .get('/findroute', routeFind)
