@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const tempTicketSchema = new mongoose.Schema({
     passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     passenger: String,
-    birthday: String,
     passport: String,
+    gender: String,
     phoneNumber: String,
     seat_number: Number,
     seat: { type: mongoose.Schema.Types.ObjectId, ref: "Seat" },

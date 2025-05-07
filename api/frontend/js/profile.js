@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const imgDeleteExistingBtn = document.getElementById('img-delete-existing-btn');
   const imgActions = document.getElementById('img-action-buttons');
   const displayName = document.getElementById('display-name');
-  const inputs = document.querySelectorAll('.field input');
+  const inputs = document.querySelectorAll('.field input, .field select');
   const errors = {
     'first-name': document.getElementById('error-first-name'),
     'last-name': document.getElementById('error-last-name'),
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'passport': document.getElementById('error-passport'),
     'card-number': document.getElementById('error-card-number'),
     'card-expiry': document.getElementById('error-card-expiry'),
+    'gender': document.getElementById('error-gender')
   };
   const editBtn = document.getElementById('edit-btn');
   const saveBtn = document.getElementById('save-btn');
@@ -87,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'phone': 'phoneNumber',
     'passport': 'passport',
     'card-number': 'bank_card',
-    'card-expiry': 'expiryDate'
+    'card-expiry': 'expiryDate',
+    'gender': 'gender'
   };
 
   // Default avatar o'rnatish
@@ -112,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayName.textContent = `${user.first_Name || ''} ${user.last_Name || ''}`;
       Object.keys(fieldMap).forEach(id => {
         document.getElementById(id).value = user[fieldMap[id]] || '';
+        document.getElementById('gender').value = user.gender || '';
       });
 
       // Faqat backendda image bo'lsa o'chirish tugmasini ko'rsat
@@ -231,13 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     if (!valid) return;
+
     const payload = {
       first_Name: document.getElementById('first-name').value.trim(),
       last_Name: document.getElementById('last-name').value.trim(),
       phoneNumber: document.getElementById('phone').value.trim(),
       passport: document.getElementById('passport').value.trim(),
       bank_card: document.getElementById('card-number').value.trim(),
-      expiryDate: document.getElementById('card-expiry').value.trim()
+      expiryDate: document.getElementById('card-expiry').value.trim(),
+      gender: document.getElementById('gender').value      // ← include gender
     };
     const res = await fetch(`http://localhost:8000/profile/${userId}/update`, {
       method: 'PUT',

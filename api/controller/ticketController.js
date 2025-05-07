@@ -60,11 +60,11 @@ export const routeFind = async (req, res) => {
 
         const trips = await tripModel.find({
             route: routeDoc._id,
-            departure_date: departure_date 
+            departure_date: departure_date
         }).populate('bus')
-        .populate({
-            path: "route", select: 'from to -_id',
-        })
+            .populate({
+                path: "route", select: 'from to -_id',
+            })
 
         if (trips.length === 0) {
             return res.status(404).send({
@@ -170,7 +170,7 @@ export const pendingTicket = async (req, res) => {
             const tempTicket = await tempTicketModel.create({
                 passenger_Id: userId,
                 passenger: passenger.fullName,
-                birthday: passenger.birthday,
+                gender: passenger.gender,
                 passport: passenger.passport,
                 phoneNumber: passenger.phoneNumber,
                 seat_number: passenger.seatNumber,
@@ -210,13 +210,14 @@ export const cardPage = async (req, res) => {
 
 export const seatBooking = async (req, res) => {
     try {
-
-        const authHeader = req.headers["authorization"];
-        const token = authHeader.split(" ")[1];
+        const token = req.cookies.token
 
         const decodet = jwt.verify(token, process.env.JWT_KEY);
 
         const userId = decodet.id;
+
+        console.log(req.body);
+        
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -281,20 +282,14 @@ export const confirmOrder = async (req, res) => {
             });
         }
 
-        const authHeader = req.headers["authorization"];
-        const orderToken = req.headers["ordertoken"];
-
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).send({ error: "Authorization token noto‘g‘ri yoki mavjud emas!" });
-        }
+        const token = req.cookies.token
+        const orderToken = req.headers["ordertoken"];        
 
         if (!orderToken) {
             return res.status(400).send({ error: "Order token topilmadi!" });
         }
 
-        const accessToken = authHeader.split(" ")[1];
-
-        const decodedUser = jwt.verify(accessToken, process.env.JWT_KEY);
+        const decodedUser = jwt.verify(token, process.env.JWT_KEY);
         const decodedOrder = jwt.verify(orderToken, process.env.ORDER_KEY);
 
         const userId = decodedUser.id;
@@ -331,11 +326,29 @@ export const confirmOrder = async (req, res) => {
 
         const createdTickets = [];
 
+        const generateUniqueTicketId = async () => {
+            let unique = false;
+            let ticketId;
+
+            while (!unique) {
+                ticketId = Math.floor(100000 + Math.random() * 900000);
+                const existing = await ticketModel.findOne({ ticketId });
+                if (!existing) {
+                    unique = true;
+                }
+            }
+
+            return ticketId;
+        };
+
         for (const temp of tempTickets) {
+            const ticketId = await generateUniqueTicketId();
+
             const ticket = await ticketModel.create({
+                ticketId: ticketId,
                 passenger_Id: temp.passenger_Id,
                 passenger: temp.passenger,
-                birthday: temp.birthday,
+                gender: temp.gender,
                 passport: temp.passport,
                 phoneNumber: temp.phoneNumber,
                 seat_number: temp.seat_number,
@@ -369,9 +382,10 @@ export const confirmOrder = async (req, res) => {
             ticket.qrImage = fileUrl;
             await ticket.save();
 
-
-
-            await seatModel.findByIdAndUpdate(temp.seat, { status: "busy" });
+            await seatModel.findByIdAndUpdate(temp.seat, {
+                status: "busy",
+                passenger_gender: temp.gender
+            });
 
             await tempTicketModel.findByIdAndDelete(temp._id);
             createdTickets.push(ticket);
@@ -390,11 +404,11 @@ export const confirmOrder = async (req, res) => {
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).send({
-                error: 'Token muddati tugagan. Iltimos, qayta kirish qiling!',
+                error: "Iltimos, qayta o'rindiq band qiling!",
             });
         } else if (error.name === 'JsonWebTokenError') {
             return res.status(401).send({
-                error: 'Token noto‘g‘ri. Iltimos, qayta kirish qiling!',
+                error: "Iltimos, qayta o'rindiq band qiling!",
             });
         }
 

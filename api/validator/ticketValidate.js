@@ -15,34 +15,16 @@ export const pendingTicketSchema = {
             errorMessage: "Yo‘lovchi ismi matn ko‘rinishida bo‘lishi kerak!"
         }
     },
-    'passengers.*.birthday': {
+    'passengers.*.gender': {
         notEmpty: {
-            errorMessage: "Yo‘lovchi tu'gilgan yili bo‘lishi shart!"
+            errorMessage: "Yo‘lovchi jinsini kiritishi shart!"
         },
         isString: {
-            errorMessage: "Yo‘lovchi tu'gilgan yili sana ko'rinishida bo‘lishi kerak!"
+            errorMessage: "Yo‘lovchi jinsini matn ko'rinishida kiritishi shart!"
         },
-        custom: {
-            options: (value) => {
-                const birthday = new Date(value);
-                const today = new Date();
-                const maxDate = new Date();
-                maxDate.setFullYear(today.getFullYear() - 110);
-
-                if (isNaN(birthday.getTime())) {
-                    throw new Error("Sana noto‘g‘ri formatda!");
-                }
-
-                if (birthday > today) {
-                    throw new Error("Tug‘ilgan sana kelajakdagi sana bo‘lishi mumkin emas!");
-                }
-
-                if (birthday < maxDate) {
-                    throw new Error("Tug‘ilgan sana 110 yildan oldin bo‘lishi mumkin emas!");
-                }
-
-                return true;
-            }
+        isIn: {
+            options: [["male", "female"]],
+            errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
         }
     },
     'passengers.*.passport': {

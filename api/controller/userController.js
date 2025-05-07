@@ -82,7 +82,8 @@ export const updateProfile = async (req, res) => {
       phoneNumber: data.phoneNumber || user.phoneNumber,
       bank_card: data.bank_card || user.bank_card,
       expiryDate: data.expiryDate || user.expiryDate,
-      passport: data.passport || user.passport
+      passport: data.passport || user.passport,
+      gender: data.gender || user.gender
     }
 
     await userModel.findByIdAndUpdate(id, updatedUser)

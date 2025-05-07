@@ -1612,13 +1612,15 @@ div.bus_loading {
   display: flex;
   flex-direction: column;
 }
-.field label {
+.field label,
+select {
   margin-bottom: 0.5rem;
   color: var(--light);
   font-size: 0.85rem;
   font-weight: 500;
 }
-.field input {
+.field input,
+select {
   width: 100%;
   padding: 1rem 1.25rem;
   border: none;
@@ -1629,12 +1631,14 @@ div.bus_loading {
   transition: background 0.2s, box-shadow 0.2s, border 0.2s;
   font-size: 1rem;
 }
-.field input:focus {
+.field input:focus,
+select:focus {
   background: #fff;
   box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.2);
   outline: none;
 }
-.field input:disabled {
+.field input:disabled,
+select:disabled {
   opacity: 0.7;
 }
 .field-group {
