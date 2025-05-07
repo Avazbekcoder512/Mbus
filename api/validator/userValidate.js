@@ -28,6 +28,18 @@ export const profileUpdateSchema = {
             errorMessage: 'Telefon raqamni kiriting!'
         }
     },
+    gender: {
+        notEmpty: {
+            errorMessage: 'Jinsni kiriting!'
+        },
+        isString: {
+            errorMessage: "Jinsni matn ko'rinishida kiritng!"
+        },
+        isIn: {
+            options: [["male", "female"]],
+            errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
+        }
+    },
     passport: {
         notEmpty: {
             errorMessage: "Passport raqamini kiriting!"

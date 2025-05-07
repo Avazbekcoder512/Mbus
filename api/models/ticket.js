@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const ticketSchema = new mongoose.Schema({
+    ticketId: Number,
     passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     passenger: String,
     passport: String,

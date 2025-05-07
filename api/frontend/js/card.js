@@ -50,14 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const verifyBtn = document.getElementById('verify-code-btn');
     const cardNumberInput = document.getElementById('card-number');
     const expiryInput = document.getElementById('expiry');
-    const token = localStorage.getItem('token');
     const order = localStorage.getItem('order');
 
     // Token yoki order mavjud bo'lmasa index.htmlga yo'naltirish
-    if (!token || !order) {
-        window.location.href = "index.html";
-        return;
-    }
+    // if (!order) {
+    //     window.location.href = "";
+    //     return;
+    // }
 
     const ticketCount = localStorage.getItem('selectedSeatsCount') || 2;
     const ticketPrice = localStorage.getItem('ticketPrice') || 200000;
@@ -124,12 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('https://mbus.onrender.com/seat-booking', {
-            // const response = await fetch('http://localhost:8000/seat-booking', {
+            // const response = await fetch('https://mbus.onrender.com/seat-booking', {
+            const response = await fetch('http://localhost:8000/seat-booking', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     bank_card: cardNumber,
@@ -146,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.style.display = 'flex';
 
             } else if (response.status === 429) {
-                window.location.href = 'index.html'
+                window.location.href = '/'
             } else if (response.status === 500) {
                 window.location.href = '/500'
             } else {
@@ -181,12 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.style.display = 'inline-block';
 
         try {
-            const response = await fetch('https://mbus.onrender.com/confirm', {
-            // const response = await fetch('http://localhost:8000/confirm', {
+            // const response = await fetch('https://mbus.onrender.com/confirm', {
+            const response = await fetch('http://localhost:8000/confirm', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                     orderToken: `${order}`
                 },
                 body: JSON.stringify({ verificationCode: code })
@@ -198,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showPopup('success', "Kod qabul qilindi! To‘lov yakunlandi.");
                 modal.style.display = 'none';
             } else if (response.status === 429) {
-                window.location.href = 'index.html'
+                window.location.href = '/'
             } else if (response.status === 500) {
                 window.location.href = '/500'
             } else {
