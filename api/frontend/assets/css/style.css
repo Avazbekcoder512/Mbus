@@ -137,6 +137,10 @@ form button:hover {
   color: #333;
 }
 
+.seat-info {
+  text-align: center;
+}
+
 .trip-table {
   width: 100%;
   border-collapse: separate;
@@ -254,33 +258,51 @@ form button:hover {
   }
 }
 
-/* Grid (16 ustun, 5 qator) – rasmga yaqin ko‘rinish uchun */
-.seats-grid {
-  display: grid;
-  grid-template-columns: repeat(16, 1fr);
-  grid-auto-rows: 50px; /* Har bir qatordagi balandlik */
+.seat-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+/* ranglar */
+.vip-seat {
+  background-color: #ffff4b;
+} /* oltin */
+.premium-seat {
+  background-color: #6FE6FC;
+} /* kumush */
+.economy-seat {
+  background-color: #90ee90;
+} /* och yashil */
+
+.vip-seat:hover {
+  background-color: #f0f000;
+}
+.premium-seat:hover {
+  background-color: #06d8fd;
+}
+.economy-seat:hover {
+  background-color: #4bff4b;
+} 
+
+.seat-legend {
+  display: flex;
   gap: 10px;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+  justify-content: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #333;
 }
 
-/* Oddiy o‘rindiq */
-.seat {
-  background-color: #e9ecef; /* Bo'sh o‘rindiq rangi (kulrang) */
-  border-radius: 5px;
-  text-align: center;
-  line-height: 50px; /* Div balandligi bilan teng bo‘lishi uchun */
-  font-weight: 600;
-  cursor: pointer;
-  color: #000;
-  transition: background-color 0.3s;
-}
-
-.seat-info {
-  font-size: 20px;
-  margin: 10px 10px;
-}
 
 /* Band (occupied) o‘rindiq */
 .seat.occupied {
@@ -289,17 +311,11 @@ form button:hover {
   cursor: not-allowed;
 }
 
-/* Tanlangan (selected) o‘rindiq */
-.seat.selected {
-  background-color: #0d6efd; /* Ko‘k */
-  color: #fff;
-}
-
 /* Hover effekti */
-.seat:not(.occupied):hover {
-  background-color: #ffc107; /* Sariq */
+/* .seat:not(.occupied):hover {
+  background-color: rgba(255, 255, 255, 0.274);
   color: #000;
-}
+} */
 
 /* Bo‘sh joy (yo‘lak) yoki joyni to‘ldirish uchun */
 .empty {
@@ -336,28 +352,30 @@ td {
   border: none;
   font-size: 20px;
 }
+/* —– Avval generic .seat qoidasi (fon olinmasin!) —– */
 td.seat {
-  background: #eaeaea;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.3s;
 }
-td.seat:hover {
-  background: #d0d0d0;
-  transform: scale(1.1);
-}
+
+/* —– Selected & occupied holatlar (o‘zgarmaydi) —– */
 td.seat.selected {
-  background-color: #4caf50;
+  background-color: #00cb07 !important;
   color: #fff;
   transform: scale(1.1);
 }
 td.seat.occupied {
-  background-color: #f44336;
+  background-color: #f44336 !important;
   color: #fff;
   cursor: not-allowed;
+  filter: none; /* hover va brightness ta’sir qilmasin */
 }
+
+/* —– Driver va empty o‘rinlari ham o‘zgarishsiz qolsin —– */
 td.empty {
   background: transparent;
+  pointer-events: none;
 }
 td.driver {
   background: #555;

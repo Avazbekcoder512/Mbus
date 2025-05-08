@@ -47,7 +47,7 @@ export const pendingTicketSchema = {
         notEmpty: {
             errorMessage: "Yo‘lovchi o'rindiq raqami bo‘lishi shart!"
         },
-        isString: {
+        isInt: {
             errorMessage: "Yo‘lovchi o'rindiq raqami raqam ko'rinishida bo‘lishi kerak!"
         }
     },
