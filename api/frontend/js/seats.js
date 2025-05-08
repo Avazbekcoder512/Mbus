@@ -1,17 +1,15 @@
 // selectedPrices global scope'da bo'lishi kerak, chunki boshqa joylarda ham ishlatiladi
-const selectedPrices = new Map(); // seatId => price
+const selectedPrices = new Map(); // seatId => { seatNumber, price }
 let routeFrom = "";
 let routeTo = "";
 let departureDate = "";
 let departureTime = "";
-let price = "";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem('userId');
 
-  let userData = {};  
-  // ② userId bo‘lsa, ma’lumotni olish
+  let userData = {};
   if (userId) {
     try {
       const userRes = await fetch(`http://localhost:8000/profile/${userId}`);
@@ -48,50 +46,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("close-popup-btn").addEventListener("click", () => {
     const popup = document.getElementById("token-expired-popup");
     popup.classList.add("hidden");
-    window.location.href = "/"
+    window.location.href = "/";
   });
 
-  // 1) Error-popup elementlarini olish
   const errorPopup = document.getElementById("error-popup");
   const errorMessage = document.getElementById("error-message");
   const closeErrorBtn = document.getElementById("close-error-btn");
 
-  // 2) Popupni ko‘rsatish funksiyasi
   function showErrorPopup(msg) {
     errorMessage.textContent = msg;
     errorPopup.classList.remove("hidden");
   }
 
-  // 3) Yopish tugmasi (YANGI): faqat ekran ko‘rinishini yashiradi
   closeErrorBtn.addEventListener("click", () => {
     errorPopup.classList.add("hidden");
-    window.location.href = '/'
+    window.location.href = '/';
   });
 
   try {
     showPreloader();
     const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
-      // const response = await fetch(`https://mbus.onrender.com/trip/${tripId}`, {
       method: "GET"
     });
     const tripData = await response.json();
 
     if (response.status === 429) {
-      showErrorPopup(result.error)
+      showErrorPopup(result.error);
     } else if (response.status === 401) {
-      console.log(tripData.error);
       showTokenExpiredPopup(tripData.error);
       return;
     } else if (response.status === 500) {
-      window.location.href = '/500'
+      window.location.href = '/500';
     }
-
 
     routeFrom = tripData.trip.route.from;
     routeTo = tripData.trip.route.to;
     departureDate = tripData.trip.departure_date;
     departureTime = tripData.trip.departure_time;
-    price = tripData.trip.ticket_price;
 
     function formatDate(dateStr) {
       const parts = dateStr.split("-");
@@ -102,11 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tripTitleEl = document.getElementById("trip-title");
     if (tripTitleEl) {
       tripTitleEl.innerHTML = `${routeFrom} - ${routeTo} <span class="date">${formattedDate} ${departureTime}</span>`;
-    }
-
-    const tripPriceEl = document.getElementById("ticket-price");
-    if (tripPriceEl) {
-      tripPriceEl.innerHTML = `<span class="price">Chipta narxi: ${price} so'm</span>`;
     }
 
     const seats = tripData.trip.seats || [];
@@ -121,11 +107,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("free-seats").textContent = freeSeats;
     document.getElementById("booked-seats").textContent = bookedSeats;
 
-    const seatsData = tripData.trip.seats;
-    const occupiedSeats = new Set(
-      seatsData.filter(seat => seat.status === "busy").map(seat => seat.seatNumber)
-    );
-
     const seatLayout = [
       [47, 43, 39, 35, 31, 27, 25, 21, 17, 13, 9, 5, 1, "driver"],
       [48, 44, 40, 36, 32, 28, 26, 22, 18, 14, 10, 6, 2],
@@ -136,6 +117,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const seatingTable = document.getElementById("seating-table");
     seatingTable.innerHTML = "";
+
+    const legendEl = document.getElementById("seat-legend");
+    legendEl.innerHTML = "";
+
+    const occItems = [
+      { icon: "../assets/images/male.png", text: "Erkak kishi band qilgan" },
+      { icon: "../assets/images/female.png", text: "Ayol kishi band qilgan" }
+    ];
+    occItems.forEach(item => {
+      const div = document.createElement("div");
+      div.classList.add("legend-item");
+      div.innerHTML = `
+        <img src="${item.icon}" alt="" class="legend-color" />
+        <span>${item.text}</span>
+      `;
+      legendEl.appendChild(div);
+    });
+
+    const priceByClass = { vip: 0, premium: 0, economy: 0 };
+    seats.forEach(s => {
+      const cls = (s.class || "economy").toLowerCase();
+      if (!priceByClass[cls] && s.price) priceByClass[cls] = s.price;
+    });
+    ["vip", "premium", "economy"].forEach(cls => {
+      const div = document.createElement("div");
+      div.classList.add("legend-item");
+      div.innerHTML = `
+        <div class="legend-color ${cls}-seat"></div>
+        <span>${cls.charAt(0).toUpperCase() + cls.slice(1)} — ${priceByClass[cls]} so'm</span>
+      `;
+      legendEl.appendChild(div);
+    });
 
     seatLayout.forEach(row => {
       const tr = document.createElement("tr");
@@ -149,38 +162,46 @@ document.addEventListener("DOMContentLoaded", async () => {
           td.classList.add("empty");
         } else {
           td.classList.add("seat");
+          const seatObj = seats.find(s => s.seatNumber === value);
+          if (!seatObj) return;
+
+          // Har bir o'rindiq uchun unique ID
+          td.dataset.id = seatObj._id; // <-- MUHIM O'ZGARISH
+
+          const cls = (seatObj.class || "economy").toLowerCase();
+          td.classList.add(`${cls}-seat`);
           td.textContent = value;
 
-          const seatObj = seatsData.find(seat => seat.seatNumber === value);
-          if (seatObj) {
-            td.dataset.id = seatObj._id;
-            td.dataset.seatNumber = seatObj.seatNumber;
-          }
-
-          if (occupiedSeats.has(value)) {
+          if (seatObj.status === "busy") {
             td.classList.add("occupied");
-          }
-
-          td.addEventListener("click", () => {
-            if (!td.classList.contains("occupied")) {
+            const gender = seatObj.passenger_gender;
+            let iconHtml = "";
+            if (gender === "female") {
+              iconHtml = `<img src="../assets/images/female.png" alt="Ayol" class="seat-icon" />`;
+            } else if (gender === "male") {
+              iconHtml = `<img src="../assets/images/male.png" alt="Erkak" class="seat-icon" />`;
+            }
+            td.innerHTML = iconHtml;
+            td.style.cursor = "not-allowed";
+          } else {
+            td.addEventListener("click", () => {
               td.classList.toggle("selected");
-
               const selectedId = td.dataset.id;
-              const seatObj = seatsData.find(seat => seat._id === selectedId || seat.seatNumber == value);
-              const seatNumber = seatObj ? seatObj.seatNumber : value;
-
+              
               if (td.classList.contains("selected")) {
-                selectedPrices.set(selectedId, seatNumber);
+                selectedPrices.set(selectedId, {
+                  seatNumber: value,
+                  price: seatObj.price || priceByClass[cls] // Klassga qarab narx
+                });
               } else {
                 selectedPrices.delete(selectedId);
               }
-
+              
               updateTotalPrice();
               showTicketForm();
-            }
-          });
+            });
+          }
         }
-
         tr.appendChild(td);
       });
       seatingTable.appendChild(tr);
@@ -189,266 +210,207 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("Ma'lumotlarni yuklashda xatolik:", error);
   } finally {
-    hidePreloader()
+    hidePreloader();
   }
 
   function updateTotalPrice() {
     let totalPrice = 0;
-    let selectedSeatsCount = 0;
-    const selectedSeatIds = [];
-
-    for (let [seatId, seatNumber] of selectedPrices.entries()) {
-      totalPrice += Number(price);
-      selectedSeatsCount++;
-      selectedSeatIds.push({ seatId, seatNumber });
-    }
-
-    localStorage.setItem("selectedSeatsCount", selectedSeatsCount.toString());
+    selectedPrices.forEach(seatData => {
+      totalPrice += Number(seatData.price);
+    });
     localStorage.setItem("totalPrice", totalPrice.toString());
-    localStorage.setItem("ticketPrice", price.toString());
   }
-
-
 
   function formatPhoneNumber(value) {
     let digits = value.replace(/\D/g, '');
-
-    if (digits.length < 3) {
-      return "+998";
-    }
-
-    if (digits.startsWith("998")) {
-      digits = digits.slice(3);
-    }
-
+    if (digits.startsWith("998")) digits = digits.slice(3);
     digits = digits.slice(0, 9);
-
-    const operator = digits.slice(0, 2);
-    const part1 = digits.slice(2, 5);
-    const part2 = digits.slice(5, 7);
-    const part3 = digits.slice(7, 9);
-
-    let formatted = "+998";
-
-    if (operator.length > 0) {
-      if (operator.length === 2) {
-        formatted += ` (${operator})`;
-      } else {
-        formatted += ` (${operator}`;
-      }
-    } else {
-      formatted += " (";
-    }
-
-    if (operator.length === 2) {
-      formatted += " ";
-    }
-
-    if (part1) {
-      formatted += part1;
-    }
-    if (part2) {
-      formatted += `-${part2}`;
-    }
-    if (part3) {
-      formatted += `-${part3}`;
-    }
-    return formatted;
+    const parts = [
+      digits.slice(0, 2),
+      digits.slice(2, 5),
+      digits.slice(5, 7),
+      digits.slice(7, 9)
+    ].filter(Boolean);
+    return "+998" + (parts.length > 0 ? ` (${parts[0]})` : "") + " " + parts.slice(1).join("-");
   }
 
-  // Pasport raqam formatlash funksiyasi:
   function formatPassportNumber(value) {
-    let cleaned = value.replace(/[^a-zA-Z0-9]/g, '');
-    let letters = cleaned.slice(0, 2).replace(/[^a-zA-Z]/g, '').toUpperCase();
-    let digits = cleaned.slice(2).replace(/\D/g, '').slice(0, 7);
-    return letters + digits;
+    return value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 9);
   }
 
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
     formContainer.innerHTML = "";
+    
     if (selectedPrices.size === 0) {
       formContainer.style.display = "none";
       return;
     }
+    
     formContainer.style.display = "block";
 
-    selectedPrices.forEach((seatNumber, seatId) => {
+    selectedPrices.forEach((seatData, seatId) => {
       const form = document.createElement("form");
       form.classList.add("ticket-passenger-form");
       form.innerHTML = `
-      <div class="form-header">O‘rindiq raqami: ${seatNumber}</div>
-      <div class="form-row">
-        <div class="input-group">
-          <label for="fullName_${seatId}">To‘liq ism:</label>
-          <input
-            type="text"
-            id="fullName_${seatId}"
-            name="fullName_${seatId}"
-            placeholder="To‘liq ism"
-            required
-            value="${(userData.user.first_Name ?? '') + (userData.user.last_Name ? ' ' + userData.user.last_Name : '')}"
-          >
+        <div class="form-header">O‘rindiq raqami: ${seatData.seatNumber}</div>
+        <div class="form-row">
+          <div class="input-group">
+            <label for="fullName_${seatId}">To‘liq ism:</label>
+            <input
+              type="text"
+              id="fullName_${seatId}"
+              name="fullName_${seatId}"
+              placeholder="To‘liq ism"
+              required
+              value="${(userData.user?.first_Name || '') + (userData.user?.last_Name ? ' ' + userData.user.last_Name : '')}"
+            >
+          </div>
+          <div class="input-group">
+            <label for="gender_${seatId}">Jins:</label>
+            <select
+              id="gender_${seatId}"
+              name="gender_${seatId}"
+              required
+            >
+              <option value="" disabled selected>Jinsni tanlang</option>
+              <option value="male" ${userData.user?.gender === 'male' ? 'selected' : ''}>Erkak</option>
+              <option value="female" ${userData.user?.gender === 'female' ? 'selected' : ''}>Ayol</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="passport_${seatId}">Pasport raqam:</label>
+            <input
+              type="text"
+              id="passport_${seatId}"
+              name="passport_${seatId}"
+              placeholder="AA1234567"
+              required
+              value="${userData.user?.passport || ''}"
+            >
+          </div>
+          <div class="input-group">
+            <label for="phone_${seatId}">Telefon raqam:</label>
+            <input
+              type="text"
+              id="phone_${seatId}"
+              name="phone_${seatId}"
+              placeholder="+998 (XX) XXX-XX-XX"
+              required
+              value="${userData.user?.phoneNumber ? formatPhoneNumber(userData.user.phoneNumber) : ''}"
+            >
+          </div>
         </div>
-        <div class="input-group">
-          <label for="gender_${seatId}">Jins:</label>
-          <select
-            id="gender_${seatId}"
-            name="gender_${seatId}"
-            required
-          >
-            <option value="" disabled selected>Jinsni tanlang</option>
-            <option value="male"   ${userData.user.gender === 'male' ? 'selected' : ''}>Erkak</option>
-            <option value="female" ${userData.user.gender === 'female' ? 'selected' : ''}>Ayol</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label for="passport_${seatId}">Pasport raqam:</label>
-          <input
-            type="text"
-            id="passport_${seatId}"
-            name="passport_${seatId}"
-            placeholder="Pasport raqam"
-            required
-            value="${userData.user.passport ?? ''}"
-          >
-        </div>
-        <div class="input-group">
-          <label for="phone_${seatId}">Telefon raqam:</label>
-          <input
-            type="text"
-            id="phone_${seatId}"
-            name="phone_${seatId}"
-            placeholder="Telefon raqam"
-            required
-            value="${userData.user.phoneNumber ? formatPhoneNumber(userData.user.phoneNumber) : ''}"
-          >
-        </div>
-      </div>
-    `;
+      `;
       formContainer.appendChild(form);
 
+      // Telefon raqam formati
       const phoneInput = form.querySelector(`#phone_${seatId}`);
-      if (phoneInput) {
-        phoneInput.addEventListener("input", function () {
-          const pos = this.selectionStart;
-          const origLen = this.value.length;
-          this.value = formatPhoneNumber(this.value);
-          const newLen = this.value.length;
-          this.selectionStart = this.selectionEnd = pos + (newLen - origLen);
-        });
-      }
+      phoneInput?.addEventListener("input", function(e) {
+        const pos = e.target.selectionStart;
+        e.target.value = formatPhoneNumber(e.target.value);
+        e.target.setSelectionRange(pos, pos);
+      });
+
+      // Pasport formati
       const passportInput = form.querySelector(`#passport_${seatId}`);
-      if (passportInput) {
-        passportInput.addEventListener("input", function () {
-          const pos = this.selectionStart;
-          const origLen = this.value.length;
-          this.value = formatPassportNumber(this.value);
-          const newLen = this.value.length;
-          this.selectionStart = this.selectionEnd = pos + (newLen - origLen);
-        });
-      }
+      passportInput?.addEventListener("input", function(e) {
+        const pos = e.target.selectionStart;
+        e.target.value = formatPassportNumber(e.target.value);
+        e.target.setSelectionRange(pos, pos);
+      });
     });
 
-    // Pastki tugmalar
     const btnContainer = document.createElement("div");
     btnContainer.classList.add("form-buttons");
     btnContainer.innerHTML = `
-    <button type="button" id="back-btn"><i class="fa-solid fa-arrow-left"></i> Ortga qaytish</button>
-    <button type="submit" id="continue-btn">
-      <span class="btn-text">Davom etish</span>
-      <i class="fa-solid fa-arrow-right"></i>
-      <i class="fa-solid fa-spinner-third fa-spin" id="loader" style="display: none; margin-left: 5px; animation-duration: 1s;"></i>
-    </button>
+      <button type="button" id="back-btn"><i class="fa-solid fa-arrow-left"></i> Ortga qaytish</button>
+      <button type="submit" id="continue-btn">
+        <span class="btn-text">Davom etish</span>
+        <i class="fa-solid fa-arrow-right"></i>
+        <i class="fa-solid fa-spinner-third fa-spin" id="loader" style="display: none;"></i>
+      </button>
     `;
     formContainer.appendChild(btnContainer);
 
-    // "Ortga qaytish" tugmasi:
     document.getElementById("back-btn").addEventListener("click", () => {
-      window.location = "/";
+      window.location.href = "/";
       selectedPrices.clear();
       document.querySelectorAll(".seat.selected").forEach(el => el.classList.remove("selected"));
     });
 
-    // "Davom etish" tugmasi bosilganda:
     document.getElementById("continue-btn").addEventListener("click", async (e) => {
       const continueBtn = e.target.closest("#continue-btn");
       const loader = continueBtn.querySelector("#loader");
       const btnText = continueBtn.querySelector(".btn-text");
-      // Har bir forma validatsiyasini tekshiramiz:
+      
+      // Validatsiya
       const forms = document.querySelectorAll(".ticket-passenger-form");
-      for (const form of forms) {
+      let isValid = true;
+      forms.forEach(form => {
         if (!form.checkValidity()) {
           form.reportValidity();
-          e.preventDefault();
-          return;
+          isValid = false;
         }
-      }
+      });
+      if (!isValid) return;
 
       continueBtn.disabled = true;
       loader.style.display = "inline-block";
       btnText.textContent = "Yuborilmoqda";
 
-      let passengers = [];
-      forms.forEach(form => {
-        const formData = new FormData(form);
-        const fullNameInput = form.querySelector('input[id^="fullName_"]');
-        if (!fullNameInput) return;
+      const passengers = [];
+      selectedPrices.forEach((seatData, seatId) => {
+        const form = document.querySelector(`#ticket-form-container form input[id="fullName_${seatId}"]`)?.closest("form");
+        if (!form) return;
 
-        const seatId = fullNameInput.id.split("_")[1];
-        const seatNumber = form.querySelector('.form-header')?.textContent.replace("O‘rindiq raqami: ", "").trim();
-        const fullName = formData.get(`fullName_${seatId}`);
-        const gender = formData.get(`gender_${seatId}`);
-        const passport = formData.get(`passport_${seatId}`);
-        const phoneNumber = formData.get(`phone_${seatId}`);
+        const fullName = form.querySelector(`#fullName_${seatId}`)?.value;
+        const gender = form.querySelector(`#gender_${seatId}`)?.value;
+        const passport = form.querySelector(`#passport_${seatId}`)?.value;
+        const phone = form.querySelector(`#phone_${seatId}`)?.value;
 
-        passengers.push({ seatId, seatNumber, fullName, gender, passport, phoneNumber });
+        passengers.push({
+          seatId,
+          seatNumber: seatData.seatNumber,
+          fullName,
+          gender,
+          passport,
+          phoneNumber: phone.replace(/\D/g, '')
+        });
       });
 
-      if (passengers.length === 0) {
-        alert("Iltimos, avval o‘rindiq tanlang!");
-        return;
-      }
-
-      const payload = {
-        passengers: passengers,
-        from: routeFrom,
-        to: routeTo,
-        departure_date: departureDate,
-        departure_time: departureTime
-      };
-
       try {
-        // const response = await fetch("https://mbus.onrender.com/ticket-pending", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(payload)
-        // });
-        // const result = await response.json();
         const response = await fetch("http://localhost:8000/ticket-pending", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload)
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            passengers,
+            from: routeFrom,
+            to: routeTo,
+            departure_date: departureDate,
+            departure_time: departureTime
+          })
         });
-        const result = await response.json();
 
+        const result = await response.json();
+        
         if (response.ok && result.order) {
-          localStorage.setItem('order', result.order)
+          localStorage.setItem('order', result.order);
           window.location.href = "/card";
         } else if (response.status === 429) {
-          showErrorPopup(result.error)
+          showErrorPopup(result.error);
         } else if (response.status === 500) {
-          window.location.href = '/500'
+          window.location.href = '/500';
         } else {
-          alert(result.data || "Xatolik yuz berdi!");
+          alert(result.message || "Xatolik yuz berdi!");
         }
       } catch (err) {
         console.error("Xatolik:", err);
         alert("Server bilan aloqa o‘rnatilmadi");
+      } finally {
+        continueBtn.disabled = false;
+        loader.style.display = "none";
+        btnText.textContent = "Davom etish";
       }
     });
   }
