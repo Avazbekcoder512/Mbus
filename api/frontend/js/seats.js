@@ -121,20 +121,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const legendEl = document.getElementById("seat-legend");
     legendEl.innerHTML = "";
 
-    const occItems = [
-      { icon: "../assets/images/male.png", text: "Erkak kishi band qilgan" },
-      { icon: "../assets/images/female.png", text: "Ayol kishi band qilgan" }
-    ];
-    occItems.forEach(item => {
-      const div = document.createElement("div");
-      div.classList.add("legend-item");
-      div.innerHTML = `
-        <img src="${item.icon}" alt="" class="legend-color" />
-        <span>${item.text}</span>
-      `;
-      legendEl.appendChild(div);
-    });
-
     const priceByClass = { vip: 0, premium: 0, economy: 0 };
     seats.forEach(s => {
       const cls = (s.class || "economy").toLowerCase();

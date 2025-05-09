@@ -167,6 +167,12 @@ export const pendingTicket = async (req, res) => {
                 return res.status(404).send({ error: "Avtobus mavjud emas!" });
             }
 
+            if (!user.bank_card) {
+                return res.status(400).send({
+                    error: "Iltimos avval bank kartangizni kiriting!"
+                })
+            }
+
             const tempTicket = await tempTicketModel.create({
                 passenger_Id: userId,
                 passenger: passenger.fullName,
