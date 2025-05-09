@@ -137,9 +137,76 @@ form button:hover {
   color: #333;
 }
 
-.seat-info {
-  text-align: center;
+.bus-content-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
 }
+
+/* === SEAT INFO CONTAINER === */
+.seat-info {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  margin: 2rem auto;
+  background: linear-gradient(135deg, var(--legend-bg-start), var(--legend-bg-end));
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  align-items: center;
+}
+
+/* === HAR BIR ELEMENTGA TESKARI SKEW === */
+.seat-info > * {
+  transform: skew(3deg);
+}
+
+/* Trip title va sana */
+.seat-info #trip-title,
+.seat-info #ticket-price {
+  margin: 0 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Sana */
+.seat-info .date {
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.8);
+}
+
+/* Narx gradient matn */
+.seat-info #ticket-price .price {
+  background: linear-gradient(90deg, var(--vip-color) 0%, var(--premium-color) 50%, var(--eco-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Bo‘sh va band o‘rindiqlar */
+.seat-info span {
+  margin: 0 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Bo‘sh va band raqamlarni ranglash */
+.seat-info #free-seats {
+  color: var(--eco-color);
+  font-weight: 700;
+}
+.seat-info #booked-seats {
+  color: var(--premium-color);
+  font-weight: 700;
+}
+
+
 
 .trip-table {
   width: 100%;
@@ -264,16 +331,15 @@ form button:hover {
   vertical-align: middle;
 }
 
-/* ranglar */
 .vip-seat {
   background-color: #ffff4b;
-} /* oltin */
+}
 .premium-seat {
   background-color: #6FE6FC;
-} /* kumush */
+}
 .economy-seat {
   background-color: #90ee90;
-} /* och yashil */
+}
 
 .vip-seat:hover {
   background-color: #f0f000;
@@ -285,24 +351,79 @@ form button:hover {
   background-color: #4bff4b;
 } 
 
-.seat-legend {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-  align-items: center;
-  justify-content: center;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.legend-color {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #333;
+:root {
+  --vip-color: #ffff4b;
+  --premium-color: #6FE6FC;
+  --eco-color: #90ee90;
+  --legend-bg-start: #2b5876;
+  --legend-bg-end: #4e4376;
 }
 
+/* Container skew, gradient, shadow */
+#seat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, var(--legend-bg-start), var(--legend-bg-end));
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 2rem;
+  max-width: 60%;
+}
+
+/* Item teskari skew + hover */
+#seat-legend .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: skew(3deg);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+#seat-legend .legend-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: skew(3deg) scale(1.05);
+}
+
+/* Neon block + pulsatsiya */
+#seat-legend .legend-color {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.2); }
+}
+
+/* Ranglar sensoring bergan kodlarga mos */
+#seat-legend .vip-seat {
+  background: var(--vip-color);
+  box-shadow: 0 0 15px var(--vip-color);
+}
+#seat-legend .premium-seat {
+  background: var(--premium-color);
+  box-shadow: 0 0 15px var(--premium-color);
+}
+#seat-legend .economy-seat {
+  background: var(--eco-color);
+  box-shadow: 0 0 15px var(--eco-color);
+}
+
+/* Text */
+#seat-legend .legend-item span {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
 
 /* Band (occupied) o‘rindiq */
 .seat.occupied {
