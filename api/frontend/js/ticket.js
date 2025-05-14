@@ -45,14 +45,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const hidePreloader = () => preloader && preloader.classList.add("hidden");
 
     try {
-        const token = localStorage.getItem("token");
         showPreloader();
 
         // const response = await fetch("https://mbus.onrender.com/tickets", {
         //     method: "GET",
         //     headers: {
         //         "Content-Type": "application/json",
-        //         "Authorization": `Bearer ${token}`
         //     }
         // });
         // const data = await response.json();
@@ -60,7 +58,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             }
         });
         const data = await response.json();
@@ -123,16 +120,35 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const expiredImage = isExpired
-                ? `<img src='./assets/images/expired.png' alt='expired'/>`
+                ? `<img src='./assets/images/expired.png' alt='expired' draggable="false"/>`
                 : "";
+
+            let statusIcon = '';
+            switch (ticket.class_status) {
+                case 'vip':
+                    statusIcon = '<i class="fa-solid fa-gem"></i>';
+                    break;
+                case 'premium':
+                    statusIcon = '<i class="fa-solid fa-star"></i>';
+                    break;
+                case 'economy':
+                    statusIcon = '<i class="fa-solid fa-ticket-simple"></i>';
+                    break;
+                default:
+                    statusIcon = '';
+            }
 
             // Yakuniy HTML
             const ticketHTML = `
                 <div id="ticket-${ticketId}" class="ticket ${isExpired ? "expired" : ""}">
                     <div class="ticket-left">
                         <h1>Avtobus Chiptasi</h1>
+                        <p class="status-badge ${ticket.class_status}-status">
+                            ${statusIcon}
+                            ${ticket.class_status || ""}
+                        </p>
                         <p>Avtobus raqami: ${ticket.bus_number || "Noma'lum"}</p>
-                        <img src="${ticket.qrImage}" alt="QRCode"/>
+                        <img src="${ticket.qrImage}" alt="QRCode" draggable="false"/>
                     </div>
                     ${expiredImage}
                     <div class="ticket-right">
@@ -144,6 +160,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <div class="item"><div class="label">Qayerdan:</div><div class="value">${ticket.from || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">O‘rindiq raqami:</div><div class="value">${ticket.seat_number || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">Qayerga:</div><div class="value">${ticket.to || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">O‘rindiq statusi:</div><div class="value">${ticket.class_status || "Noma'lum"}</div></div>
                         </div>
                         <div class="ticket-footer">
                             <div class="date-time">
@@ -169,10 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // --- Download funksiyasi ---
 async function downloadTicket(ticketId, btn) {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
 
-    // Tugmani disable qilib, matnini spinner bilan almashtiramiz
     btn.disabled = true;
     // originalText saqlaymiz, keyin qaytarish uchun
     const originalText = btn.innerHTML;
@@ -181,11 +195,9 @@ async function downloadTicket(ticketId, btn) {
     try {
         // const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/download`, {
         //     method: "GET",
-        //     headers: { "Authorization": `Bearer ${token}` }
         // });
         const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
             method: "GET",
-            headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) {
             const err = await res.json();
@@ -214,17 +226,13 @@ async function downloadTicket(ticketId, btn) {
 
 // --- Expired bo'lgan chiptani o'chirish ---
 async function deleteExpiredTicket(ticketId) {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
 
     try {
         // const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/delete`, {
         //     method: "DELETE",
-        //     headers: { "Authorization": `Bearer ${token}` }
         // });
         const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
             method: "DELETE",
-            headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) {
             const err = await res.json();
@@ -263,22 +271,17 @@ function showCancelModal(ticketId) {
 }
 
 async function cancelTicketPut(ticketId) {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Token topilmadi. Iltimos, qayta kiring.");
-
     try {
         // const res = await fetch(`https://mbus.onrender.com/ticket/${ticketId}/cancel`, {
         //     method: "PUT",
         //     headers: {
         //         "Content-Type": "application/json",
-        //         "Authorization": `Bearer ${token}`
         //     }
         // });
         const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             }
         });
         if (!res.ok) {
