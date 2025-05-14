@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             td.addEventListener("click", () => {
               td.classList.toggle("selected");
               const selectedId = td.dataset.id;
-              
+
               if (td.classList.contains("selected")) {
                 selectedPrices.set(selectedId, {
                   seatNumber: value,
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               } else {
                 selectedPrices.delete(selectedId);
               }
-              
+
               updateTotalPrice();
               showTicketForm();
             });
@@ -227,72 +227,91 @@ document.addEventListener("DOMContentLoaded", async () => {
   function showTicketForm() {
     const formContainer = document.getElementById("ticket-form-container");
     formContainer.innerHTML = "";
-    
+
     if (selectedPrices.size === 0) {
       formContainer.style.display = "none";
       return;
     }
-    
+
     formContainer.style.display = "block";
 
     selectedPrices.forEach((seatData, seatId) => {
       const form = document.createElement("form");
       form.classList.add("ticket-passenger-form");
       form.innerHTML = `
-        <div class="form-header">O‘rindiq raqami: ${seatData.seatNumber}</div>
-        <div class="form-row">
-          <div class="input-group">
-            <label for="fullName_${seatId}">To‘liq ism:</label>
-            <input
-              type="text"
-              id="fullName_${seatId}"
-              name="fullName_${seatId}"
-              placeholder="To‘liq ism"
-              required
-              value="${(userData.user?.first_Name || '') + (userData.user?.last_Name ? ' ' + userData.user.last_Name : '')}"
-            >
-          </div>
-          <div class="input-group">
-            <label for="gender_${seatId}">Jins:</label>
-            <select
-              id="gender_${seatId}"
-              name="gender_${seatId}"
-              required
-            >
-              <option value="" disabled selected>Jinsni tanlang</option>
-              <option value="male" ${userData.user?.gender === 'male' ? 'selected' : ''}>Erkak</option>
-              <option value="female" ${userData.user?.gender === 'female' ? 'selected' : ''}>Ayol</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label for="passport_${seatId}">Pasport raqam:</label>
-            <input
-              type="text"
-              id="passport_${seatId}"
-              name="passport_${seatId}"
-              placeholder="AA1234567"
-              required
-              value="${userData.user?.passport || ''}"
-            >
-          </div>
-          <div class="input-group">
-            <label for="phone_${seatId}">Telefon raqam:</label>
-            <input
-              type="text"
-              id="phone_${seatId}"
-              name="phone_${seatId}"
-              placeholder="+998 (XX) XXX-XX-XX"
-              required
-              value="${userData.user?.phoneNumber ? formatPhoneNumber(userData.user.phoneNumber) : ''}"
-            >
-          </div>
+      <div class="form-header">
+      <div>
+        O‘rindiq raqami: ${seatData.seatNumber}<button class="close-form-btn">×</button></div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label for="fullName_${seatId}">To‘liq ism:</label>
+          <input
+            type="text"
+            id="fullName_${seatId}"
+            name="fullName_${seatId}"
+            placeholder="To‘liq ism"
+            required
+            value="${(userData.user?.first_Name || '') + (userData.user?.last_Name ? ' ' + userData.user.last_Name : '')}"
+          >
         </div>
-      `;
+        <div class="input-group">
+          <label for="gender_${seatId}">Jins:</label>
+          <select
+            id="gender_${seatId}"
+            name="gender_${seatId}"
+            required
+          >
+            <option value="" disabled selected>Jinsni tanlang</option>
+            <option value="male" ${userData.user?.gender === 'male' ? 'selected' : ''}>Erkak</option>
+            <option value="female" ${userData.user?.gender === 'female' ? 'selected' : ''}>Ayol</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="passport_${seatId}">Pasport raqam:</label>
+          <input
+            type="text"
+            id="passport_${seatId}"
+            name="passport_${seatId}"
+            placeholder="AA1234567"
+            required
+            value="${userData.user?.passport || ''}"
+          >
+        </div>
+        <div class="input-group">
+          <label for="phone_${seatId}">Telefon raqam:</label>
+          <input
+            type="text"
+            id="phone_${seatId}"
+            name="phone_${seatId}"
+            placeholder="+998 (XX) XXX-XX-XX"
+            required
+            value="${userData.user?.phoneNumber ? formatPhoneNumber(userData.user.phoneNumber) : ''}"
+          >
+        </div>
+      </div>
+    `;
+
+      // X tugmasi uchun hodisa
+      const closeBtn = form.querySelector(".close-form-btn");
+      closeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        form.remove();
+        selectedPrices.delete(seatId);
+        const seatElement = document.querySelector(`td[data-id="${seatId}"]`);
+        if (seatElement) {
+          seatElement.classList.remove("selected");
+        }
+        updateTotalPrice();
+        if (selectedPrices.size === 0) {
+          formContainer.style.display = "none";
+        }
+      });
       formContainer.appendChild(form);
 
       // Telefon raqam formati
       const phoneInput = form.querySelector(`#phone_${seatId}`);
-      phoneInput?.addEventListener("input", function(e) {
+      phoneInput?.addEventListener("input", function (e) {
         const pos = e.target.selectionStart;
         e.target.value = formatPhoneNumber(e.target.value);
         e.target.setSelectionRange(pos, pos);
@@ -300,7 +319,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Pasport formati
       const passportInput = form.querySelector(`#passport_${seatId}`);
-      passportInput?.addEventListener("input", function(e) {
+      passportInput?.addEventListener("input", function (e) {
         const pos = e.target.selectionStart;
         e.target.value = formatPassportNumber(e.target.value);
         e.target.setSelectionRange(pos, pos);
@@ -329,7 +348,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const continueBtn = e.target.closest("#continue-btn");
       const loader = continueBtn.querySelector("#loader");
       const btnText = continueBtn.querySelector(".btn-text");
-      
+
       // Validatsiya
       const forms = document.querySelectorAll(".ticket-passenger-form");
       let isValid = true;
@@ -379,7 +398,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         const result = await response.json();
-        
+
         if (response.ok && result.order) {
           localStorage.setItem('order', result.order);
           window.location.href = "/card";

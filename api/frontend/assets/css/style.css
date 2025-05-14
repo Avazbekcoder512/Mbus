@@ -95,7 +95,7 @@ form > div {
 
 form select,
 form input,
-form button {
+form .search-button {
   padding: 15px;
   background: white;
   color: black;
@@ -107,13 +107,13 @@ form button {
   box-sizing: border-box;
 }
 
-form button {
+form .search-button {
   background-color: #6abf45;
   color: white;
   cursor: pointer;
 }
 
-form button:hover {
+form .search-button:hover {
   background-color: #5a9d3a;
 }
 
@@ -886,6 +886,27 @@ div.bus_loading {
   flex-direction: row; /* Bitta qatorda joylashish uchun */
   flex-wrap: nowrap; /* Flex itemlar bir qatorda bo'lishi kerak */
   gap: 10px; /* Inputlar orasidagi masofa */
+}
+
+.close-form-btn {
+  border: none;
+  color: #000;
+  background-color: #dfdcdc;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 0 5px;
+  float: right;
+  width: 40px;
+  border-radius: 6px;
+}
+
+.close-form-btn:hover {
+  background-color: #c2bfbf !important;
+}
+
+.form-header {
+  padding: 10px;
+  font-weight: bold;
 }
 
 .input-group {
