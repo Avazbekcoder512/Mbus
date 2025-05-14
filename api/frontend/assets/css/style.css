@@ -149,7 +149,11 @@ form .search-button:hover {
   gap: 1rem;
   padding: 1.25rem;
   margin: 2rem auto;
-  background: linear-gradient(135deg, var(--legend-bg-start), var(--legend-bg-end));
+  background: linear-gradient(
+    135deg,
+    var(--legend-bg-start),
+    var(--legend-bg-end)
+  );
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   justify-content: center;
@@ -165,23 +169,28 @@ form .search-button:hover {
 .seat-info #trip-title,
 .seat-info #ticket-price {
   margin: 0 1rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Sana */
 .seat-info .date {
   font-weight: 400;
   font-size: 1.2rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* Narx gradient matn */
 .seat-info #ticket-price .price {
-  background: linear-gradient(90deg, var(--vip-color) 0%, var(--premium-color) 50%, var(--eco-color) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--vip-color) 0%,
+    var(--premium-color) 50%,
+    var(--eco-color) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -189,11 +198,11 @@ form .search-button:hover {
 /* Bo‘sh va band o‘rindiqlar */
 .seat-info span {
   margin: 0 1rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1rem;
   color: #ffffff;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Bo‘sh va band raqamlarni ranglash */
@@ -205,8 +214,6 @@ form .search-button:hover {
   color: var(--premium-color);
   font-weight: 700;
 }
-
-
 
 .trip-table {
   width: 100%;
@@ -335,7 +342,7 @@ form .search-button:hover {
   background-color: #ffff4b;
 }
 .premium-seat {
-  background-color: #6FE6FC;
+  background-color: #6fe6fc;
 }
 .economy-seat {
   background-color: #90ee90;
@@ -349,11 +356,11 @@ form .search-button:hover {
 }
 .economy-seat:hover {
   background-color: #4bff4b;
-} 
+}
 
 :root {
   --vip-color: #ffff4b;
-  --premium-color: #6FE6FC;
+  --premium-color: #6fe6fc;
   --eco-color: #90ee90;
   --legend-bg-start: #2b5876;
   --legend-bg-end: #4e4376;
@@ -365,7 +372,11 @@ form .search-button:hover {
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1.25rem;
-  background: linear-gradient(135deg, var(--legend-bg-start), var(--legend-bg-end));
+  background: linear-gradient(
+    135deg,
+    var(--legend-bg-start),
+    var(--legend-bg-end)
+  );
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   justify-content: center;
@@ -398,8 +409,13 @@ form .search-button:hover {
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.2); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 /* Ranglar sensoring bergan kodlarga mos */
@@ -418,11 +434,11 @@ form .search-button:hover {
 
 /* Text */
 #seat-legend .legend-item span {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Band (occupied) o‘rindiq */
@@ -1300,6 +1316,10 @@ div.bus_loading {
   top: 60%;
 }
 
+.ticket.expired {
+  opacity: 0.6;
+}
+
 .ticket.expired .ticket-left {
   justify-content: start;
 }
@@ -1307,7 +1327,6 @@ div.bus_loading {
 .ticket-left h1 {
   font-size: 28px;
   margin-bottom: 20px;
-  letter-spacing: 1px;
 }
 
 .ticket-left p {
@@ -1413,6 +1432,72 @@ div.bus_loading {
 .delete-btn:hover {
   background: #ff1f1f;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Status-badge uchun umumiy uslub */
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Porlash chizig‘i */
+.status-badge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  transform: skewX(-30deg);
+  pointer-events: none;
+  animation: shine 2.2s ease-in-out infinite;
+}
+
+/* Keyframes animatsiyasi */
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  50% {
+    left: 125%;
+  }
+  100% {
+    left: 125%;
+  }
+}
+
+.status-badge i {
+  margin-right: 6px;
+}
+
+/* VIP – oltin rang */
+.vip-status {
+  background-color: #ffd700; /* oltin rang */
+  color: #000; /* qora matn kontrasti uchun */
+}
+
+/* Premium – kumush rang */
+.premium-status {
+  background-color: #c0c0c0; /* kumush rang */
+  color: #000;
+}
+
+/* Ekonom – bronza rang */
+.economy-status {
+  background-color: #cd7f32; /* bronza rang */
+  color: #fff;
 }
 
 /* Mobil qurilmalar uchun moslashuvchanlik */

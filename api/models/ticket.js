@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const ticketSchema = new mongoose.Schema({
-    ticketId: Number,
+    ticketId: String,
     passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     passenger: String,
     passport: String,
@@ -16,6 +16,7 @@ const ticketSchema = new mongoose.Schema({
     departure_time: String,
     price: Number,
     status: { type: String, enum: ["booked", "canceled"], default: "booked" },
+    class_status: String,
     qrImage: String
 }, { timestamps: true })
 

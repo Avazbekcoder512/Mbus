@@ -15,6 +15,7 @@ const tempTicketSchema = new mongoose.Schema({
     departure_time: String,
     price: Number,
     status: { type: String, enum: ["booked", "canceled"], default: "booked" },
+    class_status: String
 }, { timestamps: true })
 
 export const tempTicketModel = mongoose.model('tempTicket', tempTicketSchema)
