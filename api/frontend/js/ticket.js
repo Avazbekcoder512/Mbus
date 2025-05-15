@@ -160,7 +160,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <div class="item"><div class="label">Qayerdan:</div><div class="value">${ticket.from || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">O‘rindiq raqami:</div><div class="value">${ticket.seat_number || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">Qayerga:</div><div class="value">${ticket.to || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">O‘rindiq statusi:</div><div class="value">${ticket.class_status || "Noma'lum"}</div></div>
                         </div>
                         <div class="ticket-footer">
                             <div class="date-time">
