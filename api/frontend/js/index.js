@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document?.addEventListener("DOMContentLoaded", () => {
     const fromSelect = document.getElementById("from");
     const toSelect = document.getElementById("to");
     const dateInput = document.getElementById("departure_date");
@@ -59,11 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
             usernameDisplay.textContent = initials;
             userNameElement.style.display = "flex";
             loginButton.style.display = "none";
-            userNameElement.addEventListener("click", e => {
+            userNameElement?.addEventListener("click", e => {
                 userMenu.classList.toggle("show");
                 e.stopPropagation();
             });
-            document.addEventListener("click", e => {
+            document?.addEventListener("click", e => {
                 if (!userNameElement.contains(e.target) && !userMenu.contains(e.target)) {
                     userMenu.classList.remove("show");
                 }
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })();
 
     // 2) “from” o‘zgarganda → to’larni so‘raymiz
-    fromSelect.addEventListener("change", async () => {
+    fromSelect?.addEventListener("change", async () => {
         toSelect.innerHTML = `<option disabled selected value="">Bekatni tanlang</option>`;
         dateInput.value = "";
         dateInput.setAttribute("disabled", "disabled");
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 3) “to” o‘zgarganda → sanalarni so‘raymiz
-    toSelect.addEventListener("change", async () => {
+    toSelect?.addEventListener("change", async () => {
         if (fpInstance) {
             fpInstance.destroy();
             fpInstance = null;
@@ -165,12 +165,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 4) Sana tanlanganida → trips uchun tayyor
-    dateInput.addEventListener("change", () => {
+    dateInput?.addEventListener("change", () => {
         dataDiv.innerHTML = "";
     });
 
     // 5) Form yuborilganda → trips so‘rovini yuboramiz
-    form.addEventListener("submit", async e => {
+    form?.addEventListener("submit", async e => {
         e.preventDefault();
         dataDiv.innerHTML = "";
 
