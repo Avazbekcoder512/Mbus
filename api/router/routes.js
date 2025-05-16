@@ -7,7 +7,7 @@ import { cityFind, get } from '../controller/cityController.js'
 import { jwtAccessMiddleware } from '../middleware/jwtAccessMiddleware.js'
 import { resetPasswordSchema, sendCodeSchema } from '../validator/passwordValidate.js'
 import { resetPassword, sendCode } from '../controller/passwordController.js'
-import { confirmOrderSchema, pendingTicketSchema, seatBookingSchema } from '../validator/ticketValidate.js'
+import { confirmOrderSchema, pendingTicketSchema } from '../validator/ticketValidate.js'
 import { loginLimit } from '../middleware/loginLimit.js'
 import { limit } from '../middleware/limit.js'
 import { page404, page500 } from '../controller/errorController.js'
@@ -41,11 +41,10 @@ router
     // ticket router
     .get('/findroute', routeFind)
     .get('/cities', cityFind)
-    .get('/trip', jwtAccessMiddleware, getTripPage)
+    .get('/trip', getTripPage)
     .get('/trip/:id', jwtAccessMiddleware, getTrip)
     .get('/card', jwtAccessMiddleware, cardPage)
     .post('/ticket-pending', limit, jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
-    .post('/seat-booking', limit, jwtAccessMiddleware, checkSchema(seatBookingSchema), seatBooking)
     .post('/confirm', limit, jwtAccessMiddleware, checkSchema(confirmOrderSchema), confirmOrder)
 
     // tickets page router

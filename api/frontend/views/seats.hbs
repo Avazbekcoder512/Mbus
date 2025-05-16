@@ -9,25 +9,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link type="image/x-icon" href="../assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <style>
+        .error-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .error-popup.visible {
+            display: flex;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        #error-buttons button {
+            margin: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="token-expired-popup" class="popup hidden">
-        <div class="popup-content">
-            <p>Token muddati tugagan. Iltimos, qayta kiring.</p>
-            <button id="close-popup-btn">Yopish</button>
-        </div>
-    </div>
-
-    <!-- Bu ni body ichida, boshqa popup’lar yonida joylashtiring -->
-    <div id="error-popup" class="popup hidden">
-        <div class="popup-overlay"></div>
-        <div class="popup-content">
-            <p id="error-message">Bu yerda xatolik matni chiqadi.</p>
-            <button id="close-error-btn">Yopish</button>
-        </div>
-    </div>
-
     {{!-- <div id="preloader">
         <div class="background1">
             <div class="bus-body ">
@@ -108,6 +124,14 @@
             </div>
         </div>
     </div> --}}
+
+    <!-- Asosiy HTMLga qo'shing -->
+    <div id="error-popup" class="error-popup">
+        <div class="popup-content">
+            <p id="error-message"></p>
+            <div id="error-buttons"></div>
+        </div>
+    </div>
 
     <div class="bus-container">
         <header class="header container">

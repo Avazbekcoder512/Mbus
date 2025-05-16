@@ -32,7 +32,7 @@ export const routeFind = async (req, res) => {
 
         if (!from) {
             return res.status(400).send({
-                error: 'iltoms  qayerdan ekanligini belgilang!'
+                error: 'Iltoms  qayerdan ekanligini belgilang!'
             })
         }
 
@@ -167,9 +167,9 @@ export const pendingTicket = async (req, res) => {
                 return res.status(404).send({ error: "Avtobus mavjud emas!" });
             }
 
-            if (!user.bank_card) {
+            if (!user.bank_card || !user.expiryDate || !user.passport || !user.gender) {
                 return res.status(400).send({
-                    error: "Iltimos avval bank kartangizni kiriting!"
+                    error: "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!"
                 })
             }
 
@@ -338,7 +338,7 @@ export const confirmOrder = async (req, res) => {
             let ticketId;
 
             while (!unique) {
-                ticketId = Math.floor(100000 + Math.random() * 900000);
+                ticketId = '#' + Math.floor(100000 + Math.random() * 900000);
                 const existing = await ticketModel.findOne({ ticketId });
                 if (!existing) {
                     unique = true;

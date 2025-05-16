@@ -1,9 +1,27 @@
-// selectedPrices global scope'da bo'lishi kerak, chunki boshqa joylarda ham ishlatiladi
-const selectedPrices = new Map(); // seatId => { seatNumber, price }
+const selectedPrices = new Map();
 let routeFrom = "";
 let routeTo = "";
 let departureDate = "";
 let departureTime = "";
+
+function showErrorPopup(message, redirectUrl = null) {
+  const popup = document.getElementById('error-popup');
+  const errorMessage = document.getElementById('error-message');
+  const errorButtons = document.getElementById('error-buttons');
+
+  errorMessage.textContent = message;
+  errorButtons.innerHTML = '';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = 'Yopish';
+  closeBtn.onclick = () => {
+    popup.classList.remove('visible');
+    if (redirectUrl) window.location.href = redirectUrl;
+  };
+
+  errorButtons.appendChild(closeBtn);
+  popup.classList.add('visible');
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   const preloader = document.getElementById("preloader");
@@ -22,11 +40,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function showPreloader() {
-    if (preloader) preloader.classList.remove("hidden");
+    if (preloader) preloader.classList.remove("visible");
   }
 
   function hidePreloader() {
-    if (preloader) preloader.classList.add("hidden");
+    if (preloader) preloader.classList.add("visible");
   }
 
   const tripId = localStorage.getItem("selectedTripId");
@@ -35,45 +53,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  function showTokenExpiredPopup(message) {
-    const popup = document.getElementById("token-expired-popup");
-    const messageEl = popup.querySelector("p");
-    messageEl.textContent = message;
-    popup.classList.remove("hidden");
-    localStorage.removeItem("token");
-  }
-
-  document.getElementById("close-popup-btn").addEventListener("click", () => {
-    const popup = document.getElementById("token-expired-popup");
-    popup.classList.add("hidden");
-    window.location.href = "/";
-  });
-
-  const errorPopup = document.getElementById("error-popup");
-  const errorMessage = document.getElementById("error-message");
-  const closeErrorBtn = document.getElementById("close-error-btn");
-
-  function showErrorPopup(msg) {
-    errorMessage.textContent = msg;
-    errorPopup.classList.remove("hidden");
-  }
-
-  closeErrorBtn.addEventListener("click", () => {
-    errorPopup.classList.add("hidden");
-    window.location.href = '/';
-  });
-
   try {
     showPreloader();
     const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
       method: "GET"
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (response.status === 401 || errorData.error === "Kirish amalga oshirilmagan. Iltimos, tizimga kiring!") {
+        showErrorPopup(errorData.error, '/login');
+        return;
+      } else if (response.status === 500) {
+        window.location.href = '/500';
+        return;
+      } else {
+        showErrorPopup(errorData.error || 'Xatolik yuz berdi', '/');
+        return;
+      }
+    }
     const tripData = await response.json();
 
-    if (response.status === 429) {
-      showErrorPopup(result.error);
-    } else if (response.status === 401) {
-      showTokenExpiredPopup(tripData.error);
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/";
       return;
     } else if (response.status === 500) {
       window.location.href = '/500';
@@ -151,9 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const seatObj = seats.find(s => s.seatNumber === value);
           if (!seatObj) return;
 
-          // Har bir o'rindiq uchun unique ID
-          td.dataset.id = seatObj._id; // <-- MUHIM O'ZGARISH
-
+          td.dataset.id = seatObj._id;
           const cls = (seatObj.class || "economy").toLowerCase();
           td.classList.add(`${cls}-seat`);
           td.textContent = value;
@@ -177,7 +178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               if (td.classList.contains("selected")) {
                 selectedPrices.set(selectedId, {
                   seatNumber: value,
-                  price: seatObj.price || priceByClass[cls] // Klassga qarab narx
+                  price: seatObj.price || priceByClass[cls]
                 });
               } else {
                 selectedPrices.delete(selectedId);
@@ -292,7 +293,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
 
-      // X tugmasi uchun hodisa
       const closeBtn = form.querySelector(".close-form-btn");
       closeBtn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -309,7 +309,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       formContainer.appendChild(form);
 
-      // Telefon raqam formati
       const phoneInput = form.querySelector(`#phone_${seatId}`);
       phoneInput?.addEventListener("input", function (e) {
         const pos = e.target.selectionStart;
@@ -317,7 +316,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.target.setSelectionRange(pos, pos);
       });
 
-      // Pasport formati
       const passportInput = form.querySelector(`#passport_${seatId}`);
       passportInput?.addEventListener("input", function (e) {
         const pos = e.target.selectionStart;
@@ -349,7 +347,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const loader = continueBtn.querySelector("#loader");
       const btnText = continueBtn.querySelector(".btn-text");
 
-      // Validatsiya
       const forms = document.querySelectorAll(".ticket-passenger-form");
       let isValid = true;
       forms.forEach(form => {
@@ -402,16 +399,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (response.ok && result.order) {
           localStorage.setItem('order', result.order);
           window.location.href = "/card";
-        } else if (response.status === 429) {
-          showErrorPopup(result.error);
-        } else if (response.status === 500) {
-          window.location.href = '/500';
         } else {
-          alert(result.message || "Xatolik yuz berdi!");
+          if (result.error === "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!") {
+            showErrorPopup(result.error, '/profile');
+            localStorage.removeItem("token");
+            showErrorPopup('Kirish muddati tugadi. Iltimos, qaytadan kiring.', '/login');
+          } else if (response.status === 500) {
+            window.location.href = '/500';
+          } else {
+            showErrorPopup(result.error || 'Xatolik yuz berdi');
+          }
         }
       } catch (err) {
         console.error("Xatolik:", err);
-        alert("Server bilan aloqa o‘rnatilmadi");
+        showErrorPopup('Serverga ulanib bo‘lmadi', '/');
       } finally {
         continueBtn.disabled = false;
         loader.style.display = "none";

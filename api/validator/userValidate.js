@@ -50,18 +50,46 @@ export const profileUpdateSchema = {
     },
     bank_card: {
         notEmpty: {
-            errorMessage: "Bank karta raqamini kiriting!"
+            errorMessage: "Karta raqamini kiriting!",
         },
-        isString: {
-            errorMessage: "Bank karta raqamini matnda kiriting!"
-        }
+        custom: {
+            options: (value) => {
+                const cleanCard = value.replace(/\s+/g, '');
+                if (!/^8600\d{12}$/.test(cleanCard) && !/^9860\d{12}$/.test(cleanCard)) {
+                    throw new Error("Faqat UzCard yoki Humo kartalariga ruxsat beriladi!");
+                }
+                if (!/^\d{16}$/.test(cleanCard)) {
+                    throw new Error("Karta raqami noto‘g‘ri formatda!");
+                }
+                return true;
+            },
+        },
     },
     expiryDate: {
         notEmpty: {
-            errorMessage: "Kartani amal qilish muddatini kiriting!"
+            errorMessage: "Kartaning yaroqlilik muddati bo‘sh bo‘lmasligi kerak!",
         },
-        isString: {
-            errorMessage: "Kartani amal qilish muddatini matnda kiriting!"
-        }
-    }
+        matches: {
+            options: [/^(0[1-9]|1[0-2])\/\d{2}$/],
+            errorMessage: "Yaroqlilik muddati noto‘g‘ri formatda! To‘g‘ri format: MM/YY",
+        },
+        custom: {
+            options: (value) => {
+                const [monthStr, yearStr] = value.split('/');
+                const month = parseInt(monthStr);
+                const year = parseInt('20' + yearStr);
+
+                // E'tibor bering: bu yerda `new Date(year, month)` keyingi oyning 1-kunini bildiradi,
+                // shuning uchun bu oyning oxirigacha amal qiladi
+                const expiryDate = new Date(year, month, 1);
+                const now = new Date();
+                now.setDate(1); // faqat oy va yilni solishtirish uchun
+
+                if (expiryDate <= now) {
+                    throw new Error("Karta muddati allaqachon o‘tgan!");
+                }
+                return true;
+            },
+        },
+    },
 }
