@@ -147,16 +147,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                             ${statusIcon}
                             ${ticket.class_status || ""}
                         </p>
-                        <p>Avtobus raqami: ${ticket.bus_number || "Noma'lum"}</p>
+                        <p>Chipta raqami: ${ticket.ticketId || "Noma'lum"}</p>
                         <img src="${ticket.qrImage}" alt="QRCode" draggable="false"/>
                     </div>
                     ${expiredImage}
                     <div class="ticket-right">
                         <div class="ticket-section">
                             <div class="item"><div class="label">Ism:</div><div class="value">${ticket.passenger || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Tug‘ilgan sana:</div><div class="value">${ticket.birthday || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">Pasport raqami:</div><div class="value">${ticket.passport || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Telefon raqami:</div><div class="value">${ticket.phoneNumber || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Telefon raqami:</div><div class="value">+${ticket.phoneNumber || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Avtobus raqami:</div><div class="value">${ticket.bus_number || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">Qayerdan:</div><div class="value">${ticket.from || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">O‘rindiq raqami:</div><div class="value">${ticket.seat_number || "Noma'lum"}</div></div>
                             <div class="item"><div class="label">Qayerga:</div><div class="value">${ticket.to || "Noma'lum"}</div></div>

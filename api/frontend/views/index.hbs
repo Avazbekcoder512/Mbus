@@ -10,17 +10,47 @@
     <link type="image/x-icon" href="../assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        #closePopup {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="error-popup" class="error-popup">
+    <!-- Boshqa elementlardan keyin -->
+    <div id="errorPopup" class="popup" style="display: none;">
         <div class="popup-content">
-            <span id="error-close" class="popup-close"></span>
-            <i class="fa-solid fa-triangle-exclamation" style=" font-size: 36px; color: #e74c3c;"></i>
-            <h3>Xatolik</h3>
-            <p id="error-message"></p>
-            <button id="popup_button" onclick="closeErrorPopup()">Yopish</button>
+            <p id="popupMessage"></p>
+            <button id="closePopup">Yopish</button>
         </div>
     </div>
 
@@ -34,7 +64,7 @@
             <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
                     Kirish</button></a>
             <span id="user-name" style="display: none;">
-                <span id="username"></span> <!-- Foydalanuvchi ismi -->
+                <span id="username"></span>
             </span>
             <div id="user-menu" class="dropdown-menu">
                 <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profile</a>

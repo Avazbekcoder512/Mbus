@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document?.addEventListener("DOMContentLoaded", () => {
     const fromSelect = document.getElementById("from");
     const toSelect = document.getElementById("to");
     const dateInput = document.getElementById("departure_date");
@@ -9,26 +9,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const usernameDisplay = document.getElementById("username");
     const userMenu = document.getElementById("user-menu");
     let fpInstance = null;
-    const API_BASE = "http://localhost:8000";  // yoki https://mbus.onrender.com
-
-    function showErrorPopup(message) {
-        const popup = document.getElementById('error-popup');
-        const errorMessage = document.getElementById('error-message');
-        if (popup && errorMessage) {
-            errorMessage.textContent = message;
-            popup.style.display = 'flex';
-        }
-    }
-    function closeErrorPopup() {
-        const popup = document.getElementById('error-popup');
-        if (popup) popup.style.display = 'none';
-    }
-    window.closeErrorPopup = closeErrorPopup;
+    const API_BASE = "http://localhost:8000";
 
     // Yordamchi: backenddan kelgan xabarni ajratish (array yoki string)
     function extractError(err) {
         if (!err) return '';
         return Array.isArray(err) ? err[0] : err;
+    }
+
+    document.getElementById('closePopup')?.addEventListener('click', () => {
+        document.getElementById('errorPopup').style.display = 'none';
+        window.location.href = "/login";
+    });
+
+    // Xatolarni boshqarish funksiyasi
+    function handleError(error) {
+        const status = error.status || 0;
+
+        if (status === 401) {
+            const popup = document.getElementById('errorPopup');
+            const popupMessage = document.getElementById('popupMessage');
+            popupMessage.textContent = error.message || "Avval tizimga kiring";
+            popup.style.display = 'flex';
+        } else if (status === 500) {
+            window.location.href = '/500';
+        } else {
+            window.location.reload();
+        }
     }
 
     function getCookie(name) {
@@ -39,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return null;
     }
+
     function decodeJWT(token) {
         try {
             const payload = token.split('.')[1];
@@ -50,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- User login/display logic unchanged ---
+    // --- User login/display logic ---
     const token = getCookie("token");
     if (token) {
         const { first_Name, last_Name } = decodeJWT(token);
@@ -59,11 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
             usernameDisplay.textContent = initials;
             userNameElement.style.display = "flex";
             loginButton.style.display = "none";
-            userNameElement.addEventListener("click", e => {
+            userNameElement?.addEventListener("click", e => {
                 userMenu.classList.toggle("show");
                 e.stopPropagation();
             });
-            document.addEventListener("click", e => {
+            document?.addEventListener("click", e => {
                 if (!userNameElement.contains(e.target) && !userMenu.contains(e.target)) {
                     userMenu.classList.remove("show");
                 }
@@ -73,10 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
         loginButton.style.display = "block";
         userNameElement.style.display = "none";
     }
+
     document.getElementById("logout")?.addEventListener("click", () => {
         document.cookie = "token=; max-age=0; path=/";
         window.location.href = "/";
     });
+
     document.getElementById("tickets")?.addEventListener("click", () => {
         window.location.href = "/ticket";
     });
@@ -88,19 +98,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`${API_BASE}/cities`);
             const j = await res.json();
             if (!res.ok) {
-                throw new Error(extractError(j.error) || "Bekatlar ro‘yxatini olishda xato");
+                const errorMessage = extractError(j.error) || "Bekatlar ro‘yxatini olishda xato";
+                const error = new Error(errorMessage);
+                error.status = res.status;
+                throw error;
             }
             j.cities.forEach(c => {
                 fromSelect.append(new Option(c.name, c.name));
             });
         } catch (e) {
+            handleError(e);
             console.error(e);
-            showErrorPopup(e.message);
         }
     })();
 
     // 2) “from” o‘zgarganda → to’larni so‘raymiz
-    fromSelect.addEventListener("change", async () => {
+    fromSelect?.addEventListener("change", async () => {
         toSelect.innerHTML = `<option disabled selected value="">Bekatni tanlang</option>`;
         dateInput.value = "";
         dateInput.setAttribute("disabled", "disabled");
@@ -113,18 +126,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}`);
             const j = await res.json();
             if (!res.ok) {
-                throw new Error(extractError(j.error) || "Yo‘nalish topilmadi");
+                const errorMessage = extractError(j.error) || "Xato xabari...";
+                const error = new Error(errorMessage);
+                error.status = res.status;
+                throw error;
             }
             j.to.forEach(dest => toSelect.append(new Option(dest, dest)));
             toSelect.removeAttribute("disabled");
         } catch (e) {
+            handleError(e);
             console.error(e);
-            showErrorPopup(e.message);
         }
     });
 
     // 3) “to” o‘zgarganda → sanalarni so‘raymiz
-    toSelect.addEventListener("change", async () => {
+    toSelect?.addEventListener("change", async () => {
         if (fpInstance) {
             fpInstance.destroy();
             fpInstance = null;
@@ -141,7 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(url);
             const j = await res.json();
             if (!res.ok) {
-                throw new Error(extractError(j.error) || "Sanalar topilmadi");
+                const errorMessage = extractError(j.error) || "Xato xabari...";
+                const error = new Error(errorMessage);
+                error.status = res.status;
+                throw error;
             }
 
             const enabledDates = j.departure_date.map(d => {
@@ -159,18 +178,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 disableMobile: true,
             });
         } catch (e) {
+            handleError(e);
             console.error(e);
-            showErrorPopup(e.message);
         }
     });
 
     // 4) Sana tanlanganida → trips uchun tayyor
-    dateInput.addEventListener("change", () => {
+    dateInput?.addEventListener("change", () => {
         dataDiv.innerHTML = "";
     });
 
     // 5) Form yuborilganda → trips so‘rovini yuboramiz
-    form.addEventListener("submit", async e => {
+    form?.addEventListener("submit", async e => {
         e.preventDefault();
         dataDiv.innerHTML = "";
 
@@ -179,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const departure_date = dateInput.value;
 
         if (!from || !to || !departure_date) {
-            showErrorPopup("Iltimos, barcha maydonlarni to‘ldiring");
+            console.error("Iltimos, barcha maydonlarni to‘ldiring");
             return;
         }
 
@@ -191,7 +210,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(url);
             const j = await res.json();
             if (!res.ok) {
-                throw new Error(extractError(j.error) || "Reys topilmadi");
+                const errorMessage = extractError(j.error) || "Xato xabari...";
+                const error = new Error(errorMessage);
+                error.status = res.status;
+                throw error;
             }
 
             const trips = j.data;
@@ -228,8 +250,8 @@ document.addEventListener("DOMContentLoaded", () => {
             dataDiv.innerHTML = html;
 
         } catch (e) {
+            handleError(e);
             console.error(e);
-            showErrorPopup(e.message);
         }
     });
 });
