@@ -197,6 +197,33 @@ export const pendingTicket = async (req, res) => {
         const ticketIds = createdTickets.map(ticket => ticket._id)
         const order = generateToken(ticketIds, userId)
 
+        const generateRandomCode = () =>
+            Math.floor(100000 + Math.random() * 900000);
+
+        const verificationCode = generateRandomCode();
+        console.log(verificationCode);
+
+
+
+        // const Token = await getNewToken()
+
+        // const Phone = user.phoneNumber
+        // const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${verificationCode}`
+
+        // axios.post('https://notify.eskiz.uz/api/message/sms/send', {
+        //     mobile_phone: Phone,
+        //     message: Message,
+        //     from: process.env.Eskiz_From
+        // }, {
+        //     headers: {
+        //         Authorization: `Bearer ${Token}`
+        //     }
+        // })
+        //     .then(res => console.log(res.data))
+        //     .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
+
+        await userModel.findByIdAndUpdate(user._id, { verification_code: verificationCode })
+
         return res.status(200).send({
             tempTickets: createdTickets,
             order: order
@@ -224,7 +251,6 @@ export const seatBooking = async (req, res) => {
         const userId = decodet.id;
 
         console.log(req.body);
-        
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -290,7 +316,7 @@ export const confirmOrder = async (req, res) => {
         }
 
         const token = req.cookies.token
-        const orderToken = req.headers["ordertoken"];        
+        const orderToken = req.headers["ordertoken"];
 
         if (!orderToken) {
             return res.status(400).send({ error: "Order token topilmadi!" });

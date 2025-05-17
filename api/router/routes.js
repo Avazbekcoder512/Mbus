@@ -10,7 +10,7 @@ import { resetPassword, sendCode } from '../controller/passwordController.js'
 import { confirmOrderSchema, pendingTicketSchema } from '../validator/ticketValidate.js'
 import { loginLimit } from '../middleware/loginLimit.js'
 import { limit } from '../middleware/limit.js'
-import { page404, page500 } from '../controller/errorController.js'
+import { page404, page429, page500 } from '../controller/errorController.js'
 import { profileImageDelete, profileImageUpdate, updateProfile, userPage, userProfile } from '../controller/userController.js'
 import multer from 'multer'
 import { profileUpdateSchema } from '../validator/userValidate.js'
@@ -24,11 +24,11 @@ router
     // login & register router
     .get('/login', loginPage)
     .post('/register', checkSchema(registerValidate), register)
-    .post('/confirmregistration', checkSchema(confirmRegistrationSchema), confirmRegistration)
+    .post('/confirmregistration', loginLimit, checkSchema(confirmRegistrationSchema), confirmRegistration)
     .post('/login', loginLimit, checkSchema(loginValidate), login)
     .get('/logout', logout)
     .post('/send-code', checkSchema(sendCodeSchema), sendCode)
-    .post('/reset-password', checkSchema(resetPasswordSchema), resetPassword)
+    .post('/reset-password', loginLimit, checkSchema(resetPasswordSchema), resetPassword)
 
     // user router
     .get('/profile', jwtAccessMiddleware, userPage)
@@ -43,9 +43,8 @@ router
     .get('/cities', cityFind)
     .get('/trip', getTripPage)
     .get('/trip/:id', jwtAccessMiddleware, getTrip)
-    .get('/card', jwtAccessMiddleware, cardPage)
-    .post('/ticket-pending', limit, jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
-    .post('/confirm', limit, jwtAccessMiddleware, checkSchema(confirmOrderSchema), confirmOrder)
+    .post('/ticket-pending', jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
+    .post('/confirm', jwtAccessMiddleware, limit, checkSchema(confirmOrderSchema), confirmOrder)
 
     // tickets page router
     .get('/ticket', jwtAccessMiddleware, ticketsPage)
@@ -56,6 +55,7 @@ router
 
     // error router
     .get('/404', page404)
+    .get('/429', page429)
     .get('/500', page500)
 
 router.use((req, res) => {

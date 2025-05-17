@@ -119,6 +119,10 @@ document.getElementById('register_button').addEventListener('click', async funct
             return;
         }
 
+        if (res.status === 429) {
+            window.location.href = '/429'
+        }
+
         // agar register muvaffaqiyatli bo'lsa, backend dan userId yoki token kelsin
         const { _id } = json.user;
         // userId ni globalga yoki closure ga olamiz
@@ -170,6 +174,10 @@ document.getElementById('verify-code-btn').addEventListener('click', async funct
             return;
         }
 
+        if (res.status === 429) {
+            window.location.href = '/429'
+        }
+
         // hamma narsa OK — boshqa sahifaga yo'naltiramiz
         window.location.href = '/';
     } catch (err) {
@@ -204,6 +212,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
         // });
 
         const result = await response.json();
+        const errorMessage = document.querySelector('.error-message')
 
         if (response.ok) {
             localStorage.setItem('userId', result.user._id)
@@ -211,8 +220,9 @@ document.getElementById('login_buttton').addEventListener('click', async functio
         } else {
             if (response.status === 500) {
                 window.location.href = '/500'
-            }
-            if (result.error && typeof result.error === 'string') {
+            } else if (response.status === 429) {
+                window.location.href = '/429'
+            } else if (result.error && typeof result.error === 'string') {
                 showErrorPopup(result.error);
             } else if (result.error && Array.isArray(result.error) && result.error.length > 0) {
                 showErrorPopup(result.error[0]);
@@ -349,10 +359,11 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                             if (responseReset.ok) {
                                 showSuccessPopup(resultReset.message);
                             } else {
-                                if (response.status === 500) {
+                                if (responseReset.status === 500) {
                                     window.location.href = '/500'
-                                }
-                                if (resultReset.error) {
+                                } else if (responseReset.status === 429) {
+                                    window.location.href = '/429'
+                                } else if (resultReset.error) {
                                     showErrorPopup(typeof resultReset.error === 'string' ? resultReset.error : resultReset.error[0]);
                                 } else {
                                     showErrorPopup('Xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.');

@@ -40,6 +40,23 @@
             padding: 8px 16px;
             cursor: pointer;
         }
+
+        #verification-modal input {
+            width: 200px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        #verification-modal button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -130,6 +147,17 @@
         <div class="popup-content">
             <p id="error-message"></p>
             <div id="error-buttons"></div>
+        </div>
+    </div>
+
+    <div id="verification-modal" class="error-popup">
+        <div class="popup-content">
+            <h3>Tasdiqlash kodi</h3>
+            <input type="number" id="verification-code" placeholder="6 xonali kod" maxlength="6" min="100000"
+                max="999999" />
+            <div id="verification-buttons" style="margin-top: 15px;">
+                <button type="button" id="submit-verification">Tasdiqlash</button>
+            </div>
         </div>
     </div>
 
