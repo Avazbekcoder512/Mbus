@@ -75,7 +75,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tripData = await response.json();
 
     if (response.status === 401) {
-      localStorage.removeItem("token");
       window.location.href = "/";
       return;
     } else if (response.status === 500) {
@@ -398,12 +397,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (response.ok && result.order) {
           localStorage.setItem('order', result.order);
-          window.location.href = "/card";
+          showVerificationModal();
         } else {
           if (result.error === "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!") {
             showErrorPopup(result.error, '/profile');
-            localStorage.removeItem("token");
-            showErrorPopup('Kirish muddati tugadi. Iltimos, qaytadan kiring.', '/login');
+          } else if (response.status === 401) {
+            showErrorPopup(result.error, '/login');
           } else if (response.status === 500) {
             window.location.href = '/500';
           } else {
@@ -419,5 +418,68 @@ document.addEventListener("DOMContentLoaded", async () => {
         btnText.textContent = "Davom etish";
       }
     });
+  }
+
+  document.getElementById('submit-verification').addEventListener('click', handleVerification);
+  document.getElementById('verification-code').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleVerification();
+  });
+
+  function showVerificationModal() {
+    const modal = document.getElementById('verification-modal');
+    modal.classList.add('visible');
+  }
+
+  function hideVerificationModal() {
+    const modal = document.getElementById('verification-modal');
+    modal.classList.remove('visible');
+  }
+
+  async function handleVerification() {
+    const code = document.getElementById('verification-code').value;
+    if (!code || code.length !== 6) {
+      showErrorPopup('Iltimos 6 xonali kodni kiriting!');
+      return;
+    }
+
+    const order = localStorage.getItem('order');
+    if (!order) {
+      showErrorPopup('Buyurtma topilmadi!');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/confirm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          orderToken: `${order}`
+        },
+        body: JSON.stringify({ verificationCode: Number(code) })
+      });
+
+      if (response.status === 401) {
+        showErrorPopup('Kirish amalga oshirilmagan!', '/login');
+        return;
+      }
+
+      if (response.status === 500) {
+        window.location.href = '/500';
+        return;
+      }
+
+      const result = await response.json();
+
+      if (response.ok) {
+        showErrorPopup(result.message, '/ticket');
+      } else {
+        showErrorPopup(result.error || 'Xatolik yuz berdi');
+      }
+    } catch (err) {
+      console.error('Tasdiqlashda xatolik:', err);
+      showErrorPopup('Serverga ulanib bo‘lmadi');
+    } finally {
+      hideVerificationModal();
+    }
   }
 });
