@@ -11,7 +11,7 @@ document?.addEventListener("DOMContentLoaded", () => {
     let fpInstance = null;
     const API_BASE = "http://localhost:8000";
 
-    // Yordamchi: backenddan kelgan xabarni ajratish (array yoki string)
+    // Helper: extract message from backend error (array or string)
     function extractError(err) {
         if (!err) return '';
         return Array.isArray(err) ? err[0] : err;
@@ -22,14 +22,14 @@ document?.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/login";
     });
 
-    // Xatolarni boshqarish funksiyasi
+    // Error handling function
     function handleError(error) {
         const status = error.status || 0;
 
         if (status === 401) {
             const popup = document.getElementById('errorPopup');
             const popupMessage = document.getElementById('popupMessage');
-            popupMessage.textContent = error.message || "Avval tizimga kiring";
+            popupMessage.textContent = error.message || "Please log in first";
             popup.style.display = 'flex';
         } else if (status === 500) {
             window.location.href = '/500';
@@ -91,14 +91,14 @@ document?.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/ticket";
     });
 
-    // 1) “from” select’ga bekatlarni yuklaymiz
+    // 1) Load stations into "from" select
     (async function loadCities() {
         try {
             if (!form) return;
             const res = await fetch(`${API_BASE}/cities`);
             const j = await res.json();
             if (!res.ok) {
-                const errorMessage = extractError(j.error) || "Bekatlar ro‘yxatini olishda xato";
+                const errorMessage = extractError(j.error) || "Error fetching station list";
                 const error = new Error(errorMessage);
                 error.status = res.status;
                 throw error;
@@ -112,9 +112,9 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
     })();
 
-    // 2) “from” o‘zgarganda → to’larni so‘raymiz
+    // 2) On "from" change → request destinations
     fromSelect?.addEventListener("change", async () => {
-        toSelect.innerHTML = `<option disabled selected value="">Bekatni tanlang</option>`;
+        toSelect.innerHTML = `<option disabled selected value="">Select a station</option>`;
         dateInput.value = "";
         dateInput.setAttribute("disabled", "disabled");
         dataDiv.innerHTML = "";
@@ -126,7 +126,7 @@ document?.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}`);
             const j = await res.json();
             if (!res.ok) {
-                const errorMessage = extractError(j.error) || "Xato xabari...";
+                const errorMessage = extractError(j.error) || "Error occurred...";
                 const error = new Error(errorMessage);
                 error.status = res.status;
                 throw error;
@@ -139,7 +139,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 3) “to” o‘zgarganda → sanalarni so‘raymiz
+    // 3) On "to" change → request dates
     toSelect?.addEventListener("change", async () => {
         if (fpInstance) {
             fpInstance.destroy();
@@ -147,7 +147,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
         dateInput.value = "";
         dateInput.setAttribute("disabled", "disabled");
-        dateInput.setAttribute("placeholder", "Yuklanmoqda…");
+        dateInput.setAttribute("placeholder", "Loading…");
         dataDiv.innerHTML = "";
 
         const from = fromSelect.value;
@@ -157,7 +157,7 @@ document?.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(url);
             const j = await res.json();
             if (!res.ok) {
-                const errorMessage = extractError(j.error) || "Xato xabari...";
+                const errorMessage = extractError(j.error) || "Error occurred...";
                 const error = new Error(errorMessage);
                 error.status = res.status;
                 throw error;
@@ -169,7 +169,7 @@ document?.addEventListener("DOMContentLoaded", () => {
             });
 
             dateInput.removeAttribute("disabled");
-            dateInput.setAttribute("placeholder", "Kunni tanlang");
+            dateInput.setAttribute("placeholder", "Select a date");
             fpInstance = flatpickr(dateInput, {
                 dateFormat: "Y-m-d",
                 altInput: true,
@@ -183,12 +183,12 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 4) Sana tanlanganida → trips uchun tayyor
+    // 4) On date selection → clear previous data
     dateInput?.addEventListener("change", () => {
         dataDiv.innerHTML = "";
     });
 
-    // 5) Form yuborilganda → trips so‘rovini yuboramiz
+    // 5) On form submit → request trips
     form?.addEventListener("submit", async e => {
         e.preventDefault();
         dataDiv.innerHTML = "";
@@ -198,7 +198,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         const departure_date = dateInput.value;
 
         if (!from || !to || !departure_date) {
-            console.error("Iltimos, barcha maydonlarni to‘ldiring");
+            console.error("Please fill in all fields");
             return;
         }
 
@@ -210,7 +210,7 @@ document?.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(url);
             const j = await res.json();
             if (!res.ok) {
-                const errorMessage = extractError(j.error) || "Xato xabari...";
+                const errorMessage = extractError(j.error) || "Error occurred...";
                 const error = new Error(errorMessage);
                 error.status = res.status;
                 throw error;
@@ -218,7 +218,7 @@ document?.addEventListener("DOMContentLoaded", () => {
 
             const trips = j.data;
             if (!trips.length) {
-                dataDiv.innerHTML = "<p>Reyslar topilmadi.</p>";
+                dataDiv.innerHTML = "<p>No trips found.</p>";
                 return;
             }
 
@@ -226,10 +226,10 @@ document?.addEventListener("DOMContentLoaded", () => {
           <table class="trip-table">
             <thead>
               <tr>
-                <th>Ketish vaqti</th>
-                <th>Yo‘nalish</th>
-                <th>O‘rinlar</th>
-                <th>Narx</th>
+                <th>Departure Time</th>
+                <th>Route</th>
+                <th>Seats</th>
+                <th>Price</th>
                 <th>Model</th>
               </tr>
             </thead>
@@ -240,9 +240,9 @@ document?.addEventListener("DOMContentLoaded", () => {
             <tr onclick="saveTripId('${trip._id}')" style="cursor:pointer">
               <td>${trip.departure_date}<br>${trip.departure_time}</td>
               <td>${trip.route.uz_name}</td>
-              <td>${trip.bus?.seats_count ?? '-'}</td>
-              <td>${trip.ticket_price ?? '-'} so‘m</td>
-              <td>${trip.bus?.bus_model ?? '-'}</td>
+              <td>${trip.bus?.seats_count ?? '-'}
+              <td>${trip.ticket_price ?? '-'} so'm</td>
+              <td>${trip.bus?.bus_model ?? '-'}
             </tr>
           `;
             });
@@ -256,7 +256,7 @@ document?.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Global funksiyani ochiq qilamiz
+// Expose global function to save selected trip
 function saveTripId(id) {
     localStorage.setItem("selectedTripId", id);
     window.location.href = "/trip";

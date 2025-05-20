@@ -3,20 +3,64 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avtobus O'rindiqlari</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link type="image/x-icon" href="../assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
-    <title>Chiptalarim</title>
     <style>
+        .error-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
+        .error-popup.visible {
+            display: flex;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        #error-buttons button {
+            margin: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        #verification-modal input {
+            width: 200px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        #verification-modal button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Popuplar konteyneri -->
-    <div id="app-popup-container"></div>
-
     {{!-- <div id="preloader">
         <div class="background1">
             <div class="bus-body ">
@@ -98,33 +142,65 @@
         </div>
     </div> --}}
 
-    <div class="background"></div>
-    <header class="header container">
-        <a href="/" style="color: rgba(0, 0, 0, 0.486); text-decoration: none;">
-            <h1><span>Lime</span>Go</h1>
-        </a>
-        <div class="about">
-            <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
-            <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
-                    Kirish</button></a>
-            <span id="user-name" style="display: none;">
-                <span id="username"></span> <!-- Foydalanuvchi ismi -->
-            </span>
-            <div id="user-menu" class="dropdown-menu">
-                <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profil</a>
-                <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
-                <a href="/logout" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+    <!-- Asosiy HTMLga qo'shing -->
+    <div id="error-popup" class="error-popup">
+        <div class="popup-content">
+            <p id="error-message"></p>
+            <div id="error-buttons"></div>
+        </div>
+    </div>
+
+    <div id="verification-modal" class="error-popup">
+        <div class="popup-content">
+            <h3>Код подтверждения</h3>
+            <input type="number" id="verification-code" placeholder="6 xonali kod" maxlength="6" min="100000"
+                max="999999" />
+            <div id="verification-buttons" style="margin-top: 15px;">
+                <button type="button" id="submit-verification">Подтверждение</button>
             </div>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <div id="ticket-container">
+    <div class="bus-container">
+        <header class="header container">
+            <a href="/" style="color: rgba(0, 0, 0, 0.486); text-decoration: none;">
+                <h1><span>Lime</span>Go</h1>
+            </a>
+            <div class="about">
+                <a href="tel:+998998483737">Техническая поддержка: +998 (99) 848-37-37</a>
+                <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
+                        Войти</button></a>
+                <span id="user-name" style="display: none;">
+                    <span id="username"></span>
+                </span>
+                <div id="user-menu" class="dropdown-menu">
+                    <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Профиль</a>
+                    <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Мои билеты</a>
+                    <a href="/logout" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="bus-content-container">
+                <div class="seat-info">
+                    <h2 id="trip-title"><span class="date"></span></h2>
+                    <h2 id="ticket-price"><span class="price"></span></h2>
+                    <div>
+                        <span>Свободные сиденья: <strong id="free-seats">0</strong></span>
+                        <span>Занятые сиденья: <strong id="booked-seats">0</strong></span>
+                    </div>
+                </div>
+                <div id="seat-legend" class="seat-legend"></div>
+                <table id="seating-table"></table>
 
-        </div>
-    </main>
-    <script src="../js/index.js" defer></script>
-    <script src="../js/ticket.js" defer></script>
+                <div id="ticket-form-container" style="display: none;"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../js/seatsRu.js" defer></script>
+    <script src="../js/indexRu.js" defer></script>
 </body>
 
 </html>

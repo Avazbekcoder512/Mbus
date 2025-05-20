@@ -1,6 +1,7 @@
 const selectedPrices = new Map();
 let routeFrom = "";
 let routeTo = "";
+let route = "";
 let departureDate = "";
 let departureTime = "";
 
@@ -83,6 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     routeFrom = tripData.trip.route.from;
     routeTo = tripData.trip.route.to;
+    route = tripData.trip.route.en_name;
     departureDate = tripData.trip.departure_date;
     departureTime = tripData.trip.departure_time;
 
@@ -97,6 +99,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       tripTitleEl.innerHTML = `${routeFrom} - ${routeTo} <span class="date">${formattedDate} ${departureTime}</span>`;
     }
 
+    // if (tripTitleEl) {
+    //   tripTitleEl.innerHTML = `${route}<span class="date">${formattedDate} ${departureTime}</span>`;
+    // }
     const seats = tripData.trip.seats || [];
     let freeSeats = 0;
     let bookedSeats = 0;

@@ -22,6 +22,32 @@ export const userPage = async (req, res) => {
   }
 };
 
+export const userPageRu = async (req, res) => {
+  try {
+    return res.render("profileRu", {
+      layout: false,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      error: "Serverda ichki xatolik!",
+    });
+  }
+};
+
+export const userPageEn = async (req, res) => {
+  try {
+    return res.render("profileEn", {
+      layout: false,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      error: "Serverda ichki xatolik!",
+    });
+  }
+};
+
 export const userProfile = async (req, res) => {
   try {
     const { id } = req.params;

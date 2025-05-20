@@ -63,7 +63,7 @@ export const routeFind = async (req, res) => {
             departure_date: departure_date
         }).populate('bus')
             .populate({
-                path: "route", select: 'from to -_id',
+                path: "route", select: 'from to -_id uz_name ru_name en_name',
             })
 
         if (trips.length === 0) {
@@ -81,6 +81,18 @@ export const routeFind = async (req, res) => {
 
 export const getTripPage = async (req, res) => {
     return res.render('seats', {
+        layout: false
+    })
+}
+
+export const getTripPageRu = async (req, res) => {
+    return res.render('seatsRu', {
+        layout: false
+    })
+}
+
+export const getTripPageEn = async (req, res) => {
+    return res.render('seatsEn', {
         layout: false
     })
 }
@@ -454,6 +466,18 @@ export const confirmOrder = async (req, res) => {
 
 export const ticketsPage = async (req, res) => {
     return res.render('ticket', {
+        layout: false
+    })
+}
+
+export const ticketsPageRu = async (req, res) => {
+    return res.render('ticketRu', {
+        layout: false
+    })
+}
+
+export const ticketsPageEn = async (req, res) => {
+    return res.render('ticketEn', {
         layout: false
     })
 }

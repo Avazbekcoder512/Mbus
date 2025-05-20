@@ -11,7 +11,7 @@ function showError(message) {
   iconEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
   // 3) sarlavha rangini ham qaytaramiz
   const titleEl = popup.querySelector('h3');
-  titleEl.textContent = 'Xatolik';
+  titleEl.textContent = 'Error!';
   titleEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error');
   // 4) xabar matni
   document.getElementById('error-message').textContent = message;
@@ -30,7 +30,7 @@ function showSuccess(message) {
   iconEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
   // 3) sarlavha matni va rangini o‘zgartiramiz
   const titleEl = popup.querySelector('h3');
-  titleEl.textContent = 'Muvaffaqiyat';
+  titleEl.textContent = 'Success!';
   titleEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success');
   // 4) xabar
   document.getElementById('error-message').textContent = message;
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadUser() {
     try {
       const res = await fetch(`http://localhost:8000/profile/${userId}`);
-      if (!res.ok) throw new Error('Maʼlumot olinmadi');
+      if (!res.ok) throw new Error('Information not received!');
       const { user } = await res.json();
       originalData = { ...user };
       hasCustomImage = Boolean(user.image);
@@ -171,12 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Saqlash (rasm uchun)
   imgSaveBtn.addEventListener('click', withLoader(imgSaveBtn, async () => {
     const file = imgInput.files[0];
-    if (!file) return showError('Rasm tanlanmadi');
+    if (!file) return showError('Image not selected!');
     const formData = new FormData();
     formData.append('image', file);
     const res = await fetch(`http://localhost:8000/profile/${userId}/avatar`, { method: 'PUT', body: formData });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Rasm saqlanmadi');
+    if (!res.ok) throw new Error(data.message || 'Image not saved!');
     hasCustomImage = Boolean(data.avatarUrl);
     originalAvatar = data.avatarUrl || defaultAvatar;
     avatar.src = originalAvatar;
@@ -184,19 +184,19 @@ document.addEventListener('DOMContentLoaded', () => {
     imgEditBtn.classList.remove('hidden');
     imgInput.value = '';
     if (hasCustomImage) imgDeleteExistingBtn.classList.remove('hidden');
-    showSuccess(data.message || 'Rasm muvaffaqiyatli saqlandi');
+    showSuccess(data.message || 'Image saved successfully!');
   }));
 
   // Rasmni o‘chirish (backenddan)
   imgDeleteExistingBtn.addEventListener('click', withLoader(imgDeleteExistingBtn, async () => {
     const res = await fetch(`http://localhost:8000/profile/${userId}/avatar`, { method: 'DELETE' });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Rasm o‘chirilmadi');
+    if (!res.ok) throw new Error(data.message || 'The image was not deleted!');
     hasCustomImage = false;
     originalAvatar = defaultAvatar;
     avatar.src = defaultAvatar;
     imgDeleteExistingBtn.classList.add('hidden');
-    showSuccess(data.message || 'Rasm muvaffaqiyatli o‘chirildi');
+    showSuccess(data.message || 'Image deleted successfully!');
   }));
 
   // Ma’lumotlarni tahrirlash
@@ -250,14 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Saqlashda xatolik');
+    if (!res.ok) throw new Error(data.message || 'Error while saving!');
     originalData = { ...payload };
     displayName.textContent = `${payload.first_Name} ${payload.last_Name}`;
     inputs.forEach(i => i.disabled = true);
     editBtn.classList.remove('hidden');
     saveBtn.classList.add('hidden');
     cancelBtn.classList.add('hidden');
-    showSuccess(data.message || 'Ma\'lumotlar muvaffaqiyatli saqlandi');
+    showSuccess(data.message || 'Data saved successfully!');
   }));
 
   // Popup close handlers

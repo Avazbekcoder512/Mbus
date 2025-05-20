@@ -17,7 +17,7 @@ function showPopup(type, message, errorCode) {
             : `<i class="fa-solid fa-circle-xmark error-icon"></i>`}
         </div>
         <div class="popup-message">${message}</div>
-        <button class="app-popup-btn ${type === "success" ? "success-btn" : "error-btn"}" onclick="closeAppPopup()">Yopish</button>
+        <button class="app-popup-btn ${type === "success" ? "success-btn" : "error-btn"}" onclick="closeAppPopup()">Закрыть</button>
     `;
     popupContainer.appendChild(popup);
 }
@@ -55,14 +55,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         const data = await response.json();
 
-
         if (!response.ok) {
             if (response.status === 500) return window.location.href = '/500';
 
             if (response.status === 401) {
-                showPopup("error", data.error || "Xatolik yuz berdi!", 401);
+                showPopup("error", data.error || "Произошла ошибка!", 401);
             } else {
-                showPopup("error", data.error || "Xatolik yuz berdi!");
+                showPopup("error", data.error || "Произошла ошибка!");
             }
             return;
         }
@@ -72,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         container.innerHTML = "";
 
         if (!data.tickets || data.tickets.length === 0) {
-            container.innerHTML = "<p class='no-ticket-message'>Sizda chipta mavjud emas!</p>";
+            container.innerHTML = "<p class='no-ticket-message'>У вас нет билетов!</p>";
             return;
         }
 
@@ -85,31 +84,28 @@ document.addEventListener("DOMContentLoaded", async () => {
             const now = new Date();
             const isExpired = (ticketDateTime.getTime() + oneDayInMs) < now.getTime();
 
-            // Tugmalarni tayyorlaymiz
             let actionButtonsHTML;
             if (isExpired) {
                 actionButtonsHTML = `
                     <button class="delete-btn"
                     onclick="deleteExpiredTicket('${ticketId}')">
                     <i class="fa-solid fa-trash-xmark"></i>
-                        <span>O‘chirish</span>
+                        <span>Удалить</span>
                     </button>
                 `;
             } else {
-                // ticket render qilinayotgan joyda
                 actionButtonsHTML = `
                     <button class="download-btn"
                             onclick="downloadTicket('${ticketId}', this)">
                             <i class="fa-regular fa-download"></i>
-                        Yuklab olish
+                        Скачать
                     </button>
                     <button class="cancel-btn"
                             onclick="showCancelModal('${ticketId}')">
                         <i class="fa-solid fa-xmark-large"></i> 
-                        Bekor qilish
+                        Отменить
                     </button>
                 `;
-
             }
 
             const expiredImage = isExpired
@@ -131,11 +127,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     statusIcon = '';
             }
 
-            // Yakuniy HTML
             const ticketHTML = `
                 <div id="ticket-${ticketId}" class="ticket ${isExpired ? "expired" : ""}">
                     <div class="ticket-left">
-                        <h1>Avtobus Chiptasi</h1>
+                        <h1>Автобусный Билет</h1>
                         <p class="status-badge ${ticket.class_status}-status">
                             ${statusIcon}
                             ${ticket.class_status || ""}
@@ -145,21 +140,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ${expiredImage}
                     <div class="ticket-right">
                         <div class="ticket-section">
-                            <div class="item"><div class="label">Ism:</div><div class="value">${ticket.passenger || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Pasport raqami:</div><div class="value">${ticket.passport || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Telefon raqami:</div><div class="value">+${ticket.phoneNumber || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Avtobus raqami:</div><div class="value">${ticket.bus_number || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Qayerdan:</div><div class="value">${ticket.from || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">O‘rindiq raqami:</div><div class="value">${ticket.seat_number || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Qayerga:</div><div class="value">${ticket.to || "Noma'lum"}</div></div>
-                            <div class="item"><div class="label">Chipta raqami:</div><div class="value">${ticket.ticketId || "Noma'lum"}</div></div>
+                            <div class="item"><div class="label">Имя:</div><div class="value">${ticket.passenger || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Паспорт:</div><div class="value">${ticket.passport || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Телефон:</div><div class="value">+${ticket.phoneNumber || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Номер автобуса:</div><div class="value">${ticket.bus_number || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Откуда:</div><div class="value">${ticket.from || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Место:</div><div class="value">${ticket.seat_number || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Куда:</div><div class="value">${ticket.to || "Неизвестно"}</div></div>
+                            <div class="item"><div class="label">Номер билета:</div><div class="value">${ticket.ticketId || "Неизвестно"}</div></div>
                         </div>
                         <div class="ticket-footer">
                             <div class="date-time">
-                                <div>Sana: ${departureDate || '---'}</div>
-                                <div>Vaqt: ${departureTime || '---'}</div>
+                                <div>Дата: ${departureDate || '---'}</div>
+                                <div>Время: ${departureTime || '---'}</div>
                             </div>
-                            <div class="price">${ticket.price || '0'} so'm</div>
+                            <div class="price">${ticket.price || '0'} сум</div>
                         </div>
                         <div class="ticket-actions">
                             ${actionButtonsHTML}
@@ -171,16 +166,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
     } catch (error) {
-        console.error("Xatolik:", error);
-        showPopup("error", error.message || "Noma'lum xatolik yuz berdi!");
+        console.error("Ошибка:", error);
+        showPopup("error", error.message || "Произошла неизвестная ошибка!");
     }
 });
 
 // --- Download funksiyasi ---
 async function downloadTicket(ticketId, btn) {
-
     btn.disabled = true;
-    // originalText saqlaymiz, keyin qaytarish uchun
     const originalText = btn.innerHTML;
     btn.innerHTML = '<span class="loader"></span>';
 
@@ -191,23 +184,22 @@ async function downloadTicket(ticketId, btn) {
         if (!res.ok) {
             const err = await res.json();
             if (res.status === 500) return window.location.href = '/500';
-            if (res.status === 401) return showPopup("error", err.error || "Yuklab olishda xatolik!", 401);
-            return showPopup("error", err.error || "Yuklab olishda xatolik!");
+            if (res.status === 401) return showPopup("error", err.error || "Ошибка загрузки!", 401);
+            return showPopup("error", err.error || "Ошибка загрузки!");
         }
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `chipta-${ticketId}.pdf`;
+        a.download = `билет-${ticketId}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     } catch (e) {
         console.error(e);
-        showPopup("error", e.message || "Noma'lum xatolik yuz berdi!");
+        showPopup("error", e.message || "Произошла неизвестная ошибка!");
     } finally {
-        // tugmani qayta yoqib, matnini tiklaymiz
         btn.disabled = false;
         btn.innerHTML = originalText;
     }
@@ -215,7 +207,6 @@ async function downloadTicket(ticketId, btn) {
 
 // --- Expired bo'lgan chiptani o'chirish ---
 async function deleteExpiredTicket(ticketId) {
-
     try {
         const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
             method: "DELETE",
@@ -223,27 +214,27 @@ async function deleteExpiredTicket(ticketId) {
         if (!res.ok) {
             const err = await res.json();
             if (res.status === 500) return window.location.href = '/500';
-            if (res.status === 401) return showPopup("error", err.error || "O‘chirishda xatolik!", 401);
-            throw new Error(err.error || "O‘chirishda xatolik!");
+            if (res.status === 401) return showPopup("error", err.error || "Ошибка удаления!", 401);
+            throw new Error(err.error || "Ошибка удаления!");
         }
         document.getElementById(`ticket-${ticketId}`)?.remove();
-        showPopup("success", "Chipta muvaffaqiyatli o‘chirildi!");
+        showPopup("success", "Билет успешно удален!");
     } catch (e) {
         console.error(e);
-        showPopup("error", e.message || "O‘chirishda xatolik!");
+        showPopup("error", e.message || "Ошибка удаления!");
     }
 }
 
-// --- Non‑expired uchun “Bekor qilish” modal va PUT so‘rovi ---
+// --- Bekor qilish modal va PUT so‘rovi ---
 function showCancelModal(ticketId) {
     const modal = document.createElement("div");
     modal.className = "modal-overlay";
     modal.innerHTML = `
       <div class="modal">
-        <p>Chiptani bekor qilishni xohlaysizmi?</p>
+        <p>Вы уверены что хотите отменить билет?</p>
         <div class="modal-actions">
-          <button id="modal-yes" class="confirm-btn">Ha</button>
-          <button id="modal-no" class="cancel-btn">Yo‘q</button>
+          <button id="modal-yes" class="confirm-btn">Да</button>
+          <button id="modal-no" class="cancel-btn">Нет</button>
         </div>
       </div>
     `;
@@ -267,13 +258,13 @@ async function cancelTicketPut(ticketId) {
         if (!res.ok) {
             const err = await res.json();
             if (res.status === 500) return window.location.href = '/500';
-            if (res.status === 401) return showPopup("error", err.error || "Bekor qilishda xatolik!", 401);
-            throw new Error(err.error || "Bekor qilishda xatolik!");
+            if (res.status === 401) return showPopup("error", err.error || "Ошибка отмены!", 401);
+            throw new Error(err.error || "Ошибка отмены!");
         }
         document.getElementById(`ticket-${ticketId}`)?.remove();
-        showPopup("success", "Chipta muvaffaqiyatli bekor qilindi!");
+        showPopup("success", "Билет успешно отменен!");
     } catch (e) {
         console.error(e);
-        showPopup("error", e.message || "Bekor qilishda xatolik!");
+        showPopup("error", e.message || "Ошибка отмены!");
     }
 }
