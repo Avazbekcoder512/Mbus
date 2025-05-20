@@ -111,6 +111,7 @@ form .search-button {
   background-color: #6abf45;
   color: white;
   cursor: pointer;
+  height: 48px;
 }
 
 form .search-button:hover {
@@ -156,7 +157,7 @@ form .search-button:hover {
   );
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 

@@ -6,6 +6,18 @@ export const get = async (req, res) => {
     })
 }
 
+export const getRu = async (req, res) => {
+    return res.render('indexRu', {
+        layout: false
+    })
+}
+
+export const getEn = async (req, res) => {
+    return res.render('indexEn', {
+        layout: false
+    })
+}
+
 export const cityFind = async (req, res) => {
     try {
         const cities = await cityModel.find()

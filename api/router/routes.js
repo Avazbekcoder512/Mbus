@@ -2,8 +2,8 @@ import { Router } from 'express'
 import { confirmRegistration, login, loginPage, logout, register } from '../controller/authController.js'
 import { checkSchema } from 'express-validator'
 import { confirmRegistrationSchema, loginValidate, registerValidate } from '../validator/authValidate.js'
-import { cancelTicket, cardPage, confirmOrder, deleteTicket, downloadTicket, getTicket, getTrip, getTripPage, pendingTicket, routeFind, seatBooking, ticketsPage } from '../controller/ticketController.js'
-import { cityFind, get } from '../controller/cityController.js'
+import { cancelTicket, cardPage, confirmOrder, deleteTicket, downloadTicket, getTicket, getTrip, getTripPage, getTripPageEn, getTripPageRu, pendingTicket, routeFind, seatBooking, ticketsPage, ticketsPageEn, ticketsPageRu } from '../controller/ticketController.js'
+import { cityFind, get, getEn, getRu } from '../controller/cityController.js'
 import { jwtAccessMiddleware } from '../middleware/jwtAccessMiddleware.js'
 import { resetPasswordSchema, sendCodeSchema } from '../validator/passwordValidate.js'
 import { resetPassword, sendCode } from '../controller/passwordController.js'
@@ -11,7 +11,7 @@ import { confirmOrderSchema, pendingTicketSchema } from '../validator/ticketVali
 import { loginLimit } from '../middleware/loginLimit.js'
 import { limit } from '../middleware/limit.js'
 import { page404, page429, page500 } from '../controller/errorController.js'
-import { profileImageDelete, profileImageUpdate, updateProfile, userPage, userProfile } from '../controller/userController.js'
+import { profileImageDelete, profileImageUpdate, updateProfile, userPage, userPageEn, userPageRu, userProfile } from '../controller/userController.js'
 import multer from 'multer'
 import { profileUpdateSchema } from '../validator/userValidate.js'
 const upload = multer()
@@ -20,6 +20,8 @@ export const router = Router()
 
 router
     .get('/', get)
+    .get('/ru', getRu)
+    .get('/en', getEn)
 
     // login & register router
     .get('/login', loginPage)
@@ -32,6 +34,8 @@ router
 
     // user router
     .get('/profile', jwtAccessMiddleware, userPage)
+    .get('/profile/ru', jwtAccessMiddleware, userPageRu)
+    .get('/profile/en', jwtAccessMiddleware, userPageEn)
     .get('/profile/:id', jwtAccessMiddleware, userProfile)
     .put('/profile/:id/update', jwtAccessMiddleware, checkSchema(profileUpdateSchema), updateProfile)
     .put('/profile/:id/avatar', jwtAccessMiddleware, upload.single('image'), profileImageUpdate)
@@ -42,12 +46,16 @@ router
     .get('/findroute', routeFind)
     .get('/cities', cityFind)
     .get('/trip', getTripPage)
+    .get('/trip/ru', getTripPageRu)
+    .get('/trip/en', getTripPageEn)
     .get('/trip/:id', jwtAccessMiddleware, getTrip)
     .post('/ticket-pending', jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
     .post('/confirm', jwtAccessMiddleware, limit, checkSchema(confirmOrderSchema), confirmOrder)
 
     // tickets page router
     .get('/ticket', jwtAccessMiddleware, ticketsPage)
+    .get('/ticket/ru', jwtAccessMiddleware, ticketsPageRu)
+    .get('/ticket/en', jwtAccessMiddleware, ticketsPageEn)
     .get('/tickets', jwtAccessMiddleware, getTicket)
     .get('/ticket/:id/download', downloadTicket)
     .put('/ticket/:id/cancel', jwtAccessMiddleware, cancelTicket)

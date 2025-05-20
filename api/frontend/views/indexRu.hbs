@@ -50,7 +50,7 @@
     <div id="errorPopup" class="popup" style="display: none;">
         <div class="popup-content">
             <p id="popupMessage"></p>
-            <button id="closePopup">Yopish</button>
+            <button id="closePopup">Закрыть</button>
         </div>
     </div>
 
@@ -60,42 +60,42 @@
             <h1><span>Lime</span>Go</h1>
         </a>
         <div class="about">
-            <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
+            <a href="tel:+998998483737">Техническая поддержка: +998 (99) 848-37-37</a>
             <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
-                    Kirish</button></a>
+                    Войти</button></a>
             <span id="user-name" style="display: none;">
                 <span id="username"></span>
             </span>
             <div id="user-menu" class="dropdown-menu">
-                <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profil</a>
-                <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
-                <a href="/logout" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+                <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Профиль</a>
+                <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Мои билеты</a>
+                <a href="/logout" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
             </div>
         </div>
     </header>
 
     <main class="container">
         <h1>
-            O’zbekiston bo’ylab avtobus qatnovlari uchun <br> chiptalarni <span>ONLAYN</span> xarid qiling!
+            Покупайте билеты на автобусные поездки по Узбекистану <span>ОНЛАЙН</span>!
         </h1>
 
-        <p>O’zingizga mos hududni va sanani tanlang!</p>
+        <p>Выберите подходящий вам регион и дату!</p>
         <form id="ticket-search">
             <div>
                 <select name="from" id="from" required>
-                    <option disabled selected value="">Bekatni tanlang</option>
+                    <option disabled selected value="">Выберите станцию</option>
                 </select>
             </div>
             <div>
                 <select name="to" id="to" required>
-                    <option disabled selected value="">Bekatni tanlang</option>
+                    <option disabled selected value="">Выберите станцию</option>
                 </select>
             </div>
             <div>
-                <input type="text" name="departure_date" id="departure_date" placeholder="Kunni tanlang" required
+                <input type="text" name="departure_date" id="departure_date" placeholder="Выберите день" required
                     disabled>
             </div>
-            <button type="submit" class="search-button">Chipta izlash</button>
+            <button type="submit" class="search-button">Поиск билетов</button>
         </form>
 
         <div id="Data">
@@ -104,7 +104,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="../js/index.js" defer></script>
+    <script src="../js/indexRu.js" defer></script>
 </body>
 
 </html>
