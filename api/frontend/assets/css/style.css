@@ -25,10 +25,15 @@ body {
 .header h1 {
   font-size: 28px;
   font-weight: 600;
+  color: rgba(0, 0, 0, 0.486);
 }
 
 .header a h1 span {
   color: #49aa1f;
+}
+
+.header a {
+  text-decoration: none;
 }
 
 .container h1 span {
@@ -571,65 +576,133 @@ td.driver {
 
 /* == CSS: style.css ichiga qo‘shing yoki #user-name qismiga o‘zgartiring == */
 
-#user-name {
-  /* aylana o‘lchami */
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-
-  /* matnni markazga joylashtirish */
+/* --- Wrapper pozitsiyalash --- */
+.header .about {
+  position: relative;
+  z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+}
 
-  /* agar eski line-height bo‘lsa, uni tozalaymiz */
-  line-height: normal;
-
-  /* rang va shrift sozlamalari */
-  background-color: rgba(0, 218, 65, 0.8);
+/* --- Login tugmasi --- */
+/* Login tugmasi yangi stil */
+#login-btn {
+  background: #00cb07;
+  border: none;
   color: #fff;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  font-size: 16px;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   cursor: pointer;
-  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+#login-btn i {
+  font-size: 1.1rem;
+}
+
+/* Hover effekti */
+#login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Active (bosilganda) effekti */
+#login-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
+}
+
+/* --- User-name span uchun (agar kerak bo‘lsa) --- */
+/* User-name uchun tugma ko‘rinishi */
+#user-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #00cb07;
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Ichidagi username matni uchun kerak bo‘lsa */
+#user-name #username {
+  display: inline-block;
+}
+
+/* Hover effekti */
 #user-name:hover {
-  background-color: rgba(0, 255, 85, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
-/* Dropdown menyu */
-#user-menu {
-  display: none; /* Yashirish */
-  position: absolute; /* Dropdownni joylashtirish */
-  background-color: #fff; /* Oq fon */
-  border: 1px solid #ddd; /* Chegarani qo'shish */
-  border-radius: 5px; /* Burchaklarni yumshatish */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soyali effekt */
-  min-width: 180px; /* Kichikroq o'lcham */
-  padding: 10px 0; /* Ichki bo'shliq */
-  z-index: 1000; /* Yuqori qatlamda ko'rsatish */
-  top: 72px;
-  right: 30px;
+/* Active (bosilganda) effekti */
+#user-name:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
 }
 
-#user-menu.show {
-  display: block; /* Dropdownni ko'rsatish */
+/* --- Dropdown menyu asosiy stili --- */
+#user-menu.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 160px;
+  padding: 0.5rem 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
 
-/* Dropdown itemlari */
-#user-menu a {
-  display: block; /* Har bir elementni blok qilib joylashtirish */
-  padding: 10px 20px; /* Ichki bo'shliq */
-  color: #333; /* Matn rangi */
-  text-decoration: none; /* Chiziqni olib tashlash */
-  font-size: 14px; /* O'lcham */
-  border-bottom: 1px solid #eee; /* Bo'lim chizig'i */
-  cursor: pointer; /* Pointer kursor */
+/* --- Har bir menyu elementi --- */
+#user-menu.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  transition: background 0.15s ease, transform 0.2s ease;
+}
+#user-menu.dropdown-menu a:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateX(4px);
 }
 
-#user-menu a:hover {
-  background-color: #f1f1f1; /* Hover holatida fon rangi */
+/* --- Ochilish holatlari (hover va focus-within) ---
+.header .about:hover #user-menu,
+.header .about:focus-within #user-menu {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+} */
+
+#user-name:hover + #user-menu,
+#user-name:focus-within + #user-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition-delay: 0s;
+}
+
+#user-menu:hover {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 #preloader {
@@ -2001,4 +2074,80 @@ select:disabled {
 
 #error-popup.success .popup-content i {
   color: var(--success);
+}
+
+/* --- Container uchun --- */
+.header .lang-selector {
+  position: relative;
+  z-index: 1000; /* Menyuni har doim tepada ko‘rsatish uchun */
+  display: inline-block;
+}
+
+/* --- Tugma stili --- */
+.header .lang-selector .lang-btn {
+  background: transparent;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  border-radius: 999px; /* oval shaklda tugma */
+  color: #2980b9;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+.header .lang-selector .lang-btn:hover {
+  transform: scale(1.05);
+}
+
+/* --- Menyu stili (gorizontal markazlash) --- */
+.header .lang-selector .lang-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  min-width: 140px;
+}
+
+/* --- Har bir item stili --- */
+.header .lang-selector .lang-menu li {
+  margin: 0;
+}
+.header .lang-selector .lang-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+.header .lang-selector .lang-menu li a:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* --- Ochilish qoidalari --- */
+.header .lang-selector:hover .lang-menu,
+.header .lang-selector:focus-within .lang-menu {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.header .lang-selector .lang-btn img,
+.header .lang-selector .lang-menu li a img {
+  width: 40px;
+  height: auto;
 }

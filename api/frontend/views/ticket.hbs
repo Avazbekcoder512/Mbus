@@ -100,15 +100,46 @@
 
     <div class="background"></div>
     <header class="header container">
-        <a href="/" style="color: rgba(0, 0, 0, 0.486); text-decoration: none;">
+        <a href="/" class="logo">
             <h1><span>Lime</span>Go</h1>
         </a>
         <div class="about">
             <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
-            <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
-                    Kirish</button></a>
+            <div class="lang-selector">
+                <button class="lang-btn">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Uzbekistan.svg"
+                        alt="Oʻzbekcha" width="20"> <span>UZ</span>
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <ul class="lang-menu">
+                    <li>
+                        <a href="/ticket">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Uzbekistan.svg"
+                                alt="Oʻzbekcha" width="20"> Oʻzbekcha
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/ticket/ru">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/330px-Flag_of_Russia.svg.png"
+                                alt="Русский" width="20"> Русский
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/ticket/en">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png"
+                                alt="English" width="20"> English
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Til tanlash dropdown -->
+            <a href="/login">
+                <button type="submit" id="login-btn">
+                    <i class="fa-regular fa-right-to-bracket"></i> Kirish
+                </button>
+            </a>
             <span id="user-name" style="display: none;">
-                <span id="username"></span> <!-- Foydalanuvchi ismi -->
+                <span id="username"></span>
             </span>
             <div id="user-menu" class="dropdown-menu">
                 <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profil</a>
