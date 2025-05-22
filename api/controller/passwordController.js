@@ -35,19 +35,17 @@ export const sendCode = async (req, res) => {
         const Phone = user.phoneNumber
         const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${resetCode}`
 
-        axios.post('https://notify.eskiz.uz/api/message/sms/send', {
-            mobile_phone: Phone,
-            message: Message,
-            from: process.env.Eskiz_From
-        }, {
-            headers: {
-                Authorization: `Bearer ${Token}`
-            }
-        })
-            .then(res => console.log(res.data))
-            .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
-
-
+        // axios.post('https://notify.eskiz.uz/api/message/sms/send', {
+        //     mobile_phone: Phone,
+        //     message: Message,
+        //     from: process.env.Eskiz_From
+        // }, {
+        //     headers: {
+        //         Authorization: `Bearer ${Token}`
+        //     }
+        // })
+        //     .then(res => console.log(res.data))
+        //     .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
 
         await userModel.findByIdAndUpdate(user._id, { smsCode: resetCode })
 

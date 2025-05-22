@@ -71,12 +71,16 @@ export const pendingTicketSchema = {
 
 
 export const confirmOrderSchema = {
+    notEmpty: {
+        errorMessage: "Tasdiqlash kodi bo'sh bo'lmasligi kerak!"
+    },
     verificationCode: {
         isInt: {
             errorMessage: "Tasdiqlash kodi raqam ko'rinishida bo'lishi kerak!"
         },
-        notEmpty: {
-            errorMessage: "Tasdiqlash kodi bo'sh bo'lmasligi kerak!"
-        }
-    }
+    },
+    isLength: {
+        options: { min: 6 },
+        errorMessage: "Parol 6 ta raqamdan iborat bo'lishi kerak!"
+    },
 }

@@ -137,6 +137,18 @@ export const loginPage = async (req, res) => {
     })
 }
 
+export const loginPageRu = async (req, res) => {
+    return res.render('loginRu.hbs', {
+        layout: false
+    })
+}
+
+export const loginPageEn = async (req, res) => {
+    return res.render('loginEn.hbs', {
+        layout: false
+    })
+}
+
 export const login = async (req, res) => {
     try {
         const errors = validationResult(req)
@@ -189,13 +201,18 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        const token = req.cookies.token
-        if (!token) {
+        const { lang } = req.query
+
+        res.clearCookie('token')
+
+        if (lang == 'en') {
+            return res.redirect('/login/en')
+        } else if (lang == 'ru') {
+            return res.redirect('/login/ru')
+        } else {
             return res.redirect('/login')
         }
 
-        res.clearCookie('token')
-        return res.redirect('/login')
     } catch (error) {
         console.log(error);
         return res.status(500).send({

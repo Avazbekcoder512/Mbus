@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { confirmRegistration, login, loginPage, logout, register } from '../controller/authController.js'
+import { confirmRegistration, login, loginPage, loginPageEn, loginPageRu, logout, register } from '../controller/authController.js'
 import { checkSchema } from 'express-validator'
 import { confirmRegistrationSchema, loginValidate, registerValidate } from '../validator/authValidate.js'
-import { cancelTicket, cardPage, confirmOrder, deleteTicket, downloadTicket, getTicket, getTrip, getTripPage, getTripPageEn, getTripPageRu, pendingTicket, routeFind, seatBooking, ticketsPage, ticketsPageEn, ticketsPageRu } from '../controller/ticketController.js'
+import { cancelTicket, confirmOrder, deleteTicket, downloadTicket, getTicket, getTrip, getTripPage, getTripPageEn, getTripPageRu, pendingTicket, routeFind, seatBooking, ticketsPage, ticketsPageEn, ticketsPageRu } from '../controller/ticketController.js'
 import { cityFind, get, getEn, getRu } from '../controller/cityController.js'
 import { jwtAccessMiddleware } from '../middleware/jwtAccessMiddleware.js'
 import { resetPasswordSchema, sendCodeSchema } from '../validator/passwordValidate.js'
@@ -25,6 +25,8 @@ router
 
     // login & register router
     .get('/login', loginPage)
+    .get('/login/ru', loginPageRu)
+    .get('/login/en', loginPageEn)
     .post('/register', checkSchema(registerValidate), register)
     .post('/confirmregistration', loginLimit, checkSchema(confirmRegistrationSchema), confirmRegistration)
     .post('/login', loginLimit, checkSchema(loginValidate), login)

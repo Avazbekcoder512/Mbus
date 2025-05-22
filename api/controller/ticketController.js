@@ -32,7 +32,7 @@ export const routeFind = async (req, res) => {
 
         if (!from) {
             return res.status(400).send({
-                error: 'Iltoms  qayerdan ekanligini belgilang!'
+                error: 'Iltoms qayerdan ekanligini belgilang!'
             })
         }
 
@@ -165,7 +165,7 @@ export const pendingTicket = async (req, res) => {
                 return res.status(404).send({ error: "O'rindiq topilmadi!" });
             }
 
-            if (seat.status === "band") {
+            if (seat.status === "busy") {
                 return res.status(400).send({ error: `O'rindiq ${passenger.seatNumber} band qilingan!` });
             }
 
@@ -246,12 +246,6 @@ export const pendingTicket = async (req, res) => {
             error: "Serverda xatolik!"
         })
     }
-}
-
-export const cardPage = async (req, res) => {
-    return res.render('card', {
-        layout: false
-    })
 }
 
 export const seatBooking = async (req, res) => {

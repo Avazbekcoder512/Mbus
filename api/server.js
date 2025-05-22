@@ -7,6 +7,9 @@ import { create } from 'express-handlebars'
 import Handlebars from 'handlebars'
 import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access'
 import cookieParser from 'cookie-parser'
+import i18n from 'i18n'
+import path from 'path'
+import { fileURLToPath} from 'url'
 
 dotenv.config()
 Connect()
@@ -18,6 +21,17 @@ const hbs = create({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
 })
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+i18n.configure({
+    locales: ['uz', 'ru', 'en'],
+    directory: path.join(__dirname, 'language'),
+    defaultLocale: 'uz',
+    queryParameter: 'lang',
+})
+
+app.use(i18n.init)
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))

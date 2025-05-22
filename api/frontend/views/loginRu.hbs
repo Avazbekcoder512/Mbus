@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <link type="image/x-icon" href="./assets/images/favicon-3.png" rel="icon" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <style>
+        *,
+        *::after,
+        *::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* Generic */
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            background-color: #ecf0f3;
+            color: #a0a5a8;
+        }
+
+        /**/
+        .main {
+            position: relative;
+            width: 1000px;
+            min-width: 1000px;
+            min-height: 600px;
+            height: 600px;
+            padding: 25px;
+            background-color: #ecf0f3;
+            box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1200px) {
+            .main {
+                transform: scale(.7);
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .main {
+                transform: scale(.6);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .main {
+                transform: scale(.5);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main {
+                transform: scale(.4);
+            }
+        }
+
+        /**/
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            width: 600px;
+            height: 100%;
+            padding: 25px;
+            background-color: #ecf0f3;
+            transition: 1.25s;
+        }
+
+        .form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        .form__icon {
+            object-fit: contain;
+            width: 30px;
+            margin: 0 5px;
+            opacity: .5;
+            transition: .15s;
+        }
+
+        .form__icon:hover {
+            opacity: 1;
+            transition: .15s;
+            cursor: pointer;
+        }
+
+        .form__input {
+            width: 350px;
+            height: 40px;
+            margin: 4px 0;
+            padding-left: 25px;
+            font-size: 13px;
+            letter-spacing: .15px;
+            border: none;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #ecf0f3;
+            transition: .25s ease;
+            border-radius: 8px;
+            box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
+        }
+
+        .form__input:focus {
+            box-shadow: inset 4px 4px 4px #d1d9e6, inset -4px -4px 4px #f9f9f9;
+        }
+
+        .form__input::placeholder {
+            color: #181818;
+        }
+
+        .form__span {
+            margin-top: 30px;
+            margin-bottom: 12px;
+        }
+
+        .form__link {
+            color: #181818;
+            font-size: 15px;
+            margin-top: 25px;
+            border-bottom: 1px solid #a0a5a8;
+            line-height: 2;
+        }
+
+        .title {
+            font-size: 34px;
+            font-weight: 700;
+            line-height: 3;
+            color: #181818;
+        }
+
+        .description {
+            font-size: 14px;
+            letter-spacing: .25px;
+            text-align: center;
+            line-height: 1.6;
+            color: #181818;
+        }
+
+        .button {
+            width: 200px;
+            height: 50px;
+            border-radius: 25px;
+            margin-top: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1.15px;
+            background-color: #4b70e2;
+            color: #f9f9f9;
+            box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /**/
+
+        .a-container {
+            z-index: 100;
+            left: calc(100% - 600px);
+        }
+
+        .b-container {
+            left: calc(100% - 600px);
+            z-index: 0;
+        }
+
+        .switch {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 400px;
+            padding: 50px;
+            z-index: 200;
+            transition: 1.25s;
+            background-color: #ecf0f3;
+            overflow: hidden;
+            box-shadow: 4px 4px 10px #d1d9e6, -4px -4px 10px #f9f9f9;
+        }
+
+        .switch__circle {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background-color: #ecf0f3;
+            box-shadow: inset 8px 8px 12px #d1d9e6, inset -8px -8px 12px #f9f9f9;
+            bottom: -60%;
+            left: -60%;
+            transition: 1.25s;
+        }
+
+        .switch__circle--t {
+            top: -30%;
+            left: 60%;
+            width: 300px;
+            height: 300px;
+        }
+
+        .switch__container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: absolute;
+            width: 400px;
+            padding: 50px 55px;
+            transition: 1.25s;
+        }
+
+        .switch__button {
+            cursor: pointer;
+        }
+
+        .switch__button:hover {
+            box-shadow: 6px 6px 10px #d1d9e6, -6px -6px 10px #f9f9f9;
+            transform: scale(.985);
+            transition: .25s;
+        }
+
+        .switch__button:active,
+        .switch__button:focus {
+            box-shadow: 2px 2px 6px #d1d9e6, -2px -2px 6px #f9f9f9;
+            transform: scale(.97);
+            transition: .25s;
+        }
+
+        /**/
+
+        .is-txr {
+            left: calc(100% - 400px);
+            transition: 1.25s;
+            transform-origin: left;
+        }
+
+        .is-txl {
+            left: 0;
+            transition: 1.25s;
+            transform-origin: right;
+        }
+
+        .is-z200 {
+            z-index: 200;
+            transition: 1.25s;
+        }
+
+        .is-hidden {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            transition: 1.25s;
+        }
+
+        .is-gx {
+            animation: is-gx 1.25s;
+        }
+
+        @keyframes is-gx {
+
+            0%,
+            10%,
+            100% {
+                width: 400px;
+            }
+
+            30%,
+            50% {
+                width: 500px;
+            }
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4b70e2;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .error-popup h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+
+        .error-popup p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        #popup_button {
+            margin-top: 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #popup_button:hover {
+            background-color: #c0392b;
+        }
+
+        .popup-close i {
+            font-size: 36px;
+            /* Enlarging the icon */
+            color: #e74c3c;
+            /* Red color for the icon */
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 50px 60px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            width: 95%;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            font-family: sans-serif;
+            font-size: 20px;
+        }
+
+
+        .success-icon {
+            font-size: 64px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+
+        .popup-button {
+            margin-top: 30px;
+            padding: 14px 28px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .popup-button:hover {
+            background-color: #218838;
+        }
+
+        /* oddiy modal uchun */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            background: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+        }
+
+        .modal-title {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-buttons button {
+            border-radius: 25px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1.15px;
+            background-color: #4b70e2;
+            color: #f9f9f9;
+            box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
+            border: none;
+            outline: none;
+            transition: 0.2s;
+        }
+        .modal-buttons button:hover {
+            background-color: #2657eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="error-popup" class="error-popup">
+        <div class="popup-content">
+            <span id="error-close" class="popup-close"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <h3>Ошибка</h3>
+            <p id="error-message"></p>
+            <button id="popup_button" onclick="closeErrorPopup()">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Success popup -->
+    <div id="success-popup" style="display: none;" class="popup-overlay">
+        <div class="popup-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <p id="success-message">Ваш пароль успешно обновлён!</p>
+            <button onclick="closeSuccessPopup()" class="popup-button">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Verification Modal -->
+    <div id="verification-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h2 class="modal-title">Код подтверждения</h2>
+            <p>Пожалуйста, введите 6-значный код, отправленный по SMS:</p>
+            <input id="verification-code-input" type="text" maxlength="6" pattern="\d{6}" placeholder="123456"
+                class="form__input" />
+            <div class="modal-buttons">
+                <button id="cancel-verify-btn" class="form__button">Отмена</button>
+                <button id="verify-code-btn" class="form__button">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="container a-container" id="a-container">
+            <form class="form" id="a-form">
+                <h2 class="form_title title">Создать аккаунт</h2>
+                <input class="form__input" type="text" name="first_Name" placeholder="Имя" required>
+                <input class="form__input" type="text" name="last_Name" placeholder="Фамилия" required>
+                <input class="form__input" type="tel" name="phoneNumber" placeholder="Телефонный номер" required>
+                <input class="form__input" type="password" name="password" placeholder="Пароль" required>
+                <button type="submit" id="register_button" class="form__button button submit">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            </form>
+        </div>
+        <div class="container b-container" id="b-container">
+            <form class="form" id="b-form">
+                <h2 class="form_title title">Войти на сайт</h2>
+                <input class="form__input" type="text" name="phoneNumber" placeholder="Телефонный номер" required>
+                <input class="form__input" type="password" name="password" placeholder="Пароль" required>
+                <a class="form__link" id="forgot-password-link" style="cursor: pointer;">Забыли пароль?</a>
+                <button id="login_buttton" type="submit" class="form__button button submit">ВОЙТИ</button>
+            </form>
+        </div>
+        <div class="switch" id="switch-cnt">
+            <div class="switch__circle"></div>
+            <div class="switch__circle switch__circle--t"></div>
+            <div class="switch__container" id="switch-c1">
+                <p class="switch__description description">Нажмите кнопку «ВОЙТИ» для входа в систему!</p>
+                <button class="switch__button button switch-btn">ВОЙТИ</button>
+            </div>
+            <div class="switch__container is-hidden" id="switch-c2">
+                <p class="switch__description description">Если вы ещё не зарегистрированы, пожалуйста, зарегистрируйтесь!</p>
+                <button class="switch__button button switch-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/loginRu.js" defer></script>
+</body>
+</html>
