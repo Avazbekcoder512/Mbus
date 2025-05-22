@@ -1,0 +1,82 @@
+{
+    "FIRSTNAME_STRING": "Ismni matnda kiriting!",
+    "FIRSTNAME_EMPTY": "Ismni kiriting!",
+
+    "LASTNAME_STRING": "Familiyani matnda kiriting!",
+    "LASTNAME_EMPTY": "Familiyani kiriting!",
+
+    "PASSWORD_STRING": "Parol harf va raqamlardan iborat bo'lishi kerak!",
+    "PASSWORD_LENGTH": "Parol kamida 6 ta belgidan iborat bo'lishi kerak!",
+    "PASSWORD_EMPTY": "Parolni kiriting!",
+    "PASSWORD_WRONG": "Parol xato!",
+    "PASSWORD_SUCCESS": "Parol muvaffaqiyatli yangilandi!",
+
+    "PHONE_INVALID": "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)",
+    "PHONE_REGEX": "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!",
+    "PHONE_EMPTY": "Telefon raqamni kiriting!",
+
+    "REGISTERCODE_EMPTY": "Tasdiqlash kodini kiriting!",
+    "REGISTERCODE_STRING": "Tasdiqlash kodi matn bo'lishi kerak!",
+    "REGISTERCODE_INT": "Tasdiqlash kodi raqam bo'lishi kerak!",
+    "REGISTERCODE_LENGTH": "Tasdiqlash kodi 6 ta raqamdan iborat bo'lishi kerak!",
+    "REGISTERCODE_ERROR": "Tasdiqlash kodi xato!",
+
+    "REGISTER_SUCCESS": "Ro'yhatdan o'tish muvaffaqiyatli amalga oshirildi!",
+    "LOGIN_SUCCESS": "Login muvaffaqiyatli amalga oshirildi!",
+
+    "GENDER_EMPTY": "Jinsni kiriting!",
+    "GENDER_STRING": "Jinsni matn ko'rinishida kiriting!",
+    "GENDER_ENUM": "Faqat Erkak yoki Ayol kiritish mumkin!",
+
+    "PASSPORT_EMPTY": "Passport raqamni kiriting!",
+    "PASSPORT_STRING": "Passport raqamni matn ko'rinishida kiriting!",
+
+    "SEATNUMBER_EMPTY": "Yo‘lovchi o'rindiq raqami bo‘lishi shart!",
+    "SEATNUMBER_INT": "Yo‘lovchi o'rindiq raqami raqam ko'rinishida bo‘lishi kerak!",
+
+    "FROM": "Iltoms qayerdan ekanligini belgilang!",
+    "ROUTE_NOT_FOUND": "Bunday yo'nalish topilmadi!",
+    "DATE_TRIP_NOT_FOUND": "Bu sanada reyslar mavjud emas!",
+    "TRIP_NOT_FOUND": "Reys topilmadi!",
+
+    "FROM_EMPTY": "Qayerdan ekanlgi bo'lishi shart!",
+    "TO_EMPTY": "Qayerga ekanligi bo'lishi shart!",
+    "DEPARTUREDATE_EMPTY": "Jo'nash kuni bo'lishi shart!",
+    "DEPARTURETIME_EMPTY": "Jo'nash vaqti bo'lishi shart!",
+
+    "BANKCARD_EMPTY": "Karta raqamini kiriting!",
+    "BANKCARD_REGEX": "Faqat UzCard yoki Humo kartalariga ruxsat beriladi!",
+    "BANKCARD_INVALID": "Karta raqami noto‘g‘ri formatda!",
+
+    "EXPIRYDATE_EMPTY": "Kartaning yaroqlilik muddatini kiriting!",
+    "EXPIRYDATE_REGEX": "Yaroqlilik muddati noto‘g‘ri formatda! To‘g‘ri format: MM/YY",
+    "EXPIRYDATE_INVALID": "Karta muddati allaqachon o‘tgan!",
+
+    "CHECKUSER": "Bunday telefon raqamga ega foydalanuvchi allaqachon ro'yhatdan o'tgan!",
+    "LOGIN_CHECUSER": "Bunday telefon raqamga ega foydalanuvchi mavjud emas!",
+    "USER_NOT_FOUND": "Foydalanuvchi topilmadi!",
+    "USER_UPDATE_SUCCESS": "Foydalanuvchi ma'lumotlari muvaffaqiyatli yangilandi!",
+
+    "CITY_NOT_FOUND": "Shaharlar topilmadi!",
+
+    "USER_TOKEN_WRONG": "Token bu foydalanuvchiga tegishli emas!",
+
+    "SEAT_NOT_FOUND": "O'rindiq topilmadi!",
+    "SEAT_BUSY": "O'rindiq band qilingan!",
+
+    "BUS_NOT_FOUND": "Avtobus topilmadi",
+    "USER_DATA": "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!",
+
+    "TICKETS_NOT_FOUND": "Sizda sotib olingan chiptalar yo'q!",
+    "TICKET_NOT_FOUND": "Chipta topilmadi!",
+    "DELETE_TICKET": "Chipta muvaffaqiyatli o'chirildi!",
+    "CANCEL_TICKET": "Chipta bekor qilindi!",
+
+    "INVALID_FILE": "Iltimos rasmni fayl shaklida yuboring!",
+    "FILE_SIZE": "Rasm hajmi 5 MB dan oshmasligi kerak!",
+    "IMAGE_UPDATE": "Foydalanuvchi rasmi yangilandi!",
+    "DELETE_IMAGE_SUCCESS": "Foydalanuvchi rasmi muvaffaiyatli o'chirildi!",
+
+    "INVALID_ID": "Id noto'g'ri!",
+    "SERVER_ERROR": "Serverda xatolik!"
+}

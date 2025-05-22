@@ -1,33 +1,36 @@
-export const registerValidate = {
+export const registerValidate = (req) => ({
     first_Name: {
-        isString: {
-            errorMessage: "Ismni matnda kiriting!"
-        },
         notEmpty: {
             errorMessage: "Ismni kiriting!"
+        },
+        isString: {
+            errorMessage: "Ismni matnda kiriting!"
         }
     },
     last_Name: {
-        isString: {
-            errorMessage: "Familiyani matnda kiriting!"
-        },
         notEmpty: {
             errorMessage: "Familiyani kiriting!"
+        },
+        isString: {
+            errorMessage: "Familiyani matnda kiriting!"
         }
     },
     password: {
+        notEmpty: {
+            errorMessage: "Parolni kiriting!"
+        },
         isString: {
             errorMessage: "Parol harf va raqamlardan iborat bo'lishi kerak!"
         },
         isLength: {
             options: { min: 6 },
             errorMessage: "Parol kamida 6 ta belgidan iborat bo'lishi kerak!"
-        },
-        notEmpty: {
-            errorMessage: "Parolni kiriting!"
         }
     },
     phoneNumber: {
+        notEmpty: {
+            errorMessage: 'Telefon raqamni kiriting!'
+        },
         isMobilePhone: {
             options: ["uz-UZ"],
             errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
@@ -35,15 +38,15 @@ export const registerValidate = {
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
             errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
-        },
-        notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
         }
     }
-}
+})
 
 export const loginValidate = {
     phoneNumber: {
+        notEmpty: {
+            errorMessage: 'Telefon raqamni kiriting!'
+        },
         isMobilePhone: {
             options: ["uz-UZ"],
             errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
@@ -52,11 +55,11 @@ export const loginValidate = {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
             errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
         },
-        notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
-        }
     },
     password: {
+        notEmpty: {
+            errorMessage: "Parolni kiriting!"
+        },
         isString: {
             errorMessage: "Parol harf va raqamlardan iborat bo'lishi kerak!"
         },
@@ -64,9 +67,6 @@ export const loginValidate = {
             options: { min: 6 },
             errorMessage: "Parol kamida 6 ta belgidan iborat bo'lishi kerak!"
         },
-        notEmpty: {
-            errorMessage: "Parolni kiriting!"
-        }
     }
 }
 
@@ -77,11 +77,11 @@ export const confirmRegistrationSchema = {
         }
     },
     register_code: {
-        isString: {
-            errorMessage: "Tasdiqlash kodi matn bo'lishi kerak!"
-        },
         notEmpty: {
             errorMessage: "Tasdiqlash kodini kiritish shart!"
+        },
+        isString: {
+            errorMessage: "Tasdiqlash kodi matn bo'lishi kerak!"
         },
         isLength: {
             options: { min: 6 },
