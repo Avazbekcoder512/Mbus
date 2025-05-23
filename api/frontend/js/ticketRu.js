@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         showPreloader();
 
-        const response = await fetch("http://localhost:8000/tickets", {
+        const response = await fetch("http://localhost:8000/tickets?lang=ru", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -178,7 +178,7 @@ async function downloadTicket(ticketId, btn) {
     btn.innerHTML = '<span class="loader"></span>';
 
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download`, {
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download?lang=ru`, {
             method: "GET",
         });
         if (!res.ok) {
@@ -208,7 +208,7 @@ async function downloadTicket(ticketId, btn) {
 // --- Expired bo'lgan chiptani o'chirish ---
 async function deleteExpiredTicket(ticketId) {
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete`, {
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete?lang=ru`, {
             method: "DELETE",
         });
         if (!res.ok) {
@@ -249,7 +249,7 @@ function showCancelModal(ticketId) {
 
 async function cancelTicketPut(ticketId) {
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel`, {
+        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel?lang=ru`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

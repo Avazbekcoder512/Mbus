@@ -17,7 +17,7 @@ export const userPage = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+      error: req.__('SERVER_ERROR')
     });
   }
 };
@@ -30,7 +30,7 @@ export const userPageRu = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+      error: req.__('SERVER_ERROR')
     });
   }
 };
@@ -43,7 +43,7 @@ export const userPageEn = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+      error: req.__('SERVER_ERROR')
     });
   }
 };
@@ -53,7 +53,7 @@ export const userProfile = async (req, res) => {
     const { id } = req.params;
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
-        error: "Id noto'g'ri!",
+        error: req.__('INVALID_ID')
       });
     }
 
@@ -61,7 +61,7 @@ export const userProfile = async (req, res) => {
 
     if (!user) {
       return res.status(404).send({
-        error: "Foydalanuvchi topilmadi!",
+        error: req.__('USER_NOT_FOUND')
       });
     }
 
@@ -71,7 +71,7 @@ export const userProfile = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+      error: req.__('SERVER_ERROR')
     });
   }
 };
@@ -81,14 +81,14 @@ export const updateProfile = async (req, res) => {
     const { id } = req.params
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
-        error: "Id noto'g'ri!",
+        error: req.__('INVALID_ID')
       });
     }
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       return res.status(400).send({
-        error: errors.array().map(error => error.msg)
+        error: errors.array().map(error => req.__(error.msg))
       })
     }
 
@@ -98,7 +98,7 @@ export const updateProfile = async (req, res) => {
 
     if (!user) {
       return res.status(404).send({
-        error: "Foydalanuvchi topilmadi!"
+        error: req.__('USER_NOT_FOUND')
       })
     }
 
@@ -115,12 +115,12 @@ export const updateProfile = async (req, res) => {
     await userModel.findByIdAndUpdate(id, updatedUser)
 
     return res.status(201).send({
-      message: "Foydalanuvchi ma'lumotlari muvaffaqiyatli yangilandi!"
+      message: req.__('USER_UPDATE_SUCCESS')
     })
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+      error: req.__('SERVER_ERROR')
     });
   }
 }
@@ -130,7 +130,7 @@ export const profileImageUpdate = async (req, res) => {
     const { id } = req.params
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
-        error: "Id noto'g'ri!",
+        error: req.__('INVALID_ID')
       });
     }
 
@@ -138,7 +138,7 @@ export const profileImageUpdate = async (req, res) => {
 
     if (!user) {
       return res.status(404).send({
-        error: "Foydalanuvchi topilmadi!"
+        error: req.__('USER_NOT_FOUND')
       })
     }
 
@@ -146,7 +146,7 @@ export const profileImageUpdate = async (req, res) => {
 
     if (!req.file) {
       return res.status(400).send({
-        error: "Iltimos rasmni fayl shaklida yuboring!"
+        error: req.__('INVALID_FILE')
       })
     }
 
@@ -154,7 +154,7 @@ export const profileImageUpdate = async (req, res) => {
       const maxFileSize = 5 * 1024 * 1024;
       if (req.file.size > maxFileSize) {
         return res.status(400).send({
-          error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
+          error: req.__('FILE_SIZE')
         });
       }
 
@@ -207,7 +207,7 @@ export const profileImageUpdate = async (req, res) => {
       await userModel.findByIdAndUpdate(id, { image: fileUrl })
 
       return res.status(201).send({
-        message: "Foydalanuvchi rasmi yangilandi!"
+        message: req.__('IMAGE_UPDATE')
       })
     } catch (err) {
       console.error(`Faylni yangilashda xatolik: ${err.message}`);
@@ -218,7 +218,7 @@ export const profileImageUpdate = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+       error: req.__('SERVER_ERROR')
     });
   }
 }
@@ -228,7 +228,7 @@ export const profileImageDelete = async (req, res) => {
     const { id } = req.params
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
-        error: "Id noto'g'ri!",
+        error: req.__('INVALID_ID')
       });
     }
 
@@ -236,7 +236,7 @@ export const profileImageDelete = async (req, res) => {
 
     if (!user) {
       return res.status(404).send({
-        error: "Foydalanuvchi topilmadi!"
+        error: req.__('USER_NOT_FOUND')
       })
     }
 
@@ -274,12 +274,12 @@ export const profileImageDelete = async (req, res) => {
     await userModel.findByIdAndUpdate(id, { $unset: { image: '' } }, { new: true })
 
     return res.status(200).send({
-      message: "Foydalanuvchi rasmi muvaffaiyatli o'chirildi!"
+      message: req.__('DELETE_IMAGE_SUCCESS')
     })
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      error: "Serverda ichki xatolik!",
+      error: req.__('SERVER_ERROR')
     });
   }
 }

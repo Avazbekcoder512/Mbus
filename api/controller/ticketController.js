@@ -32,7 +32,7 @@ export const routeFind = async (req, res) => {
 
         if (!from) {
             return res.status(400).send({
-                error: 'Iltoms qayerdan ekanligini belgilang!'
+                error: req.__('FROM')
             })
         }
 
@@ -46,7 +46,7 @@ export const routeFind = async (req, res) => {
         const routeDoc = await routeModel.findOne({ from, to })
         if (!routeDoc) {
             return res.status(404).send({
-                error: "Bunday yo'nalish topilmadi!"
+                error: req.__('ROUTE_NOT_FOUND')
             })
         }
 
@@ -68,14 +68,14 @@ export const routeFind = async (req, res) => {
 
         if (trips.length === 0) {
             return res.status(404).send({
-                error: "Bu sanada reyslar mavjud emas!"
+                error: req.__('DATE_TRIP_NOT_FOUND')
             })
         }
 
         return res.status(200).send({ data: trips });
     } catch (error) {
         console.error(error);
-        return res.status(500).send({ error: 'Serverda xatolik!' });
+        return res.status(500).send({ error: req.__('SERVER_ERROR') });
     }
 };
 
@@ -103,7 +103,7 @@ export const getTrip = async (req, res) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
-                error: "Id noto'g'ri!"
+                error: req.__('INVALID_ID')
             })
         }
 
@@ -113,7 +113,7 @@ export const getTrip = async (req, res) => {
 
         if (!trip) {
             return res.status(404).send({
-                error: "Reys topilmadi!"
+                error: req.__('TRIP_NOT_FOUND')
             })
         }
 
@@ -123,7 +123,7 @@ export const getTrip = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         })
     }
 }
@@ -141,14 +141,14 @@ export const pendingTicket = async (req, res) => {
 
         if (!user) {
             return res.status(400).send({
-                error: 'Token bu foydalanuvchiga tegishli emas!'
+                error: req.__('USER_TOKEN_WRONG')
             })
         }
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -162,26 +162,26 @@ export const pendingTicket = async (req, res) => {
             const seat = await seatModel.findById(passenger.seatId);
 
             if (!seat) {
-                return res.status(404).send({ error: "O'rindiq topilmadi!" });
+                return res.status(404).send({ error: req.__('SEAT_NOT_FOUND') });
             }
 
             if (seat.status === "busy") {
-                return res.status(400).send({ error: `O'rindiq ${passenger.seatNumber} band qilingan!` });
+                return res.status(400).send({ error: req.__('SEAT_BUSY') });
             }
 
             const trip = await tripModel.findById(seat.trip);
             if (!trip) {
-                return res.status(404).send({ error: "Reys mavjud emas!" });
+                return res.status(404).send({ error: req.__('TRIP_NOT_FOUND') });
             }
 
             const bus = await busModel.findById(trip.bus);
             if (!bus) {
-                return res.status(404).send({ error: "Avtobus mavjud emas!" });
+                return res.status(404).send({ error: req.__('BUS_NOT_FOUND') });
             }
 
             if (!user.bank_card || !user.expiryDate || !user.passport || !user.gender) {
                 return res.status(400).send({
-                    error: "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!"
+                    error: req.__('USER_DATA')
                 })
             }
 
@@ -243,7 +243,7 @@ export const pendingTicket = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         })
     }
 }
@@ -261,7 +261,7 @@ export const seatBooking = async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -271,7 +271,7 @@ export const seatBooking = async (req, res) => {
 
         if (!user) {
             return res.status(400).send({
-                error: "Foydalanuvchi topilmadi!"
+                error: req.__('USER_NOT_FOUND')
             })
         }
 
@@ -307,7 +307,7 @@ export const seatBooking = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         })
     }
 }
@@ -317,7 +317,7 @@ export const confirmOrder = async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             });
         }
 
@@ -347,11 +347,11 @@ export const confirmOrder = async (req, res) => {
         const user = await userModel.findById(userId);
 
         if (!user) {
-            return res.status(404).send({ error: "Foydalanuvchi topilmadi!" });
+            return res.status(404).send({ error: req.__('USER_NOT_FOUND') });
         }
 
         if (user.verification_code !== data.verificationCode) {
-            return res.status(400).send({ error: "Tasdiqlash kodi noto‘g‘ri!" });
+            return res.status(400).send({ error: req.__('REGISTERCODE_ERROR') });
         }
 
         const tempTickets = await tempTicketModel.find({
@@ -437,23 +437,23 @@ export const confirmOrder = async (req, res) => {
         });
 
         return res.status(201).send({
-            message: "Chiptalar yaratildi!",
+            message: req.__('CREATE_TICKET'),
             tickets: createdTickets
         });
 
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).send({
-                error: "Iltimos, qayta o'rindiq band qiling!",
+                error: req.__('TICKET_TOKEN_ERROR'),
             });
         } else if (error.name === 'JsonWebTokenError') {
             return res.status(401).send({
-                error: "Iltimos, qayta o'rindiq band qiling!",
+                error: req.__('TICKET_TOKEN_ERROR'),
             });
         }
 
         return res.status(500).send({
-            error: "Serverda kutilmagan xatolik yuz berdi!"
+            error: req.__('SERVER_ERROR')
         });
     }
 };
@@ -486,7 +486,7 @@ export const getTicket = async (req, res) => {
 
         if (!user) {
             return res.status(404).send({
-                error: "Foydalanuvchi topilmadi!"
+                error: req.__('USER_NOT_FOUND')
             })
         }
 
@@ -494,7 +494,7 @@ export const getTicket = async (req, res) => {
 
         if (!tickets.length === 0) {
             return res.status(404).send({
-                error: "Sizda sotib olingan chiptalar yo'q!"
+                error: (req.__('TICKETS_NOT_FOUND'))
             })
         }
 
@@ -505,7 +505,7 @@ export const getTicket = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         });
     }
 }
@@ -516,7 +516,7 @@ export const downloadTicket = async (req, res) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
-                error: "Id noto'g'ri!"
+                error: req.__('INVALID_ID')
             })
         }
 
@@ -524,7 +524,7 @@ export const downloadTicket = async (req, res) => {
 
         if (!ticket) {
             return res.status(404).send({
-                error: "Chipta topilmadi!"
+                error: req.__('TICKET_NOT_FOUND')
             })
         }
 
@@ -533,7 +533,7 @@ export const downloadTicket = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         });
     }
 }
@@ -544,7 +544,7 @@ export const deleteTicket = async (req, res) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
-                error: "Id noto'g'ri!"
+                error: req.__('INVALID_ID')
             })
         }
 
@@ -552,7 +552,7 @@ export const deleteTicket = async (req, res) => {
 
         if (!ticket) {
             return res.status(404).send({
-                error: "Chipta topilmadi!"
+                error: req.__('TICKET_NOT_FOUND')
             })
         }
 
@@ -585,12 +585,12 @@ export const deleteTicket = async (req, res) => {
         await ticketModel.findByIdAndDelete(ticket._id)
 
         return res.status(200).send({
-            message: "Chipta muvaffaqiyatli o'chirildi!"
+            message: req.__('DELETE_TICKET')
         })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         });
     }
 }
@@ -601,7 +601,7 @@ export const cancelTicket = async (req, res) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
-                error: "Id noto'g'ri!"
+                error: req.__('INVALID_ID')
             })
         }
 
@@ -609,7 +609,7 @@ export const cancelTicket = async (req, res) => {
 
         if (!ticket) {
             return res.status(404).send({
-                error: "Chipta topilmadi!"
+                error: req.__('TICKET_NOT_FOUND')
             })
         }
 
@@ -617,7 +617,7 @@ export const cancelTicket = async (req, res) => {
 
         if (!seat) {
             return res.status(404).send({
-                error: "O'rindiq topilmadi!"
+                error: req.__('SEAT_NOT_FOUND')
             })
         }
 
@@ -626,12 +626,12 @@ export const cancelTicket = async (req, res) => {
         await ticketModel.findByIdAndDelete(ticket._id)
 
         return res.status(200).send({
-            message: "Chipta bekor qilindi!"
+            message: req.__('CANCEL_TICKET')
         })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         });
     }
 }

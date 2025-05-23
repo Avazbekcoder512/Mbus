@@ -1,4 +1,4 @@
-export const pendingTicketSchema = {
+export const pendingTicketSchema = (req) => ({
     passengers: {
         isArray: {
             errorMessage: "Yo‘lovchilar ro‘yxati array bo‘lishi kerak!"
@@ -9,78 +9,83 @@ export const pendingTicketSchema = {
     },
     'passengers.*.fullName': {
         notEmpty: {
-            errorMessage: "Yo‘lovchi ismi bo‘lishi shart!"
+            errorMessage: req.__('FIRSTNAME_EMPTY')
         },
         isString: {
-            errorMessage: "Yo‘lovchi ismi matn ko‘rinishida bo‘lishi kerak!"
+            errorMessage: req.__('FIRSTNAME_STRING')
         }
     },
     'passengers.*.gender': {
         notEmpty: {
-            errorMessage: "Yo‘lovchi jinsini kiritishi shart!"
+            errorMessage: req.__('GENDER_EMPTY')
         },
         isString: {
-            errorMessage: "Yo‘lovchi jinsini matn ko'rinishida kiritishi shart!"
+            errorMessage: req.__('GENDER_STRING')
         },
         isIn: {
             options: [["male", "female"]],
-            errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
+            errorMessage: req.__('GENDER_ENUM')
         }
     },
     'passengers.*.passport': {
         notEmpty: {
-            errorMessage: "Yo‘lovchi passport raqami bo‘lishi shart!"
+            errorMessage: req.__('PASSPORT_EMPTY')
         },
         isString: {
-            errorMessage: "Yo‘lovchi passport raqami matn ko'rinishida bo‘lishi kerak!"
+            errorMessage: req.__('PASSPORT_STRING')
         }
     },
     'passengers.*.phoneNumber': {
         notEmpty: {
-            errorMessage: "Yo‘lovchi telefon raqami bo‘lishi shart!"
+            errorMessage: req.__('PHONE_EMPTY')
         },
-        isString: {
-            errorMessage: "Yo‘lovchi telefon raqami raqam ko'rinishida bo‘lishi kerak!"
+        isMobilePhone: {
+            options: ["uz-UZ"],
+            errorMessage: req.__('PHONE_INVALID')
+        },
+        matches: {
+            options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
+            errorMessage: req.__('PHONE_REGEX')
         }
     },
     'passengers.*.seatNumber': {
         notEmpty: {
-            errorMessage: "Yo‘lovchi o'rindiq raqami bo‘lishi shart!"
+            errorMessage: req.__('SEATNUMBER_EMPTY')
         },
         isInt: {
-            errorMessage: "Yo‘lovchi o'rindiq raqami raqam ko'rinishida bo‘lishi kerak!"
+            errorMessage: req.__('SEATNUMBER_INT')
         }
     },
     from: {
         notEmpty: {
-            errorMessage: "Qayerdan ekanlgi bo'lishi shart!"
+            errorMessage: req.__('FROM_EMPTY')
         }
     },
     to: {
         notEmpty: {
-            errorMessage: "Qayerga ekanligi bo'lishi shart!"
+            errorMessage: req.__('TO_EMPTY')
         }
     },
     departure_date: {
-        notEmpty: "Jo'nash kuni bo'lishi shart!"
+        notEmpty: req.__('DEPARTUREDATE_EMPTY')
     },
     departure_time: {
-        notEmpty: "Jo'nash vaqti bo'lishi shart!"
+        notEmpty: req.__('DEPARTURETIME_EMPTY')
     }
-}
+})
 
 
-export const confirmOrderSchema = {
+export const confirmOrderSchema = (req) => ({
     notEmpty: {
-        errorMessage: "Tasdiqlash kodi bo'sh bo'lmasligi kerak!"
+        errorMessage: req.__('REGISTERCODE_EMPTY')  
     },
     verificationCode: {
         isInt: {
-            errorMessage: "Tasdiqlash kodi raqam ko'rinishida bo'lishi kerak!"
+            errorMessage: req.__('REGISTERCODE_INT')
         },
     },
     isLength: {
         options: { min: 6 },
-        errorMessage: "Parol 6 ta raqamdan iborat bo'lishi kerak!"
+        errorMessage: req.__('REGISTERCODE_LENGTH')
     },
-}
+})

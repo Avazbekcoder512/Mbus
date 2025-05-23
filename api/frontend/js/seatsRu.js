@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let userData = {};
     if (userId) {
         try {
-            const userRes = await fetch(`http://localhost:8000/profile/${userId}`);
+            const userRes = await fetch(`http://localhost:8000/profile/${userId}?lang=ru`);
             if (userRes.ok) {
                 userData = await userRes.json();
             }
@@ -56,27 +56,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         showPreloader();
-        const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
+        const response = await fetch(`http://localhost:8000/trip/${tripId}?lang=ru`, {
             method: "GET"
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            if (response.status === 401 || errorData.error === "Kirish amalga oshirilmagan. Iltimos, tizimga kiring!") {
-                showErrorPopup(errorData.error, '/login');
+            if (response.status === 401 || errorData.error === "Вход не выполнен. Пожалуйста, войдите в систему!") {
+                showErrorPopup(errorData.error, '/login/ru');
                 return;
             } else if (response.status === 500) {
                 window.location.href = '/500';
                 return;
             } else {
-                showErrorPopup(errorData.error || 'Произошла ошибка.', '/');
+                showErrorPopup(errorData.error || 'Произошла ошибка.', '/ru');
                 return;
             }
         }
         const tripData = await response.json();
 
         if (response.status === 401) {
-            window.location.href = "/";
+            window.location.href = "/login/ru";
             return;
         } else if (response.status === 500) {
             window.location.href = '/500';
@@ -390,7 +390,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             try {
-                const response = await fetch("http://localhost:8000/ticket-pending", {
+                const response = await fetch("http://localhost:8000/ticket-pending?lang=ru", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -409,9 +409,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     showVerificationModal();
                 } else {
                     if (result.error === "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!") {
-                        showErrorPopup(result.error, '/profile');
+                        showErrorPopup(result.error, '/profile/ru');
                     } else if (response.status === 401) {
-                        showErrorPopup(result.error, '/login');
+                        showErrorPopup(result.error, '/login/ru');
                     } else if (response.status === 500) {
                         window.location.href = '/500';
                     } else {
@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } catch (err) {
                 console.error("Xatolik:", err);
-                showErrorPopup('Не удалось подключиться к серверу.', '/');
+                showErrorPopup('Не удалось подключиться к серверу.', '/ru');
             } finally {
                 continueBtn.disabled = false;
                 loader.style.display = "none";
@@ -458,7 +458,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/confirm', {
+            const response = await fetch('http://localhost:8000/confirm?lang=ru', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             if (response.status === 401) {
-                showErrorPopup(response.data.error, '/login');
+                showErrorPopup(response.data.error, '/login/ru');
                 return;
             }
 
@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const result = await response.json();
 
             if (response.ok) {
-                showErrorPopup(result.message, '/ticket');
+                showErrorPopup(result.message, '/ticket/ru');
             } else {
                 showErrorPopup(result.error || 'Произошла ошибка!');
             }

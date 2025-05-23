@@ -15,7 +15,7 @@ export const register = async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -25,7 +25,7 @@ export const register = async (req, res) => {
 
         if (checkUser) {
             return res.status(400).send({
-                error: "Bunday telefon raqamga ega foydalanuvchi allaqachon ro'yhatdan o'tgan!"
+                error: req.__('CHECKUSER')
             })
         }
 
@@ -71,7 +71,7 @@ export const register = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            errorMessage: "Serverda xatolik!"
+            errorMessage: req.__('SERVER_ERROR')
         })
     }
 }
@@ -81,7 +81,7 @@ export const confirmRegistration = async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -90,7 +90,7 @@ export const confirmRegistration = async (req, res) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
-                error: "Id noto'g'ri!"
+                error: req.__('INVALID_ID')
             })
         }
 
@@ -98,7 +98,7 @@ export const confirmRegistration = async (req, res) => {
 
         if (!user) {
             return res.status(404).send({
-                error: "Foydalanuvchi topilmadi!"
+                error: req.__('USER_NOT_FOUND')
             })
         }
 
@@ -107,7 +107,7 @@ export const confirmRegistration = async (req, res) => {
             await userModel.findByIdAndDelete(user._id)
 
             return res.status(400).send({
-                error: "Tasdiqlash kodi xato!"
+                error: req.__('REGISTERCODE_ERROR')
             })
         }
 
@@ -121,12 +121,12 @@ export const confirmRegistration = async (req, res) => {
         res.cookie('token', token)
 
         return res.status(201).send({
-            message: "Ro'yhatdan o'tish muvaffaqiyatli amalga oshirildi!"
+            message: req.__('REGISTER_SUCCESS')
         })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            errorMessage: "Serverda xatolik!"
+            errorMessage: req.__('SERVER_ERROR')
         })
     }
 }
@@ -154,7 +154,7 @@ export const login = async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -164,7 +164,7 @@ export const login = async (req, res) => {
 
         if (!user) {
             return res.status(400).send({
-                error: "Bunday telefon raqamga ega foydalanuvchi mavjud emas!"
+                error: req.__('LOGIN_CHECUSER')
             })
         }
 
@@ -172,7 +172,7 @@ export const login = async (req, res) => {
 
         if (!checkPassword) {
             return res.status(400).send({
-                error: "Parol xato!"
+                error: req.__('PASSWORD_WRONG')
             })
         }
 
@@ -188,13 +188,13 @@ export const login = async (req, res) => {
         res.cookie('token', token)
 
         return res.status(200).send({
-            message: "Login muvaffaqiyatli amalga oshirildi!",
+            message: req.__('LOGIN_SUCCESS'),
             user
         })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            errorMessage: "Serverda xatolik!"
+            errorMessage: req.__('SERVER_ERROR')
         })
     }
 }

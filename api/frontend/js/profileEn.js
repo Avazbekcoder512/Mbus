@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Foydalanuvchi ma'lumotini yuklash
   async function loadUser() {
     try {
-      const res = await fetch(`http://localhost:8000/profile/${userId}`);
+      const res = await fetch(`http://localhost:8000/profile/${userId}?lang=en`);
       if (!res.ok) throw new Error('Information not received!');
       const { user } = await res.json();
       originalData = { ...user };
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return showError('Image not selected!');
     const formData = new FormData();
     formData.append('image', file);
-    const res = await fetch(`http://localhost:8000/profile/${userId}/avatar`, { method: 'PUT', body: formData });
+    const res = await fetch(`http://localhost:8000/profile/${userId}/avatar?lang=en`, { method: 'PUT', body: formData });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Image not saved!');
     hasCustomImage = Boolean(data.avatarUrl);
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Rasmni o‘chirish (backenddan)
   imgDeleteExistingBtn.addEventListener('click', withLoader(imgDeleteExistingBtn, async () => {
-    const res = await fetch(`http://localhost:8000/profile/${userId}/avatar`, { method: 'DELETE' });
+    const res = await fetch(`http://localhost:8000/profile/${userId}/avatar?lang=en`, { method: 'DELETE' });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'The image was not deleted!');
     hasCustomImage = false;
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       expiryDate: document.getElementById('card-expiry').value.trim(),
       gender: document.getElementById('gender').value      // ← include gender
     };
-    const res = await fetch(`http://localhost:8000/profile/${userId}/update`, {
+    const res = await fetch(`http://localhost:8000/profile/${userId}/update?lang=en`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

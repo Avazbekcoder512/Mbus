@@ -1,55 +1,55 @@
-export const sendCodeSchema = {
+export const sendCodeSchema = (req) => ({
     phoneNumber: {
         notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
+            errorMessage: req.__('PHONE_EMPTY')
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan, +998901234567)"
+            errorMessage: req.__('PHONE_INVALID')
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
+            errorMessage: req.__('PHONE_REGEX')
         }
     }
-}
+})
 
-export const resetPasswordSchema = {
+export const resetPasswordSchema = (req) => ({
     phoneNumber: {
         notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
+            errorMessage: req.__('PHONE_EMPTY')
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan, +998901234567)"
+            errorMessage: req.__('PHONE_INVALID')
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
+            errorMessage: req.__('PHONE_REGEX')
         }
     },
     smsCode: {
         notEmpty: {
-            errorMessage: "Parolni kiriting!"
+            errorMessage: req.__('REGISTERCODE_EMPTY')
         },
         isString: {
-            errorMessage: "Parolni stringda kiriting!"
+            errorMessage: req.__('REGISTERCODE_STRING')
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: "Parol 6 ta raqamdan iborat bo'lishi kerak!"
+            errorMessage: req.__('REGISTERCODE_LENGTH')
         }
     },
     password: {
         notEmpty: {
-            errorMessage: "Parolni kiriting!"
+            errorMessage: req.__('PASSWORD_EMPTY')
         },
         isString: {
-            errorMessage: "Parol harf va raqamlardan iborat bo'lishi kerak!"
+            errorMessage: req.__('PASSWORD_STRING')
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: "Parol kamida 6 ta belgidan iborat bo'lishi kerak!"
+            errorMessage: req.__('PASSWORD_LENGTH')
         },
     }
-}
+})

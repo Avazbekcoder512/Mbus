@@ -95,7 +95,7 @@ document?.addEventListener("DOMContentLoaded", () => {
     (async function loadCities() {
         try {
             if (!form) return;
-            const res = await fetch(`${API_BASE}/cities`);
+            const res = await fetch(`${API_BASE}/cities?lang=uz`);
             const j = await res.json();
             if (!res.ok) {
                 const errorMessage = extractError(j.error) || "Bekatlar ro‘yxatini olishda xato";
@@ -123,7 +123,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         if (!from) return;
 
         try {
-            const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}`);
+            const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}&lang=uz`);
             const j = await res.json();
             if (!res.ok) {
                 const errorMessage = extractError(j.error) || "Xato xabari...";
@@ -153,7 +153,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         const from = fromSelect.value;
         const to = toSelect.value;
         try {
-            const url = `${API_BASE}/findroute?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+            const url = `${API_BASE}/findroute?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&lang=uz`;
             const res = await fetch(url);
             const j = await res.json();
             if (!res.ok) {
@@ -203,7 +203,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const url = `${API_BASE}/findroute`
+            const url = `${API_BASE}/findroute?lang=uz`
                 + `?from=${encodeURIComponent(from)}`
                 + `&to=${encodeURIComponent(to)}`
                 + `&departure_date=${encodeURIComponent(departure_date)}`;

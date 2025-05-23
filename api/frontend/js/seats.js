@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let userData = {};
   if (userId) {
     try {
-      const userRes = await fetch(`http://localhost:8000/profile/${userId}`);
+      const userRes = await fetch(`http://localhost:8000/profile/${userId}?lang=uz`);
       if (userRes.ok) {
         userData = await userRes.json();
       }
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     showPreloader();
-    const response = await fetch(`http://localhost:8000/trip/${tripId}`, {
+    const response = await fetch(`http://localhost:8000/trip/${tripId}?lang=uz`, {
       method: "GET"
     });
 
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       try {
-        const response = await fetch("http://localhost:8000/ticket-pending", {
+        const response = await fetch("http://localhost:8000/ticket-pending?lang=uz", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -454,7 +454,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/confirm', {
+      const response = await fetch('http://localhost:8000/confirm?lang=uz', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

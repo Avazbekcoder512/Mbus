@@ -71,6 +71,9 @@
     "TICKET_NOT_FOUND": "Chipta topilmadi!",
     "DELETE_TICKET": "Chipta muvaffaqiyatli o'chirildi!",
     "CANCEL_TICKET": "Chipta bekor qilindi!",
+    "CREATE_TICKET": "Chiptalar yaratildi!",
+    "TICKET_TOKEN_ERROR": "Iltimos, qayta o'rindiq band qiling!",
+    "LOGIN_ERROR": "Kirish amalga oshirilmagan. Iltimos, tizimga kiring!",
 
     "INVALID_FILE": "Iltimos rasmni fayl shaklida yuboring!",
     "FILE_SIZE": "Rasm hajmi 5 MB dan oshmasligi kerak!",

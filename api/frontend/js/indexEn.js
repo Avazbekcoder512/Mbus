@@ -95,7 +95,7 @@ document?.addEventListener("DOMContentLoaded", () => {
     (async function loadCities() {
         try {
             if (!form) return;
-            const res = await fetch(`${API_BASE}/cities`);
+            const res = await fetch(`${API_BASE}/cities?lang=en`);
             const j = await res.json();
             if (!res.ok) {
                 const errorMessage = extractError(j.error) || "Error fetching station list";
@@ -123,7 +123,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         if (!from) return;
 
         try {
-            const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}`);
+            const res = await fetch(`${API_BASE}/findroute?from=${encodeURIComponent(from)}&lang=en`);
             const j = await res.json();
             if (!res.ok) {
                 const errorMessage = extractError(j.error) || "Error occurred...";
@@ -153,7 +153,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         const from = fromSelect.value;
         const to = toSelect.value;
         try {
-            const url = `${API_BASE}/findroute?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+            const url = `${API_BASE}/findroute?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&lang=en`;
             const res = await fetch(url);
             const j = await res.json();
             if (!res.ok) {
@@ -203,7 +203,7 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const url = `${API_BASE}/findroute`
+            const url = `${API_BASE}/findroute?lang=en`
                 + `?from=${encodeURIComponent(from)}`
                 + `&to=${encodeURIComponent(to)}`
                 + `&departure_date=${encodeURIComponent(departure_date)}`;
@@ -259,5 +259,5 @@ document?.addEventListener("DOMContentLoaded", () => {
 // Expose global function to save selected trip
 function saveTripId(id) {
     localStorage.setItem("selectedTripId", id);
-    window.location.href = "/trip";
+    window.location.href = "/trip/en";
 }
