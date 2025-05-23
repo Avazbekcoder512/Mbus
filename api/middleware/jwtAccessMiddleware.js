@@ -8,7 +8,7 @@ export const jwtAccessMiddleware = (req, res, next) => {
 
         if (!token) {
             return res.status(404).send({
-                error: 'Kirish amalga oshirilmagan. Iltimos, tizimga kiring!'
+                error: req.__('LOGIN_ERROR')
             })
         }
 
@@ -18,16 +18,16 @@ export const jwtAccessMiddleware = (req, res, next) => {
     } catch (error) {  
         if (error.name === 'TokenExpiredError') {
             return res.status(401).send({
-                error: 'Kirish amalga oshirilmagan. Iltimos, tizimga kiring!',
+                error: req.__('LOGIN_ERROR')
             })
         } else if (error.name === 'JsonWebTokenError' && error.message === 'jwt malformed') {
             return res.status(401).send({
-                error: 'Kirish amalga oshirilmagan. Iltimos, tizimga kiring!',
+                error: req.__('LOGIN_ERROR')
             })
         }   
         console.log(error)
         return res.status(500).send({
-            error: 'Serverda xatolik!',
+            error: req.__('SERVER_ERROR'),
         })
     }
 }

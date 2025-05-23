@@ -11,7 +11,7 @@ export const sendCode = async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -21,7 +21,7 @@ export const sendCode = async (req, res) => {
 
         if (!user) {
             return res.status(404).send({
-                error: "Bunday telefon raqamga ega foydalanuvchi topilmadi!"
+                error: req.__('LOGIN_CHECUSER')
             })
         }
 
@@ -55,7 +55,7 @@ export const sendCode = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         })
     }
 }
@@ -65,7 +65,7 @@ export const resetPassword = async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map(error => error.msg)
+                error: errors.array().map(error => req.__(error.msg))
             })
         }
 
@@ -75,13 +75,13 @@ export const resetPassword = async (req, res) => {
 
         if (!user) {
             return res.status(404).send({
-                error: "Foydalanuvchi topilmadi!"
+                error: req.__('USER_NOT_FOUND')
             })
         }
 
         if (user.smsCode != data.smsCode) {
             return res.status(400).send({
-                error: "Sms Kod xato!"
+                error: req.__('REGISTERCODE_ERROR')
             })
         }
 
@@ -94,12 +94,12 @@ export const resetPassword = async (req, res) => {
         })
 
         return res.status(201).send({
-            message: 'Parol muvaffaqiyatli yangilandi!'
+            message: req.__('PASSWORD_SUCCESS')
         })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__('SERVER_ERROR')
         })
     }
 }

@@ -24,7 +24,7 @@ export const cityFind = async (req, res) => {
 
         if (!cities) {
             return res.status(404).send({
-                error: "Shaharlar topilmadi!"
+                error: req.__('CITY_NOT_FOUND')
             })
         }
 
@@ -34,7 +34,7 @@ export const cityFind = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "Serverda xatolik!"
+            error: req.__("SERVER_ERROR")
         })
     }
 }

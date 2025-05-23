@@ -1,82 +1,85 @@
 {
   "FIRSTNAME_STRING": "Please enter the first name as text!",
   "FIRSTNAME_EMPTY": "First name is required!",
-  
+
   "LASTNAME_STRING": "Please enter the last name as text!",
   "LASTNAME_EMPTY": "Last name is required!",
-  
+
   "PASSWORD_STRING": "Password must consist of letters and numbers!",
   "PASSWORD_LENGTH": "Password must be at least 6 characters long!",
   "PASSWORD_EMPTY": "Please enter a password!",
   "PASSWORD_WRONG": "Incorrect password!",
   "PASSWORD_SUCCESS": "Password updated successfully!",
-  
+
   "PHONE_INVALID": "Please enter the phone number in the correct format! (e.g.: +998901234567)",
   "PHONE_REGEX": "Phone number is invalid, please use the correct format!",
   "PHONE_EMPTY": "Please enter a phone number!",
-  
+
   "REGISTERCODE_EMPTY": "Please enter the confirmation code!",
   "REGISTERCODE_STRING": "Confirmation code must be text!",
   "REGISTERCODE_INT": "Confirmation code must be a number!",
   "REGISTERCODE_LENGTH": "Confirmation code must be 6 digits long!",
   "REGISTERCODE_ERROR": "Invalid confirmation code!",
-  
+
   "REGISTER_SUCCESS": "Registration completed successfully!",
   "LOGIN_SUCCESS": "Login successful!",
-  
+
   "GENDER_EMPTY": "Please specify gender!",
   "GENDER_STRING": "Gender must be entered as text!",
   "GENDER_ENUM": "Only 'Male' or 'Female' can be specified!",
-  
+
   "PASSPORT_EMPTY": "Please enter the passport number!",
   "PASSPORT_STRING": "Passport number must be entered as text!",
-  
+
   "SEATNUMBER_EMPTY": "Passenger seat number is required!",
   "SEATNUMBER_INT": "Passenger seat number must be a number!",
-  
+
   "FROM": "Please select the departure location!",
   "ROUTE_NOT_FOUND": "Route not found!",
   "DATE_TRIP_NOT_FOUND": "No trips available on this date!",
   "TRIP_NOT_FOUND": "Trip not found!",
-  
+
   "FROM_EMPTY": "Departure location is required!",
   "TO_EMPTY": "Destination is required!",
   "DEPARTUREDATE_EMPTY": "Departure date is required!",
   "DEPARTURETIME_EMPTY": "Departure time is required!",
-  
+
   "BANKCARD_EMPTY": "Please enter the card number!",
   "BANKCARD_REGEX": "Only UzCard or Humo cards are allowed!",
   "BANKCARD_INVALID": "Card number has an invalid format!",
-  
+
   "EXPIRYDATE_EMPTY": "Please enter the card expiry date!",
   "EXPIRYDATE_REGEX": "Expiry date format is invalid! Correct format: MM/YY",
   "EXPIRYDATE_INVALID": "Card has already expired!",
-  
+
   "CHECKUSER": "A user with this phone number is already registered!",
   "LOGIN_CHECUSER": "No user found with this phone number!",
   "USER_NOT_FOUND": "User not found!",
   "USER_UPDATE_SUCCESS": "User information updated successfully!",
-  
+
   "CITY_NOT_FOUND": "No cities found!",
-  
+
   "USER_TOKEN_WRONG": "Token does not belong to this user!",
-  
+
   "SEAT_NOT_FOUND": "Seat not found!",
   "SEAT_BUSY": "Seat is already booked!",
-  
+
   "BUS_NOT_FOUND": "Bus not found!",
   "USER_DATA": "User data is incomplete! Please fill in all required information!",
-  
+
   "TICKETS_NOT_FOUND": "You have no purchased tickets!",
   "TICKET_NOT_FOUND": "Ticket not found!",
   "DELETE_TICKET": "Ticket deleted successfully!",
   "CANCEL_TICKET": "Ticket canceled!",
-  
+  "CREATE_TICKET": "Tickets created!",
+  "TICKET_TOKEN_ERROR": "Please select the seat again!",
+  "LOGIN_ERROR": "Login failed. Please sign in!",
+
   "INVALID_FILE": "Please upload the image as a file!",
   "FILE_SIZE": "Image size must not exceed 5 MB!",
   "IMAGE_UPDATE": "User photo updated!",
   "DELETE_IMAGE_SUCCESS": "User photo deleted successfully!",
-  
+
   "INVALID_ID": "Invalid ID!",
   "SERVER_ERROR": "Server error!"
 }

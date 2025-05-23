@@ -1,76 +1,76 @@
 export const registerValidate = (req) => ({
     first_Name: {
         notEmpty: {
-            errorMessage: "Ismni kiriting!"
+            errorMessage: req.__('FIRSTNAME_EMPTY')
         },
         isString: {
-            errorMessage: "Ismni matnda kiriting!"
+            errorMessage: req.__('FIRSTNAME_STRING')
         }
     },
     last_Name: {
         notEmpty: {
-            errorMessage: "Familiyani kiriting!"
+            errorMessage: req.__('LASTNAME_EMPTY')
         },
         isString: {
-            errorMessage: "Familiyani matnda kiriting!"
+            errorMessage: req.__('LASTNAME_STRING')
         }
     },
     password: {
         notEmpty: {
-            errorMessage: "Parolni kiriting!"
+            errorMessage: req.__('PASSWORD_EMPTY')
         },
         isString: {
-            errorMessage: "Parol harf va raqamlardan iborat bo'lishi kerak!"
+            errorMessage: req.__('PASSWORD_STRING')
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: "Parol kamida 6 ta belgidan iborat bo'lishi kerak!"
+            errorMessage: req.__('PASSWORD_LENGTH')
         }
     },
     phoneNumber: {
         notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
+            errorMessage: req.__('PHONE_EMPTY')
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
+            errorMessage: req.__('PHONE_INVALID')
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
+            errorMessage: req.__('PHONE_REGEX')
         }
     }
 })
 
-export const loginValidate = {
+export const loginValidate = (req) => ({
     phoneNumber: {
         notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
+            errorMessage: req.__('PHONE_EMPTY')
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
+            errorMessage: req.__('PHONE_INVALID')
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
+            errorMessage: req.__('PHONE_REGEX')
         },
     },
     password: {
         notEmpty: {
-            errorMessage: "Parolni kiriting!"
+            errorMessage: req.__('PASSWORD_EMPTY')
         },
         isString: {
-            errorMessage: "Parol harf va raqamlardan iborat bo'lishi kerak!"
+            errorMessage: req.__('PASSWORD_STRING')
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: "Parol kamida 6 ta belgidan iborat bo'lishi kerak!"
+            errorMessage: req.__('PASSWORD_LENGTH')
         },
     }
-}
+})
 
-export const confirmRegistrationSchema = {
+export const confirmRegistrationSchema = (req) => ({
     userId: {
         notEmpty: {
             errorMessage: "Foydalanuvchi id si talab qilinadi!"
@@ -78,14 +78,14 @@ export const confirmRegistrationSchema = {
     },
     register_code: {
         notEmpty: {
-            errorMessage: "Tasdiqlash kodini kiritish shart!"
+            errorMessage: req.__('REGISTERCODE_EMPTY')
         },
         isString: {
-            errorMessage: "Tasdiqlash kodi matn bo'lishi kerak!"
+            errorMessage: req.__('REGISTERCODE_STRING')
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: "Tasdiqlash kodi 6 ta raqamdan iborat bo'lishi kaerak"
+            errorMessage: req.__('REGISTERCODE_LENGTH')
         }
     }
-}
+})

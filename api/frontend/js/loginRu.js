@@ -96,7 +96,7 @@ document.getElementById('register_button').addEventListener('click', async funct
     };
 
     try {
-        const res = await fetch('http://localhost:8000/register', {
+        const res = await fetch('http://localhost:8000/register?lang=ru', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -145,7 +145,7 @@ document.getElementById('verify-code-btn').addEventListener('click', async funct
     }
 
     try {
-        const res = await fetch('http://localhost:8000/confirmregistration', {
+        const res = await fetch('http://localhost:8000/confirmregistration?lang=ru', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -186,7 +186,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
     };
 
     try {
-        const response = await fetch('http://localhost:8000/login', {
+        const response = await fetch('http://localhost:8000/login?lang=ru', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -265,7 +265,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/send-code', {
+                const response = await fetch('http://localhost:8000/send-code?lang=ru', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phoneNumber: phone })
@@ -300,7 +300,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                         const smsCode = form.querySelector("input[name='smsCode']").value;
 
                         try {
-                            const responseReset = await fetch('http://localhost:8000/reset-password', {
+                            const responseReset = await fetch('http://localhost:8000/reset-password?lang=ru', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ phoneNumber: phone, password, smsCode })

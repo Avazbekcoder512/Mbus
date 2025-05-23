@@ -1,65 +1,65 @@
-export const profileUpdateSchema = {
+export const profileUpdateSchema = (req) => ({
     first_Name: {
         notEmpty: {
-            errorMessage: "Ismni kiriting!"
+            errorMessage: req.__('FIRSTNAME_EMPTY')
         },
         isString: {
-            errorMessage: "Ismni matnda kiriting!"
+            errorMessage: req.__('FIRSTNAME_STRING')
         }
     },
     last_Name: {
         notEmpty: {
-            errorMessage: "Familiyani kiriting!"
+            errorMessage: req.__('LASTNAME_EMPTY')
         },
         isString: {
-            errorMessage: "Familiyani matnda kiriting!"
+            errorMessage: req.__('LASTNAME_STRING')
         }
     },
     phoneNumber: {
         notEmpty: {
-            errorMessage: 'Telefon raqamni kiriting!'
+            errorMessage: req.__('PHONE_EMPTY')
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan: +998901234567)"
+            errorMessage: req.__('PHONE_INVALID')
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
+            errorMessage: req.__('PHONE_REGEX')
         },
     },
     gender: {
         notEmpty: {
-            errorMessage: 'Jinsni kiriting!'
+            errorMessage: req.__('GENDER_EMPTY')
         },
         isString: {
-            errorMessage: "Jinsni matn ko'rinishida kiritng!"
+            errorMessage: req.__('GENDER_STRING')
         },
         isIn: {
             options: [["male", "female"]],
-            errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
+            errorMessage: req.__('GENDER_ENUM')
         }
     },
     passport: {
         notEmpty: {
-            errorMessage: "Passport raqamini kiriting!"
+            errorMessage: req.__('PASSPORT_EMPTY')
         },
         isString: {
-            errorMessage: "Passport raqamini matnda kiriting!"
+            errorMessage: req.__('PASSPORT_STRING')
         }
     },
     bank_card: {
         notEmpty: {
-            errorMessage: "Karta raqamini kiriting!",
+            errorMessage: req.__('BANKCARD_EMPTY')
         },
         custom: {
             options: (value) => {
                 const cleanCard = value.replace(/\s+/g, '');
                 if (!/^8600\d{12}$/.test(cleanCard) && !/^9860\d{12}$/.test(cleanCard)) {
-                    throw new Error("Faqat UzCard yoki Humo kartalariga ruxsat beriladi!");
+                    throw new Error(req.__('BANKCARD_REGEX'));
                 }
                 if (!/^\d{16}$/.test(cleanCard)) {
-                    throw new Error("Karta raqami noto‘g‘ri formatda!");
+                    throw new Error(req.__('BANKCARD_INVALID'));
                 }
                 return true;
             },
@@ -67,11 +67,11 @@ export const profileUpdateSchema = {
     },
     expiryDate: {
         notEmpty: {
-            errorMessage: "Kartaning yaroqlilik muddati bo‘sh bo‘lmasligi kerak!",
+            errorMessage: req.__('EXPIRYDATE_EMPTY')
         },
         matches: {
             options: [/^(0[1-9]|1[0-2])\/\d{2}$/],
-            errorMessage: "Yaroqlilik muddati noto‘g‘ri formatda! To‘g‘ri format: MM/YY",
+            errorMessage: req.__('EXPIRYDATE_REGEX')
         },
         custom: {
             options: (value) => {
@@ -86,10 +86,10 @@ export const profileUpdateSchema = {
                 now.setDate(1); // faqat oy va yilni solishtirish uchun
 
                 if (expiryDate <= now) {
-                    throw new Error("Karta muddati allaqachon o‘tgan!");
+                    throw new Error(req.__('EXPIRYDATE_INVALID'));
                 }
                 return true;
             },
         },
     },
-}
+})
