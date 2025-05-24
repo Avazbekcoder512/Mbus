@@ -1,76 +1,76 @@
-export const registerValidate = (req) => ({
+export const registerValidate = {
     first_Name: {
         notEmpty: {
-            errorMessage: req.__('FIRSTNAME_EMPTY')
+            errorMessage: 'FIRSTNAME_EMPTY'
         },
         isString: {
-            errorMessage: req.__('FIRSTNAME_STRING')
+            errorMessage: 'FIRSTNAME_STRING'
         }
     },
     last_Name: {
         notEmpty: {
-            errorMessage: req.__('LASTNAME_EMPTY')
+            errorMessage: 'LASTNAME_EMPTY'
         },
         isString: {
-            errorMessage: req.__('LASTNAME_STRING')
+            errorMessage: 'LASTNAME_STRING'
         }
     },
     password: {
         notEmpty: {
-            errorMessage: req.__('PASSWORD_EMPTY')
+            errorMessage: 'PASSWORD_EMPTY'
         },
         isString: {
-            errorMessage: req.__('PASSWORD_STRING')
+            errorMessage: 'PASSWORD_STRING'
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: req.__('PASSWORD_LENGTH')
+            errorMessage: 'PASSWORD_LENGTH'
         }
     },
     phoneNumber: {
         notEmpty: {
-            errorMessage: req.__('PHONE_EMPTY')
+            errorMessage: 'PHONE_EMPTY'
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: req.__('PHONE_INVALID')
+            errorMessage: 'PHONE_INVALID'
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: req.__('PHONE_REGEX')
+            errorMessage: 'PHONE_REGEX'
         }
     }
-})
+}
 
-export const loginValidate = (req) => ({
+export const loginValidate = {
     phoneNumber: {
         notEmpty: {
-            errorMessage: req.__('PHONE_EMPTY')
+            errorMessage: 'PHONE_EMPTY'
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: req.__('PHONE_INVALID')
+            errorMessage: 'PHONE_INVALID'
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: req.__('PHONE_REGEX')
+            errorMessage: 'PHONE_REGEX'
         },
     },
     password: {
         notEmpty: {
-            errorMessage: req.__('PASSWORD_EMPTY')
+            errorMessage: 'PASSWORD_EMPTY'
         },
         isString: {
-            errorMessage: req.__('PASSWORD_STRING')
+            errorMessage: 'PASSWORD_STRING'
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: req.__('PASSWORD_LENGTH')
+            errorMessage: 'PASSWORD_LENGTH'
         },
     }
-})
+}
 
-export const confirmRegistrationSchema = (req) => ({
+export const confirmRegistrationSchema = {
     userId: {
         notEmpty: {
             errorMessage: "Foydalanuvchi id si talab qilinadi!"
@@ -78,14 +78,14 @@ export const confirmRegistrationSchema = (req) => ({
     },
     register_code: {
         notEmpty: {
-            errorMessage: req.__('REGISTERCODE_EMPTY')
+            errorMessage: 'REGISTERCODE_EMPTY'
         },
         isString: {
-            errorMessage: req.__('REGISTERCODE_STRING')
+            errorMessage: 'REGISTERCODE_STRING'
         },
         isLength: {
             options: { min: 6 },
-            errorMessage: req.__('REGISTERCODE_LENGTH')
+            errorMessage: 'REGISTERCODE_LENGTH'
         }
     }
-})
+}

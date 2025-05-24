@@ -204,7 +204,7 @@ document?.addEventListener("DOMContentLoaded", () => {
 
         try {
             const url = `${API_BASE}/findroute?lang=en`
-                + `?from=${encodeURIComponent(from)}`
+                + `&from=${encodeURIComponent(from)}`
                 + `&to=${encodeURIComponent(to)}`
                 + `&departure_date=${encodeURIComponent(departure_date)}`;
             const res = await fetch(url);
