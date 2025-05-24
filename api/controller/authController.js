@@ -176,7 +176,7 @@ export const login = async (req, res) => {
             })
         }
 
-        await userModel.findById(user._id, { last_Login: new Date() })
+        await userModel.findByIdAndUpdate(user._id, { last_Login: new Date() })
 
         const userId = user._id
         const phoneNumber = user.phoneNumber

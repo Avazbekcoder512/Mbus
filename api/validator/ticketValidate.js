@@ -1,4 +1,4 @@
-export const pendingTicketSchema = (req) => ({
+export const pendingTicketSchema = {
     passengers: {
         isArray: {
             errorMessage: "Yo‘lovchilar ro‘yxati array bo‘lishi kerak!"
@@ -9,83 +9,75 @@ export const pendingTicketSchema = (req) => ({
     },
     'passengers.*.fullName': {
         notEmpty: {
-            errorMessage: req.__('FIRSTNAME_EMPTY')
+            errorMessage: 'FIRSTNAME_EMPTY'
         },
         isString: {
-            errorMessage: req.__('FIRSTNAME_STRING')
+            errorMessage: 'FIRSTNAME_STRING'
         }
     },
     'passengers.*.gender': {
         notEmpty: {
-            errorMessage: req.__('GENDER_EMPTY')
+            errorMessage: 'GENDER_EMPTY'
         },
         isString: {
-            errorMessage: req.__('GENDER_STRING')
+            errorMessage: 'GENDER_STRING'
         },
         isIn: {
             options: [["male", "female"]],
-            errorMessage: req.__('GENDER_ENUM')
+            errorMessage: 'GENDER_ENUM'
         }
     },
     'passengers.*.passport': {
         notEmpty: {
-            errorMessage: req.__('PASSPORT_EMPTY')
+            errorMessage: 'PASSPORT_EMPTY'
         },
         isString: {
-            errorMessage: req.__('PASSPORT_STRING')
+            errorMessage: 'PASSPORT_STRING'
         }
     },
     'passengers.*.phoneNumber': {
         notEmpty: {
-            errorMessage: req.__('PHONE_EMPTY')
-        },
-        isMobilePhone: {
-            options: ["uz-UZ"],
-            errorMessage: req.__('PHONE_INVALID')
-        },
-        matches: {
-            options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: req.__('PHONE_REGEX')
+            errorMessage: 'PHONE_EMPTY'
         }
     },
     'passengers.*.seatNumber': {
         notEmpty: {
-            errorMessage: req.__('SEATNUMBER_EMPTY')
+            errorMessage: 'SEATNUMBER_EMPTY'
         },
         isInt: {
-            errorMessage: req.__('SEATNUMBER_INT')
+            errorMessage: 'SEATNUMBER_INT'
         }
     },
     from: {
         notEmpty: {
-            errorMessage: req.__('FROM_EMPTY')
+            errorMessage: 'FROM_EMPTY'
         }
     },
     to: {
         notEmpty: {
-            errorMessage: req.__('TO_EMPTY')
+            errorMessage: 'TO_EMPTY'
         }
     },
     departure_date: {
-        notEmpty: req.__('DEPARTUREDATE_EMPTY')
+        notEmpty: 'DEPARTUREDATE_EMPTY'
     },
     departure_time: {
-        notEmpty: req.__('DEPARTURETIME_EMPTY')
+        notEmpty: 'DEPARTURETIME_EMPTY'
     }
-})
+}
 
 
-export const confirmOrderSchema = (req) => ({
+export const confirmOrderSchema = {
     notEmpty: {
-        errorMessage: req.__('REGISTERCODE_EMPTY')  
+        errorMessage: 'REGISTERCODE_EMPTY'
     },
     verificationCode: {
         isInt: {
-            errorMessage: req.__('REGISTERCODE_INT')
+            errorMessage: 'REGISTERCODE_INT'
         },
     },
     isLength: {
         options: { min: 6 },
-        errorMessage: req.__('REGISTERCODE_LENGTH')
+        errorMessage: 'REGISTERCODE_LENGTH'
     },
-})
+}

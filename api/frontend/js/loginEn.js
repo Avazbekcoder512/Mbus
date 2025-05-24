@@ -165,7 +165,7 @@ document.getElementById('verify-code-btn').addEventListener('click', async funct
             window.location.href = '/429';
         }
 
-        window.location.href = '/';
+        window.location.href = '/en';
     } catch (err) {
         showErrorPopup('Network error: ' + err.message);
     }
@@ -195,7 +195,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
 
         if (response.ok) {
             localStorage.setItem('userId', result.user._id);
-            window.location.href = '/';
+            window.location.href = '/en';
         } else {
             if (response.status === 500) {
                 window.location.href = '/500';

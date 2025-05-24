@@ -1,65 +1,65 @@
-export const profileUpdateSchema = (req) => ({
+export const profileUpdateSchema = {
     first_Name: {
         notEmpty: {
-            errorMessage: req.__('FIRSTNAME_EMPTY')
+            errorMessage: 'FIRSTNAME_EMPTY'
         },
         isString: {
-            errorMessage: req.__('FIRSTNAME_STRING')
+            errorMessage: 'FIRSTNAME_STRING'
         }
     },
     last_Name: {
         notEmpty: {
-            errorMessage: req.__('LASTNAME_EMPTY')
+            errorMessage: 'LASTNAME_EMPTY'
         },
         isString: {
-            errorMessage: req.__('LASTNAME_STRING')
+            errorMessage: 'LASTNAME_STRING'
         }
     },
     phoneNumber: {
         notEmpty: {
-            errorMessage: req.__('PHONE_EMPTY')
+            errorMessage: 'PHONE_EMPTY'
         },
         isMobilePhone: {
             options: ["uz-UZ"],
-            errorMessage: req.__('PHONE_INVALID')
+            errorMessage: 'PHONE_INVALID'
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
-            errorMessage: req.__('PHONE_REGEX')
+            errorMessage: 'PHONE_REGEX'
         },
     },
     gender: {
         notEmpty: {
-            errorMessage: req.__('GENDER_EMPTY')
+            errorMessage: 'GENDER_EMPTY'
         },
         isString: {
-            errorMessage: req.__('GENDER_STRING')
+            errorMessage: 'GENDER_STRING'
         },
         isIn: {
             options: [["male", "female"]],
-            errorMessage: req.__('GENDER_ENUM')
+            errorMessage: 'GENDER_ENUM'
         }
     },
     passport: {
         notEmpty: {
-            errorMessage: req.__('PASSPORT_EMPTY')
+            errorMessage: 'PASSPORT_EMPTY'
         },
         isString: {
-            errorMessage: req.__('PASSPORT_STRING')
+            errorMessage: 'PASSPORT_STRING'
         }
     },
     bank_card: {
         notEmpty: {
-            errorMessage: req.__('BANKCARD_EMPTY')
+            errorMessage: 'BANKCARD_EMPTY'
         },
         custom: {
             options: (value) => {
                 const cleanCard = value.replace(/\s+/g, '');
                 if (!/^8600\d{12}$/.test(cleanCard) && !/^9860\d{12}$/.test(cleanCard)) {
-                    throw new Error(req.__('BANKCARD_REGEX'));
+                    throw new Error('BANKCARD_REGEX');
                 }
                 if (!/^\d{16}$/.test(cleanCard)) {
-                    throw new Error(req.__('BANKCARD_INVALID'));
+                    throw new Error('BANKCARD_INVALID');
                 }
                 return true;
             },
@@ -67,11 +67,11 @@ export const profileUpdateSchema = (req) => ({
     },
     expiryDate: {
         notEmpty: {
-            errorMessage: req.__('EXPIRYDATE_EMPTY')
+            errorMessage: 'EXPIRYDATE_EMPTY'
         },
         matches: {
             options: [/^(0[1-9]|1[0-2])\/\d{2}$/],
-            errorMessage: req.__('EXPIRYDATE_REGEX')
+            errorMessage: 'EXPIRYDATE_REGEX'
         },
         custom: {
             options: (value) => {
@@ -86,10 +86,10 @@ export const profileUpdateSchema = (req) => ({
                 now.setDate(1); // faqat oy va yilni solishtirish uchun
 
                 if (expiryDate <= now) {
-                    throw new Error(req.__('EXPIRYDATE_INVALID'));
+                    throw new Error('EXPIRYDATE_INVALID');
                 }
                 return true;
             },
         },
     },
-})
+}
