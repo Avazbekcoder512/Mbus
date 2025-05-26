@@ -32,7 +32,7 @@ document?.addEventListener("DOMContentLoaded", () => {
             popupMessage.textContent = error.message || "Сначала войдите в систему";
             popup.style.display = 'flex';
         } else if (status === 500) {
-            window.location.href = '/500';
+            window.location.href = '/500/ru';
         } else {
             window.location.reload();
         }
@@ -84,7 +84,7 @@ document?.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("logout")?.addEventListener("click", () => {
         document.cookie = "token=; max-age=0; path=/";
-        window.location.href = "/";
+        window.location.href = "/ru";
     });
 
     document.getElementById("tickets")?.addEventListener("click", () => {

@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            if (response.status === 500) return window.location.href = '/500';
+            if (response.status === 500) return window.location.href = '/500/ru';
 
             if (response.status === 401) {
                 showPopup("error", data.error || "Произошла ошибка!", 401);
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const expiredImage = isExpired
-                ? `<img src='/assets/images/expired.png' alt='expired' draggable="false"/>`
+                ? `<img src='/assets/images/expired3.png' alt='expired' draggable="false"/>`
                 : "";
 
             let statusIcon = '';
@@ -183,7 +183,7 @@ async function downloadTicket(ticketId, btn) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '/500';
+            if (res.status === 500) return window.location.href = '/500/ru';
             if (res.status === 401) return showPopup("error", err.error || "Ошибка загрузки!", 401);
             return showPopup("error", err.error || "Ошибка загрузки!");
         }
@@ -213,7 +213,7 @@ async function deleteExpiredTicket(ticketId) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '/500';
+            if (res.status === 500) return window.location.href = '/500/ru';
             if (res.status === 401) return showPopup("error", err.error || "Ошибка удаления!", 401);
             throw new Error(err.error || "Ошибка удаления!");
         }
@@ -257,7 +257,7 @@ async function cancelTicketPut(ticketId) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '/500';
+            if (res.status === 500) return window.location.href = '/500/ru';
             if (res.status === 401) return showPopup("error", err.error || "Ошибка отмены!", 401);
             throw new Error(err.error || "Ошибка отмены!");
         }

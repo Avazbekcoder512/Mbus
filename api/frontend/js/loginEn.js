@@ -110,7 +110,7 @@ document.getElementById('register_button').addEventListener('click', async funct
         }
 
         if (res.status === 429) {
-            window.location.href = '/429';
+            window.location.href = '/429/en';
         }
 
         const { _id } = json.user;
@@ -162,7 +162,7 @@ document.getElementById('verify-code-btn').addEventListener('click', async funct
         }
 
         if (res.status === 429) {
-            window.location.href = '/429';
+            window.location.href = '/429/en';
         }
 
         window.location.href = '/en';
@@ -198,9 +198,9 @@ document.getElementById('login_buttton').addEventListener('click', async functio
             window.location.href = '/en';
         } else {
             if (response.status === 500) {
-                window.location.href = '/500';
+                window.location.href = '/500/en';
             } else if (response.status === 429) {
-                window.location.href = '/429';
+                window.location.href = '/429/en';
             } else if (result.error && typeof result.error === 'string') {
                 showErrorPopup(result.error);
             } else if (result.error && Array.isArray(result.error) && result.error.length > 0) {
@@ -312,9 +312,9 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                                 showSuccessPopup(resultReset.message);
                             } else {
                                 if (responseReset.status === 500) {
-                                    window.location.href = '/500';
+                                    window.location.href = '/500/en';
                                 } else if (responseReset.status === 429) {
-                                    window.location.href = '/429';
+                                    window.location.href = '/429/en';
                                 } else if (resultReset.error) {
                                     showErrorPopup(typeof resultReset.error === 'string' ? resultReset.error : resultReset.error[0]);
                                 } else {
