@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>429 - Urinishlar Chegara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #6366f1;
+            --accent: #f43f5e;
+            --bg: #f8fafc;
+            --text: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'Figtree', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .attempt-tracker {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .attempt-dot {
+            width: 12px;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            animation: dotPulse 1.2s infinite;
+        }
+
+        .attempt-dot:nth-child(2) { animation-delay: 0.2s; }
+        .attempt-dot:nth-child(3) { animation-delay: 0.4s; }
+        .attempt-dot:nth-child(4) { animation-delay: 0.6s; }
+
+        .error-code {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--text);
+            margin: 2rem 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .error-code::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            animation: lineFlow 2s infinite;
+        }
+
+        .message {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin: 2rem 0;
+            color: #64748b;
+            position: relative;
+        }
+
+        .retry-btn {
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .retry-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255,255,255,0.3),
+                transparent
+            );
+            transition: 0.6s;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(15,23,42,0.1);
+        }
+
+        .retry-btn:hover::before {
+            left: 100%;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: translateY(0); }
+            50% { 
+                transform: translateY(-8px);
+                background: var(--accent);
+            }
+        }
+
+        @keyframes lineFlow {
+            0% { background-size: 100% 100%; }
+            50% { background-size: 200% 100%; }
+            100% { background-size: 100% 100%; }
+        }
+
+        .attempt-counter {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .error-code { font-size: 3rem; }
+            .message { font-size: 1rem; }
+            .retry-btn { padding: 0.8rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="attempt-tracker">
+            <div class="attempt-dot"></div>
+            <div class="attempt-dot"></div>
+            <div class="attempt-dot"></div>
+            <div class="attempt-dot"></div>
+        </div>
+
+        <h1 class="error-code">429</h1>
+        
+        <p class="message">
+            You tried so hard!<br>
+            <span style="color: var(--accent); font-weight: 500;" class="error-message">Try again in 15 minutes!</span>
+        </p>
+
+        <button class="retry-btn" onclick="window.location.href='/login'">
+            <span style="position: relative; z-index: 1;">Try Again</span>
+        </button>
+    </div>
+    <script src="../js/loginEn.js" defer></script>
+</body>
+</html>

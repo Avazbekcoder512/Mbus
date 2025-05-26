@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 showErrorPopup(errorData.error, '/login/en');
                 return;
             } else if (response.status === 500) {
-                window.location.href = '/500';
+                window.location.href = '/500/en';
                 return;
             } else {
                 showErrorPopup(errorData.error || 'An error occurred!', '/en');
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.location.href = "/login/en";
             return;
         } else if (response.status === 500) {
-            window.location.href = '/500';
+            window.location.href = '/500/en';
         }
 
         routeFrom = tripData.trip.route.from;
@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } else if (response.status === 401) {
                         showErrorPopup(result.error, '/login/en');
                     } else if (response.status === 500) {
-                        window.location.href = '/500';
+                        window.location.href = '/500/en';
                     } else {
                         showErrorPopup(result.error || 'An error occurred!');
                     }
@@ -473,7 +473,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             if (response.status === 500) {
-                window.location.href = '/500';
+                window.location.href = '/500/en';
                 return;
             }
 

@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            if (response.status === 500) return window.location.href = '/500';
+            if (response.status === 500) return window.location.href = '/500/en';
 
             if (response.status === 401) {
                 showPopup("error", data.error || "An error occurred!", 401);
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const expiredImage = isExpired
-                ? `<img src='/assets/images/expired.png' alt='expired' draggable="false"/>`
+                ? `<img src='/assets/images/expired2.png' alt='expired' draggable="false"/>`
                 : "";
 
             let statusIcon = '';
@@ -183,7 +183,7 @@ async function downloadTicket(ticketId, btn) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '/500';
+            if (res.status === 500) return window.location.href = '/500/en';
             if (res.status === 401) return showPopup("error", err.error || "Download error!", 401);
             return showPopup("error", err.error || "Download error!");
         }
@@ -213,7 +213,7 @@ async function deleteExpiredTicket(ticketId) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '/500';
+            if (res.status === 500) return window.location.href = '/500/en';
             if (res.status === 401) return showPopup("error", err.error || "Delete error!", 401);
             throw new Error(err.error || "Delete error!");
         }
@@ -257,7 +257,7 @@ async function cancelTicketPut(ticketId) {
         });
         if (!res.ok) {
             const err = await res.json();
-            if (res.status === 500) return window.location.href = '/500';
+            if (res.status === 500) return window.location.href = '/500/en';
             if (res.status === 401) return showPopup("error", err.error || "Cancellation error!", 401);
             throw new Error(err.error || "Cancellation error!");
         }

@@ -32,7 +32,7 @@ document?.addEventListener("DOMContentLoaded", () => {
             popupMessage.textContent = error.message || "Please log in first";
             popup.style.display = 'flex';
         } else if (status === 500) {
-            window.location.href = '/500';
+            window.location.href = '/500/en';
         } else {
             window.location.reload();
         }
@@ -84,7 +84,7 @@ document?.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("logout")?.addEventListener("click", () => {
         document.cookie = "token=; max-age=0; path=/";
-        window.location.href = "/";
+        window.location.href = "/en";
     });
 
     document.getElementById("tickets")?.addEventListener("click", () => {

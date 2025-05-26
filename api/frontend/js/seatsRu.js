@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 showErrorPopup(errorData.error, '/login/ru');
                 return;
             } else if (response.status === 500) {
-                window.location.href = '/500';
+                window.location.href = '/500/ru';
                 return;
             } else {
                 showErrorPopup(errorData.error || 'Произошла ошибка.', '/ru');
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.location.href = "/login/ru";
             return;
         } else if (response.status === 500) {
-            window.location.href = '/500';
+            window.location.href = '/500/ru';
         }
 
         routeFrom = tripData.trip.route.from;
@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } else if (response.status === 401) {
                         showErrorPopup(result.error, '/login/ru');
                     } else if (response.status === 500) {
-                        window.location.href = '/500';
+                        window.location.href = '/500/ru';
                     } else {
                         showErrorPopup(result.error || 'Xatolik yuz berdi');
                     }
@@ -473,7 +473,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             if (response.status === 500) {
-                window.location.href = '/500';
+                window.location.href = '/500/ru';
                 return;
             }
 

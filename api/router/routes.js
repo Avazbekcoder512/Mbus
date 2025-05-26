@@ -10,7 +10,7 @@ import { resetPassword, sendCode } from '../controller/passwordController.js'
 import { confirmOrderSchema, pendingTicketSchema } from '../validator/ticketValidate.js'
 import { loginLimit } from '../middleware/loginLimit.js'
 import { limit } from '../middleware/limit.js'
-import { page404, page429, page500 } from '../controller/errorController.js'
+import { page404, page404En, page404Ru, page429, page429En, page429Ru, page500, page500En, page500Ru } from '../controller/errorController.js'
 import { profileImageDelete, profileImageUpdate, updateProfile, userPage, userPageEn, userPageRu, userProfile } from '../controller/userController.js'
 import multer from 'multer'
 import { profileUpdateSchema } from '../validator/userValidate.js'
@@ -65,8 +65,14 @@ router
 
     // error router
     .get('/404', page404)
+    .get('/404/ru', page404Ru)
+    .get('/404/en', page404En)
     .get('/429', page429)
+    .get('/429/ru', page429Ru)
+    .get('/429/en', page429En)
     .get('/500', page500)
+    .get('/500/ru', page500Ru)
+    .get('/500/en', page500En)
 
 router.use((req, res) => {
     res.redirect('/404')
