@@ -4,6 +4,8 @@ let routeTo = "";
 let route = "";
 let departureDate = "";
 let departureTime = "";
+let arrivalDate = "";
+let arrivalTime = "";
 
 function showErrorPopup(message, redirectUrl = null) {
     const popup = document.getElementById('error-popup');
@@ -87,6 +89,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         route = tripData.trip.route.en_name;
         departureDate = tripData.trip.departure_date;
         departureTime = tripData.trip.departure_time;
+        arrivalDate = tripData.trip.arrival_date;
+        arrivalTime = tripData.trip.arrival_time;
 
         function formatDate(dateStr) {
             const parts = dateStr.split("-");
@@ -398,7 +402,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         from: routeFrom,
                         to: routeTo,
                         departure_date: departureDate,
-                        departure_time: departureTime
+                        departure_time: departureTime,
+                        arrival_date: arrivalDate,
+                        arrival_time: arrivalTime
                     })
                 });
 
@@ -408,7 +414,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     localStorage.setItem('order', result.order);
                     showVerificationModal();
                 } else {
-                    if (result.error === "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!") {
+                    if (result.error === "Данные пользователя неполны! Пожалуйста, заполните информацию!") {
                         showErrorPopup(result.error, '/profile/ru');
                     } else if (response.status === 401) {
                         showErrorPopup(result.error, '/login/ru');

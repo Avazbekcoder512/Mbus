@@ -104,7 +104,7 @@ document?.addEventListener("DOMContentLoaded", () => {
                 throw error;
             }
             j.cities.forEach(c => {
-                fromSelect.append(new Option(c.uz_name, c.uz_name));
+                fromSelect.append(new Option(c.name, c.name));
             });
         } catch (e) {
             handleError(e);
