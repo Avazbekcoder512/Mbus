@@ -31,10 +31,6 @@ export const registerValidate = {
         notEmpty: {
             errorMessage: 'PHONE_EMPTY'
         },
-        isMobilePhone: {
-            options: ["uz-UZ"],
-            errorMessage: 'PHONE_INVALID'
-        },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
             errorMessage: 'PHONE_REGEX'
@@ -46,10 +42,6 @@ export const loginValidate = {
     phoneNumber: {
         notEmpty: {
             errorMessage: 'PHONE_EMPTY'
-        },
-        isMobilePhone: {
-            options: ["uz-UZ"],
-            errorMessage: 'PHONE_INVALID'
         },
         matches: {
             options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],

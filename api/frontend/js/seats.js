@@ -103,9 +103,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       tripTitleEl.innerHTML = `${routeFrom} - ${routeTo} <span class="date">${formattedDate} ${departureTime}</span>`;
     }
 
-    // if (tripTitleEl) {
-    //   tripTitleEl.innerHTML = `${route}<span class="date">${formattedDate} ${departureTime}</span>`;
-    // }
     const seats = tripData.trip.seats || [];
     let freeSeats = 0;
     let bookedSeats = 0;
