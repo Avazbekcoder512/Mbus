@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import { validationResult, matchedData } from 'express-validator'
 import { userModel } from '../models/user.js'
 import bcrypt from 'bcrypt'
+import { getNewToken } from '../middleware/tokenMiddleware.js'
 dotenv.config()
 
 const generateToken = (id, phoneNumber, first_Name, last_Name) => {
