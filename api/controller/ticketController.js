@@ -251,70 +251,6 @@ export const pendingTicket = async (req, res) => {
 
 
 
-        // const Token = await getNewToken()
-
-        // const Phone = user.phoneNumber
-        // const Message = `Qovunsayli.uz saytidagi telefon raqamingizni tasdiqlash kodi ${verificationCode}`
-
-        // axios.post('https://notify.eskiz.uz/api/message/sms/send', {
-        //     mobile_phone: Phone,
-        //     message: Message,
-        //     from: process.env.Eskiz_From
-        // }, {
-        //     headers: {
-        //         Authorization: `Bearer ${Token}`
-        //     }
-        // })
-        //     .then(res => console.log(res.data))
-        //     .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
-
-        await userModel.findByIdAndUpdate(user._id, { verification_code: verificationCode })
-
-        return res.status(200).send({
-            tempTickets: createdTickets,
-            order: order
-        });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({
-            error: req.__('SERVER_ERROR')
-        })
-    }
-}
-
-export const seatBooking = async (req, res) => {
-    try {
-        const token = req.cookies.token
-
-        const decodet = jwt.verify(token, process.env.JWT_KEY);
-
-        const userId = decodet.id;
-
-        console.log(req.body);
-
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map(error => req.__(error.msg))
-            })
-        }
-
-        const data = matchedData(req)
-
-        const user = await userModel.findById(userId)
-
-        if (!user) {
-            return res.status(400).send({
-                error: req.__('USER_NOT_FOUND')
-            })
-        }
-
-        const generateRandomCode = () =>
-            Math.floor(100000 + Math.random() * 900000);
-
-        const verificationCode = generateRandomCode();
-        console.log(verificationCode);
-
         const Token = await getNewToken()
 
         const Phone = user.phoneNumber
@@ -332,12 +268,12 @@ export const seatBooking = async (req, res) => {
             .then(res => console.log(res.data))
             .catch(err => console.error('SMS yuborishda xatolik:', err.response?.data || err))
 
+        await userModel.findByIdAndUpdate(user._id, { verification_code: verificationCode })
 
-        await userModel.findByIdAndUpdate(user.id, { bank_card: data.bank_card, expiryDate: data.expiryDate, verification_code: verificationCode })
-
-        return res.status(201).send({
-            message: "Telefon raqamga sms cod yuborildi!"
-        })
+        return res.status(200).send({
+            tempTickets: createdTickets,
+            order: order
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).send({
