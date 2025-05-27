@@ -104,7 +104,7 @@ document?.addEventListener("DOMContentLoaded", () => {
                 throw error;
             }
             j.cities.forEach(c => {
-                fromSelect.append(new Option(c.uz_name, c.uz_name));
+                fromSelect.append(new Option(c.name, c.name));
             });
         } catch (e) {
             handleError(e);
@@ -239,7 +239,7 @@ document?.addEventListener("DOMContentLoaded", () => {
                 html += `
             <tr onclick="saveTripId('${trip._id}')" style="cursor:pointer">
               <td>${trip.departure_date}<br>${trip.departure_time}</td>
-              <td>${trip.route.uz_name}</td>
+              <td>${trip.route.ru_name}</td>
               <td>${trip.bus?.seats_count ?? '-'}</td>
               <td>${trip.ticket_price ?? '-'} сум</td>
               <td>${trip.bus?.bus_model ?? '-'}</td>

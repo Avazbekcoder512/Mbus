@@ -59,10 +59,24 @@ export const pendingTicketSchema = {
         }
     },
     departure_date: {
-        notEmpty: 'DEPARTUREDATE_EMPTY'
+        notEmpty: {
+            errorMessage: 'DEPARTUREDATE_EMPTY'
+        }
     },
     departure_time: {
-        notEmpty: 'DEPARTURETIME_EMPTY'
+        notEmpty: {
+            errorMessage: 'DEPARTURETIME_EMPTY'
+        }
+    },
+    arrival_date: {
+        notEmpty: {
+            errorMessage: "ARRIVALDATE_EMPTY"
+        }
+    },
+    arrival_time: {
+        notEmpty: {
+            errorMessage: "ARRIVALTIME_EMPTY"
+        }
     }
 }
 

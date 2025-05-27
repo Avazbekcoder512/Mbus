@@ -43,6 +43,8 @@
   "TO_EMPTY": "Destination is required!",
   "DEPARTUREDATE_EMPTY": "Departure date is required!",
   "DEPARTURETIME_EMPTY": "Departure time is required!",
+  "ARRIVALDATE_EMPTY": "Return date is required!",
+  "ARRIVALTIME_EMPTY": "Return time is required!",
 
   "BANKCARD_EMPTY": "Please enter the card number!",
   "BANKCARD_REGEX": "Only UzCard or Humo cards are allowed!",

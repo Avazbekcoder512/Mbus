@@ -43,6 +43,8 @@
     "TO_EMPTY": "Qayerga ekanligi bo'lishi shart!",
     "DEPARTUREDATE_EMPTY": "Jo'nash kuni bo'lishi shart!",
     "DEPARTURETIME_EMPTY": "Jo'nash vaqti bo'lishi shart!",
+    "ARRIVALDATE_EMPTY": "Qaytib kelish kuni bo'lishi shart!",
+    "ARRIVALTIME_EMPTY": "Qaytib kelish vaqti bo'lishi shart!",
 
     "BANKCARD_EMPTY": "Karta raqamini kiriting!",
     "BANKCARD_REGEX": "Faqat UzCard yoki Humo kartalariga ruxsat beriladi!",

@@ -81,7 +81,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const ticketId = ticket._id;
             const departureDate = ticket.departure_date || "";
             const departureTime = ticket.departure_time || "";
-            const ticketDateTime = new Date(`${departureDate} ${departureTime}`);
+            const arrivalDate = ticket.arrival_date || "";
+            const arrivalTime = ticket.arrival_time || "";
+            const ticketDateTime = new Date(`${arrivalDate} ${arrivalTime}`);
             const now = new Date();
             const isExpired = (ticketDateTime.getTime() + oneDayInMs) < now.getTime();
 
