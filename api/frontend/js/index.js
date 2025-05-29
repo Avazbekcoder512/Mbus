@@ -41,7 +41,9 @@ document?.addEventListener("DOMContentLoaded", () => {
     function getCookie(name) {
         const cookies = document.cookie.split("; ");
         for (let cookie of cookies) {
-            const [key, value] = cookie.split("=");
+            const idx = cookie.indexOf("=");
+            const key = cookie.slice(0, idx);
+            const value = cookie.slice(idx + 1);
             if (key === name) return decodeURIComponent(value);
         }
         return null;

@@ -7,16 +7,25 @@ let departureTime = "";
 let arrivalDate = "";
 let arrivalTime = "";
 
-function showErrorPopup(message, redirectUrl = null) {
+function showErrorPopup(message, redirectUrl = null, isSuccess = false) {
   const popup = document.getElementById('error-popup');
   const errorMessage = document.getElementById('error-message');
   const errorButtons = document.getElementById('error-buttons');
 
+  // Set message
   errorMessage.textContent = message;
   errorButtons.innerHTML = '';
 
+  // Create Close button
   const closeBtn = document.createElement('button');
   closeBtn.textContent = 'Yopish';
+
+  // If it's a success popup, add success styling
+  if (isSuccess) {
+    closeBtn.classList.add('btn-success');
+  }
+
+  // Close handler
   closeBtn.onclick = () => {
     popup.classList.remove('visible');
     if (redirectUrl) window.location.href = redirectUrl;
@@ -257,7 +266,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             id="fullName_${seatId}"
             name="fullName_${seatId}"
             placeholder="To‘liq ism"
-            required
             value="${(userData.user?.first_Name || '') + (userData.user?.last_Name ? ' ' + userData.user.last_Name : '')}"
           >
         </div>
@@ -266,7 +274,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           <select
             id="gender_${seatId}"
             name="gender_${seatId}"
-            required
           >
             <option value="" disabled selected>Jinsni tanlang</option>
             <option value="male" ${userData.user?.gender === 'male' ? 'selected' : ''}>Erkak</option>
@@ -280,7 +287,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             id="passport_${seatId}"
             name="passport_${seatId}"
             placeholder="AA1234567"
-            required
             value="${userData.user?.passport || ''}"
           >
         </div>
@@ -291,7 +297,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             id="phone_${seatId}"
             name="phone_${seatId}"
             placeholder="+998 (XX) XXX-XX-XX"
-            required
             value="${userData.user?.phoneNumber ? formatPhoneNumber(userData.user.phoneNumber) : ''}"
           >
         </div>

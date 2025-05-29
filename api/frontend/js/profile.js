@@ -250,14 +250,19 @@ document.addEventListener('DOMContentLoaded', () => {
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Saqlashda xatolik');
-    originalData = { ...payload };
-    displayName.textContent = `${payload.first_Name} ${payload.last_Name}`;
-    inputs.forEach(i => i.disabled = true);
-    editBtn.classList.remove('hidden');
-    saveBtn.classList.add('hidden');
-    cancelBtn.classList.add('hidden');
-    showSuccess(data.message || 'Ma\'lumotlar muvaffaqiyatli saqlandi');
+    
+    if (!res.ok || (res.status !== 200 && res.status !== 201)) {
+      showError(data.error|| data.message);
+    } else {
+      originalData = { ...payload };
+      displayName.textContent = `${payload.first_Name} ${payload.last_Name}`;
+      inputs.forEach(i => i.disabled = true);
+      editBtn.classList.remove('hidden');
+      saveBtn.classList.add('hidden');
+      cancelBtn.classList.add('hidden');
+      showSuccess(data.message || 'Ma\'lumotlar muvaffaqiyatli saqlandi');
+    }
+
   }));
 
   // Popup close handlers

@@ -211,7 +211,7 @@ export const pendingTicket = async (req, res) => {
                 return res.status(404).send({ error: req.__('BUS_NOT_FOUND') });
             }
 
-            if (!user.bank_card || !user.expiryDate || !user.passport || !user.gender) {
+            if (!user.bank_card || !user.expiryDate || !user.passport || !user.gender || !user.phoneNumber) {
                 return res.status(400).send({
                     error: req.__('USER_DATA')
                 })
