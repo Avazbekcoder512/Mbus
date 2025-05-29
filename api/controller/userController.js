@@ -86,7 +86,7 @@ export const updateProfile = async (req, res) => {
     }
 
     console.log(req.body);
-    
+
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -97,29 +97,37 @@ export const updateProfile = async (req, res) => {
 
     const data = matchedData(req)
 
-    const user = await userModel.findById(id)
+    if (data.gender === "male" || data.gender === "female") {
 
-    if (!user) {
-      return res.status(404).send({
-        error: req.__('USER_NOT_FOUND')
+      const user = await userModel.findById(id)
+
+      if (!user) {
+        return res.status(404).send({
+          error: req.__('USER_NOT_FOUND')
+        })
+      }
+
+      const updatedUser = {
+        first_Name: data.first_Name || user.first_Name,
+        last_Name: data.last_Name || user.last_Name,
+        phoneNumber: data.phoneNumber || user.phoneNumber,
+        bank_card: data.bank_card || user.bank_card,
+        expiryDate: data.expiryDate || user.expiryDate,
+        passport: data.passport || user.passport,
+        gender: data.gender || user.gender
+      }
+
+      await userModel.findByIdAndUpdate(id, updatedUser)
+
+      return res.status(201).send({
+        message: req.__('USER_UPDATE_SUCCESS')
+      })
+    } else {
+      return res.status(400).send({
+        error: req.__('GENDER_ENUM')
       })
     }
 
-    const updatedUser = {
-      first_Name: data.first_Name || user.first_Name,
-      last_Name: data.last_Name || user.last_Name,
-      phoneNumber: data.phoneNumber || user.phoneNumber,
-      bank_card: data.bank_card || user.bank_card,
-      expiryDate: data.expiryDate || user.expiryDate,
-      passport: data.passport || user.passport,
-      gender: data.gender || user.gender
-    }
-
-    await userModel.findByIdAndUpdate(id, updatedUser)
-
-    return res.status(201).send({
-      message: req.__('USER_UPDATE_SUCCESS')
-    })
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -221,7 +229,7 @@ export const profileImageUpdate = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-       error: req.__('SERVER_ERROR')
+      error: req.__('SERVER_ERROR')
     });
   }
 }

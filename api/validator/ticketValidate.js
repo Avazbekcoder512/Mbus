@@ -8,36 +8,18 @@ export const pendingTicketSchema = {
         }
     },
     'passengers.*.fullName': {
-        notEmpty: {
-            errorMessage: 'FIRSTNAME_EMPTY'
-        },
         isString: {
             errorMessage: 'FIRSTNAME_STRING'
         }
     },
     'passengers.*.gender': {
-        notEmpty: {
-            errorMessage: 'GENDER_EMPTY'
-        },
         isString: {
             errorMessage: 'GENDER_STRING'
         },
-        isIn: {
-            options: [["male", "female"]],
-            errorMessage: 'GENDER_ENUM'
-        }
     },
     'passengers.*.passport': {
-        notEmpty: {
-            errorMessage: 'PASSPORT_EMPTY'
-        },
         isString: {
             errorMessage: 'PASSPORT_STRING'
-        }
-    },
-    'passengers.*.phoneNumber': {
-        notEmpty: {
-            errorMessage: 'PHONE_EMPTY'
         }
     },
     'passengers.*.seatNumber': {

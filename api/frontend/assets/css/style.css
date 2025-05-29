@@ -2151,3 +2151,8 @@ select:disabled {
   width: 40px;
   height: auto;
 }
+
+.btn-success {
+  background-color: green;
+  color: white;
+}

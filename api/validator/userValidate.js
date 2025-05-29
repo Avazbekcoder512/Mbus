@@ -30,10 +30,6 @@ export const profileUpdateSchema = {
         },
         isString: {
             errorMessage: 'GENDER_STRING'
-        },
-        isIn: {
-            options: [["male", "female"]],
-            errorMessage: 'GENDER_ENUM'
         }
     },
     passport: {
