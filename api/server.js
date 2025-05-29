@@ -35,7 +35,7 @@ app.use(i18n.init)
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
-app.use(cors({ origin: ['https://atr.uz', "http://localhost:8000"], methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: true }))
+app.use(cors())
 app.use(express.static("public"));
 app.use(express.static("frontend"));
 
