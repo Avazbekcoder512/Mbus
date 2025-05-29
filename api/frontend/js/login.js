@@ -6,6 +6,8 @@ let switchBtn = document.querySelectorAll(".switch-btn");
 let aContainer = document.querySelector("#a-container");
 let bContainer = document.querySelector("#b-container");
 let allButtons = document.querySelectorAll(".submit");
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://atr.uz'
 
 let getButtons = e => e.preventDefault();
 
@@ -105,7 +107,7 @@ document.getElementById('register_button').addEventListener('click', async funct
     };
 
     try {
-        const res = await fetch('http://localhost:8000/register?lang=uz', {
+        const res = await fetch(`${api_url}/register?lang=uz`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -158,7 +160,7 @@ document.getElementById('verify-code-btn').addEventListener('click', async funct
     }
 
     try {
-        const res = await fetch('http://localhost:8000/confirmregistration?lang=uz', {
+        const res = await fetch(`${api_url}/confirmregistration?lang=uz`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -200,16 +202,11 @@ document.getElementById('login_buttton').addEventListener('click', async functio
     };
 
     try {
-        const response = await fetch('http://localhost:8000/login?lang=uz', {
+        const response = await fetch(`${api_url}/login?lang=uz`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        // const response = await fetch('https://mbus.onrender.com/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
 
         const result = await response.json();
         const errorMessage = document.querySelector('.error-message')
@@ -295,14 +292,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
             }
 
             try {
-                // const response = await fetch('https://mbus.onrender.com/send-code', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ phoneNumber: phone })
-                // });
-                // const result = await response.json();
-
-                const response = await fetch('http://localhost:8000/send-code?lang=uz', {
+                const response = await fetch(`${api_url}/send-code?lang=uz`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phoneNumber: phone })
@@ -343,13 +333,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                         const smsCode = form.querySelector("input[name='smsCode']").value;
 
                         try {
-                            // const responseReset = await fetch('https://mbus.onrender.com/reset-password', {
-                            //     method: 'POST',
-                            //     headers: { 'Content-Type': 'application/json' },
-                            //     body: JSON.stringify({ phoneNumber: phone, password, smsCode })
-                            // });
-                            // const resultReset = await responseReset.json();
-                            const responseReset = await fetch('http://localhost:8000/reset-password?lang=uz', {
+                            const responseReset = await fetch(`${api_url}/reset-password?lang=uz`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ phoneNumber: phone, password, smsCode })
