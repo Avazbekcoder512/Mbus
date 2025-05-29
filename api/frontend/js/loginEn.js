@@ -7,7 +7,7 @@ let aContainer = document.querySelector("#a-container");
 let bContainer = document.querySelector("#b-container");
 let allButtons = document.querySelectorAll(".submit");
 // const api_url = 'http://localhost:8000'
-const api_url = 'https://atr.uz'
+const api_url = 'https://www.atr.uz'
 
 let getButtons = e => e.preventDefault();
 

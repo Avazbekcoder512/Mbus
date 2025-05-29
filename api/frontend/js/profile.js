@@ -1,5 +1,5 @@
 // const api_url = 'http://localhost:8000'
-const api_url = 'https://atr.uz'
+const api_url = 'https://www.atr.uz'
 
 // Popup funksiyalari
 function showError(message) {

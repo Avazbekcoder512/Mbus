@@ -10,7 +10,7 @@ document?.addEventListener("DOMContentLoaded", () => {
     const userMenu = document.getElementById("user-menu");
     let fpInstance = null;
     // const API_BASE = "http://localhost:8000";
-    const API_BASE = "https://atr.uz";
+    const API_BASE = "https://www.atr.uz";
 
     // Помощник: извлекаем сообщение об ошибке из ответа (массив или строка)
     function extractError(err) {
