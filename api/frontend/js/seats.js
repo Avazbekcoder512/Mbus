@@ -7,6 +7,9 @@ let departureTime = "";
 let arrivalDate = "";
 let arrivalTime = "";
 
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://atr.uz'
+
 function showErrorPopup(message, redirectUrl = null, isSuccess = false) {
   const popup = document.getElementById('error-popup');
   const errorMessage = document.getElementById('error-message');
@@ -42,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let userData = {};
   if (userId) {
     try {
-      const userRes = await fetch(`http://localhost:8000/profile/${userId}?lang=uz`);
+      const userRes = await fetch(`${api_url}/profile/${userId}?lang=uz`);
       if (userRes.ok) {
         userData = await userRes.json();
       }
@@ -67,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     showPreloader();
-    const response = await fetch(`http://localhost:8000/trip/${tripId}?lang=uz`, {
+    const response = await fetch(`${api_url}/trip/${tripId}?lang=uz`, {
       method: "GET"
     });
 
@@ -392,7 +395,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       try {
-        const response = await fetch("http://localhost:8000/ticket-pending?lang=uz", {
+        const response = await fetch(`${api_url}/ticket-pending?lang=uz`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -462,7 +465,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/confirm?lang=uz', {
+      const response = await fetch(`${api_url}/confirm?lang=uz`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

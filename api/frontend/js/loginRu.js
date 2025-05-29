@@ -6,6 +6,8 @@ let switchBtn = document.querySelectorAll(".switch-btn");
 let aContainer = document.querySelector("#a-container");
 let bContainer = document.querySelector("#b-container");
 let allButtons = document.querySelectorAll(".submit");
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://atr.uz'
 
 let getButtons = e => e.preventDefault();
 
@@ -96,7 +98,7 @@ document.getElementById('register_button').addEventListener('click', async funct
     };
 
     try {
-        const res = await fetch('http://localhost:8000/register?lang=ru', {
+        const res = await fetch(`${api_url}/register?lang=ru`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -145,7 +147,7 @@ document.getElementById('verify-code-btn').addEventListener('click', async funct
     }
 
     try {
-        const res = await fetch('http://localhost:8000/confirmregistration?lang=ru', {
+        const res = await fetch(`${api_url}/confirmregistration?lang=ru`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -186,7 +188,7 @@ document.getElementById('login_buttton').addEventListener('click', async functio
     };
 
     try {
-        const response = await fetch('http://localhost:8000/login?lang=ru', {
+        const response = await fetch(`${api_url}/login?lang=ru`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -265,7 +267,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
             }
 
             try {
-                const response = await fetch('http://localhost:8000/send-code?lang=ru', {
+                const response = await fetch(`${api_url}/send-code?lang=ru`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phoneNumber: phone })
@@ -300,7 +302,7 @@ document.getElementById('b-form').addEventListener('click', function (e) {
                         const smsCode = form.querySelector("input[name='smsCode']").value;
 
                         try {
-                            const responseReset = await fetch('http://localhost:8000/reset-password?lang=ru', {
+                            const responseReset = await fetch(`${api_url}/reset-password?lang=ru`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ phoneNumber: phone, password, smsCode })

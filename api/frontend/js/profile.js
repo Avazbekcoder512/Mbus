@@ -1,4 +1,5 @@
-// profile.js
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://atr.uz'
 
 // Popup funksiyalari
 function showError(message) {
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Foydalanuvchi ma'lumotini yuklash
   async function loadUser() {
     try {
-      const res = await fetch(`http://localhost:8000/profile/${userId}?lang=uz`);
+      const res = await fetch(`${api_url}/profile/${userId}?lang=uz`);
       if (!res.ok) throw new Error('Maʼlumot olinmadi');
       const { user } = await res.json();
       originalData = { ...user };
@@ -174,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return showError('Rasm tanlanmadi');
     const formData = new FormData();
     formData.append('image', file);
-    const res = await fetch(`http://localhost:8000/profile/${userId}/avatar?lang=uz`, { method: 'PUT', body: formData });
+    const res = await fetch(`${api_url}/profile/${userId}/avatar?lang=uz`, { method: 'PUT', body: formData });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Rasm saqlanmadi');
     hasCustomImage = Boolean(data.avatarUrl);
@@ -189,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Rasmni o‘chirish (backenddan)
   imgDeleteExistingBtn.addEventListener('click', withLoader(imgDeleteExistingBtn, async () => {
-    const res = await fetch(`http://localhost:8000/profile/${userId}/avatar?lang=uz`, { method: 'DELETE' });
+    const res = await fetch(`${api_url}/profile/${userId}/avatar?lang=uz`, { method: 'DELETE' });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Rasm o‘chirilmadi');
     hasCustomImage = false;
@@ -244,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
       expiryDate: document.getElementById('card-expiry').value.trim(),
       gender: document.getElementById('gender').value      // ← include gender
     };
-    const res = await fetch(`http://localhost:8000/profile/${userId}/update?lang=uz`, {
+    const res = await fetch(`${api_url}/profile/${userId}/update?lang=uz`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

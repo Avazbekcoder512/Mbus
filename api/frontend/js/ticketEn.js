@@ -1,3 +1,6 @@
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://atr.uz'
+
 // --- Popup functions ---
 function showPopup(type, message, errorCode) {
     const popupContainer = document.getElementById("app-popup-container");
@@ -47,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         showPreloader();
 
-        const response = await fetch("http://localhost:8000/tickets?lang=en", {
+        const response = await fetch(`${api_url}/tickets?lang=en`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -180,7 +183,7 @@ async function downloadTicket(ticketId, btn) {
     btn.innerHTML = '<span class="loader"></span>';
 
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/download?lang=en`, {
+        const res = await fetch(`${api_url}/ticket/${ticketId}/download?lang=en`, {
             method: "GET",
         });
         if (!res.ok) {
@@ -210,7 +213,7 @@ async function downloadTicket(ticketId, btn) {
 // --- Delete expired ticket ---
 async function deleteExpiredTicket(ticketId) {
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/delete?lang=en`, {
+        const res = await fetch(`${api_url}/ticket/${ticketId}/delete?lang=en`, {
             method: "DELETE",
         });
         if (!res.ok) {
@@ -251,7 +254,7 @@ function showCancelModal(ticketId) {
 
 async function cancelTicketPut(ticketId) {
     try {
-        const res = await fetch(`http://localhost:8000/ticket/${ticketId}/cancel?lang=en`, {
+        const res = await fetch(`${api_url}/ticket/${ticketId}/cancel?lang=en`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
