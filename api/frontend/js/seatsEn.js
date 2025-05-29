@@ -8,7 +8,7 @@ let arrivalDate = "";
 let arrivalTime = "";
 
 // const api_url = 'http://localhost:8000'
-const api_url = 'https://atr.uz'
+const api_url = 'https://www.atr.uz'
 
 function showErrorPopup(message, redirectUrl = null) {
     const popup = document.getElementById('error-popup');

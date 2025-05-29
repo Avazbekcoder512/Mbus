@@ -10,7 +10,7 @@ document?.addEventListener("DOMContentLoaded", () => {
     const userMenu = document.getElementById("user-menu");
     let fpInstance = null;
     // const API_BASE = "http://localhost:8000";
-    const API_BASE = "https://atr.uz";
+    const API_BASE = "https://www.atr.uz";
 
     // Helper: extract message from backend error (array or string)
     function extractError(err) {
