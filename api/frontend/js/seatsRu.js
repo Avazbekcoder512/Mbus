@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const result = await response.json();
 
             if (response.ok) {
-                showErrorPopup(result.message, '/ticket/ru');
+                showErrorPopup(result.message, '/ticket/ru', true);
             } else {
                 showErrorPopup(result.error || 'Произошла ошибка!');
             }
