@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const result = await response.json();
 
             if (response.ok) {
-                showErrorPopup(result.message, '/ticket/en');
+                showErrorPopup(result.message, '/ticket/en', true);
             } else {
                 showErrorPopup(result.error || 'An error occurred!');
             }

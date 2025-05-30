@@ -487,7 +487,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const result = await response.json();
 
       if (response.ok) {
-        showErrorPopup(result.message, '/ticket', isSuccess = true);
+        showErrorPopup(result.message, '/ticket', true);
       } else {
         showErrorPopup(result.error || 'Xatolik yuz berdi');
       }
