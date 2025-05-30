@@ -40,7 +40,7 @@ export const createPdf = async (ticket, res) => {
 
         // 3. PDF hujjatini yaratish
         const doc = new PDFDocument({
-            size: [600, 350],
+            size: [700, 350],
             layout: 'landscape',
             margin: 30,
         })
@@ -64,17 +64,16 @@ export const createPdf = async (ticket, res) => {
             .fontSize(14)
             .font(fontPath)
             .fillColor('#555')
-            .text(`Avtobus raqami: ${ticket.bus_number || "Noma'lum"}`, 40, 75)
+            .text(`Chipta raqami: ${ticket.ticketId || "Noma'lum"}`, 40, 75)
 
         // Passenger Info
-        const infoStartY = 120
-        const lineSpacing = 36  // Matnlar orasidagi masofani kattalashtirish
-        const labelStyle = { width: 150, align: 'left' }
+        const infoStartY = 100
+        const lineSpacing = 60  // Matnlar orasidagi masofani kattalashtirish
+        const labelStyle = { width: 200, align: 'left' }
         const valueStyle = { align: 'left' }
 
         const info = [
             ['Ism:', ticket.passenger],
-            ['Tug‘ilgan sana:', ticket.birthday],
             ['Pasport raqami:', ticket.passport],
             ['Telefon raqami:', ticket.phoneNumber],
             ['Qayerdan:', ticket.from],
