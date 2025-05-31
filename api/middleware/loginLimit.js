@@ -3,7 +3,7 @@ import { RateLimiterMemory } from 'rate-limiter-flexible'
 const rateLimiter = new RateLimiterMemory({
     points: 3,
     duration: 60,
-    blockDuration: 900
+    blockDuration: 60
 });
 
 export const loginLimit = async (req, res, next) => {
