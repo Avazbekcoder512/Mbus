@@ -30,9 +30,11 @@ let changeForm = e => {
     aContainer.classList.toggle("is-txl");
     bContainer.classList.toggle("is-txl");
     bContainer.classList.toggle("is-z200");
+    aContainer.classList.toggle("is-hidden");
+    bContainer.classList.toggle("is-hidden");
 };
 
-let mainF = e => {
+let mainF = () => {
     allButtons.forEach(btn => btn.addEventListener("click", getButtons));
     switchBtn.forEach(btn => btn.addEventListener("click", changeForm));
 
@@ -41,7 +43,7 @@ let mainF = e => {
     switchCircle.forEach(c => c.classList.add("is-txr"));
     switchC1.classList.add("is-hidden");
     switchC2.classList.remove("is-hidden");
-    aContainer.classList.add("is-txl");
+    aContainer.classList.add("is-txl", "is-hidden");
     bContainer.classList.add("is-txl", "is-z200");
 };
 
