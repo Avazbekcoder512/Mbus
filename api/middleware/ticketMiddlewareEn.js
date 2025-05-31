@@ -4,8 +4,9 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { config } from 'dotenv'
+import {config } from 'dotenv'
 config()
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,7 +16,7 @@ const SUPABASE_URL = process.env.Supabase_Url
 const SUPABASE_KEY = process.env.Anon_key
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-export const createPdf = async (ticket, res) => {
+export const createPdfEn = async (ticket, res) => {
     try {
         // 1. Supabase storage'dan rasmni yuklab olish
         const fileName = `qr/${ticket._id}.png`
@@ -66,7 +67,7 @@ export const createPdf = async (ticket, res) => {
             .fontSize(14)
             .font(fontPath)
             .fillColor('#555')
-            .text(`Chipta raqami: ${ticket.ticketId || "Noma'lum"}`, 40, 75)
+            .text(`Ticket number: ${ticket.ticketId || "Unknown"}`, 40, 75)
 
         // Passenger Info
         const infoStartY = 100
@@ -75,19 +76,19 @@ export const createPdf = async (ticket, res) => {
         const valueStyle = { align: 'left' }
 
         const info = [
-            ['Ism:', ticket.passenger],
-            ['Pasport raqami:', ticket.passport],
-            ['Telefon raqami:', ticket.phoneNumber],
-            ['Qayerdan:', ticket.from],
-            ['Qayerga:', ticket.to],
-            ['O‘rindiq raqami:', ticket.seat_number],
+            ['Name:', ticket.passenger],
+            ['Passport number:', ticket.passport],
+            ['Phone number:', ticket.phoneNumber],
+            ['From where?:', ticket.from],
+            ['Where to?:', ticket.to],
+            ['Seat number:', ticket.seat_number],
         ]
 
         let y = infoStartY
         info.forEach(([label, value]) => {
             doc
                 .font('Helvetica-Bold').fillColor('#000').fontSize(14).text(label, 40, y, labelStyle)
-                .font(fontPath).fillColor('#000').fontSize(14).text(value || "Noma'lum", 190, y, valueStyle)
+                .font(fontPath).fillColor('#000').fontSize(14).text(value || "Unknown", 190, y, valueStyle)
             y += lineSpacing
         })
 
@@ -97,11 +98,11 @@ export const createPdf = async (ticket, res) => {
             .font(fontPath)
             .fillColor('#333')
             .fontSize(14)
-            .text(`Sana: ${ticket.departure_date || '---'}`, 40, textY)
-            .text(`Vaqt: ${ticket.departure_time || '---'}`, 200, textY)
+            .text(`Date: ${ticket.departure_date || '---'}`, 40, textY)
+            .text(`Time: ${ticket.departure_time || '---'}`, 200, textY)
             .font('Helvetica-Bold')
             .fillColor('#27ae60')
-            .text(`Narxi: ${ticket.price || '0'} so'm`, 400, textY)
+            .text(`Price: ${ticket.price || '0'} so'm`, 400, textY)
 
         // QR kod va chiziqni joylash
         const qrSize = 150  // QR kod kattaligi
@@ -123,7 +124,7 @@ export const createPdf = async (ticket, res) => {
             height: qrSize,
         })
 
-
+        
         doc.end()
 
         // Rasmni vaqtincha saqlangan fayldan o‘chirish
