@@ -13,6 +13,8 @@ import { createClient } from '@supabase/supabase-js'
 import QRCode from 'qrcode'
 import axios from 'axios'
 import { getNewToken } from '../middleware/tokenMiddleware.js'
+import { createPdfRu } from '../middleware/ticketMiddlewareRu.js'
+import { createPdfEn } from '../middleware/ticketMiddlewareEn.js'
 
 config()
 
@@ -485,6 +487,8 @@ export const getTicket = async (req, res) => {
 export const downloadTicket = async (req, res) => {
     try {
         const { id } = req.params
+        const { lang } = req.query
+
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
@@ -500,7 +504,14 @@ export const downloadTicket = async (req, res) => {
             })
         }
 
-        createPdf(ticket, res)
+        if (lang === "uz") {
+            createPdf(ticket, res)
+        } else if (lang === "ru") {
+            createPdfRu(ticket, res)
+        } else if (lang === "en") {
+            createPdfEn(ticket, res)
+        }
+
 
     } catch (error) {
         console.log(error);
