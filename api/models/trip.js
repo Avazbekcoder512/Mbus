@@ -8,7 +8,9 @@ const tripSchema = new mongoose.Schema({
     departure_time: String,
     arrival_date: String,
     arrival_time: String,
-    ticket_price: Number,
+    vip_price: Number,
+    premium_price: Number,
+    ekonom_price: Number,
     seats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Seat" }],
 }, { timestamps: true })
 

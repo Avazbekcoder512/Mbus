@@ -27,11 +27,11 @@ router
     .get('/login', loginPage)
     .get('/login/ru', loginPageRu)
     .get('/login/en', loginPageEn)
-    .post('/register', checkSchema(registerValidate), register)
+    .post('/register', loginLimit, checkSchema(registerValidate), register)
     .post('/confirmregistration', loginLimit, checkSchema(confirmRegistrationSchema), confirmRegistration)
     .post('/login', loginLimit, checkSchema(loginValidate), login)
     .get('/logout', logout)
-    .post('/send-code', checkSchema(sendCodeSchema), sendCode)
+    .post('/send-code', loginLimit, checkSchema(sendCodeSchema), sendCode)
     .post('/reset-password', loginLimit, checkSchema(resetPasswordSchema), resetPassword)
 
     // user router
