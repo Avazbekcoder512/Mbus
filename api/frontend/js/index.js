@@ -232,7 +232,6 @@ document?.addEventListener("DOMContentLoaded", () => {
                 <th>Ketish vaqti</th>
                 <th>Yo‘nalish</th>
                 <th>O‘rinlar</th>
-                <th>Narx</th>
                 <th>Model</th>
               </tr>
             </thead>
@@ -244,7 +243,6 @@ document?.addEventListener("DOMContentLoaded", () => {
               <td>${trip.departure_date}<br>${trip.departure_time}</td>
               <td>${trip.route.uz_name}</td>
               <td>${trip.bus?.seats_count ?? '-'}</td>
-              <td>${trip.ticket_price ?? '-'} so‘m</td>
               <td>${trip.bus?.bus_model ?? '-'}</td>
             </tr>
           `;
