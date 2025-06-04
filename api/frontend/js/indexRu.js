@@ -230,7 +230,6 @@ document?.addEventListener("DOMContentLoaded", () => {
                 <th>Время отправления</th>
                 <th>Маршрут</th>
                 <th>Места</th>
-                <th>Цена</th>
                 <th>Модель</th>
               </tr>
             </thead>
@@ -242,7 +241,6 @@ document?.addEventListener("DOMContentLoaded", () => {
               <td>${trip.departure_date}<br>${trip.departure_time}</td>
               <td>${trip.route.ru_name}</td>
               <td>${trip.bus?.seats_count ?? '-'}</td>
-              <td>${trip.ticket_price ?? '-'} сум</td>
               <td>${trip.bus?.bus_model ?? '-'}</td>
             </tr>
           `;

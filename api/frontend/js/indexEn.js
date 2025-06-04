@@ -230,7 +230,6 @@ document?.addEventListener("DOMContentLoaded", () => {
                 <th>Departure Time</th>
                 <th>Route</th>
                 <th>Seats</th>
-                <th>Price</th>
                 <th>Model</th>
               </tr>
             </thead>
@@ -242,7 +241,6 @@ document?.addEventListener("DOMContentLoaded", () => {
               <td>${trip.departure_date}<br>${trip.departure_time}</td>
               <td>${trip.route.en_name}</td>
               <td>${trip.bus?.seats_count ?? '-'}
-              <td>${trip.ticket_price ?? '-'} soum</td>
               <td>${trip.bus?.bus_model ?? '-'}
             </tr>
           `;
