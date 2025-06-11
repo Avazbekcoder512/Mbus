@@ -10,10 +10,63 @@
     <link type="image/x-icon" href="../assets/images/favicon-3.png" rel="icon" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
     <style>
-        #payment-form{
+        #payment-form {
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        /* Button’larning umumiy stili */
+        .pay-buttons {
+            position: relative;
+            /* Pseudo-elementlarni to‘g‘ri joylash uchun */
+            overflow: hidden;
+            /* Shimmer tasviri tashqariga chiqqanini yashiradi */
+            background-color: #4CAF50;
+            /* Istalgan asosiy rang */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover paytida rangni ozgina o‘zgartirish */
+        .pay-buttons:hover {
+            background-color: #45A049;
+        }
+
+        /* Quyosh nuri effekti uchun pseudo-element */
+        .pay-buttons::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 50%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: rotate(25deg);
+            transition: none;
+            /* Animatsiya nomi, davomiyligi, tipi va takrorlanishi */
+            animation: shimmer 2.5s ease-in-out infinite;
+        }
+
+        /* Shimmer animatsiyasi: chapdan o‘ngga siljiydi */
+        @keyframes shimmer {
+            0% {
+                left: -150%;
+            }
+
+            50% {
+                left: 150%;
+            }
+
+            100% {
+                left: 150%;
+            }
         }
     </style>
 </head>
@@ -71,15 +124,13 @@
                     <span class="btn-text">
                         <img src="../assets/images/click.png" alt="bu yerda click yotibdi..." width="120" height="30"
                             style="object-fit: cover;">
-                        </span>
-                    <div class="spinner"></div>
+                    </span>
                 </button>
                 <button class="pay-buttons">
                     <span class="btn-text">
                         <img src="../assets/images/payme.png" alt="bu yerda peymi yotibdi..." width="120" height="30"
                             style="object-fit: cover;">
-                        </span>
-                    <div class="spinner"></div>
+                    </span>
                 </button>
 
             </form>
