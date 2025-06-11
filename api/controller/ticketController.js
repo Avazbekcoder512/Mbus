@@ -618,3 +618,16 @@ export const cancelTicket = async (req, res) => {
         });
     }
 }
+
+export const cardPage = async (req, res) => {
+    try {
+        return res.render("card", {
+            layout: false,
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            error: req.__('SERVER_ERROR')
+        })
+    }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipta Qidirish</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link type="image/x-icon" href="../assets/images/favicon-3.png" rel="icon" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <style>
+        #payment-form{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-popup-container"></div>
+
+    <div class="background"></div>
+    <header class="header container">
+        <a href="/" style="color: rgba(0, 0, 0, 0.486); text-decoration: none;">
+            <h1><span>Lime</span>Go</h1>
+        </a>
+        <div class="about">
+            <a href="tel:+998998483737">Texnik yordam: +998 (99) 848-37-37</a>
+            <a href="/login"><button type="submit" id="login-btn"><i class="fa-regular fa-right-to-bracket"></i>
+                    Kirish</button></a>
+            <span id="user-name" style="display: none;">
+                <span id="username"></span> <!-- Foydalanuvchi ismi -->
+            </span>
+            <div id="user-menu" class="dropdown-menu">
+                <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profile</a>
+                <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
+                <a href="/logout" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Tasdiqlash kodi uchun modal -->
+        <div id="code-modal" class="code-modal">
+            <div class="modal-content">
+                <h3>SMS KODNI KIRITING</h3>
+                <p>Telefon raqamingizga yuborilgan 6 xonali kodni kiriting:</p>
+                <input type="text" id="verification-code" maxlength="6" placeholder="123456">
+                <button id="verify-code-btn">
+                    <span class="btn-text">Tasdiqlash</span>
+                    <span class="loader" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+
+        <section class="payment-container">
+            <h2>To‘lov</h2>
+
+            <div class="summary">
+                <div><span>Chiptalar soni:</span> <strong id="ticket-count">2</strong></div>
+                <div><span>1 ta chipta narxi:</span> <strong id="ticket-price">200 000 so'm</strong></div>
+                <div class="total"><span>Umumiy to‘lov:</span> <strong id="total-price">400 000 so'm</strong></div>
+            </div>
+
+            <form id="payment-form">
+
+                <button class="pay-buttons">
+                    <span class="btn-text">
+                        <img src="../assets/images/click.png" alt="bu yerda click yotibdi..." width="120" height="30"
+                            style="object-fit: cover;">
+                        </span>
+                    <div class="spinner"></div>
+                </button>
+                <button class="pay-buttons">
+                    <span class="btn-text">
+                        <img src="../assets/images/payme.png" alt="bu yerda peymi yotibdi..." width="120" height="30"
+                            style="object-fit: cover;">
+                        </span>
+                    <div class="spinner"></div>
+                </button>
+
+            </form>
+        </section>
+
+
+    </main>
+
+    <script src="../js/card.js" defer></script>
+    <script src="../js/index.js" defer></script>
+</body>
+
+</html>
