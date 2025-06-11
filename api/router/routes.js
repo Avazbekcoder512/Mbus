@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { confirmRegistration, login, loginPage, loginPageEn, loginPageRu, logout, register } from '../controller/authController.js'
 import { checkSchema } from 'express-validator'
 import { confirmRegistrationSchema, loginValidate, registerValidate } from '../validator/authValidate.js'
-import { cancelTicket, confirmOrder, deleteTicket, downloadTicket, getTicket, getTrip, getTripPage, getTripPageEn, getTripPageRu, pendingTicket, routeFind, ticketsPage, ticketsPageEn, ticketsPageRu } from '../controller/ticketController.js'
+import { cancelTicket, cardPage, confirmOrder, deleteTicket, downloadTicket, getTicket, getTrip, getTripPage, getTripPageEn, getTripPageRu, pendingTicket, routeFind, ticketsPage, ticketsPageEn, ticketsPageRu } from '../controller/ticketController.js'
 import { cityFind, get, getEn, getRu } from '../controller/cityController.js'
 import { jwtAccessMiddleware } from '../middleware/jwtAccessMiddleware.js'
 import { resetPasswordSchema, sendCodeSchema } from '../validator/passwordValidate.js'
@@ -53,6 +53,7 @@ router
     .get('/trip/:id', jwtAccessMiddleware, getTrip)
     .post('/ticket-pending', jwtAccessMiddleware, checkSchema(pendingTicketSchema), pendingTicket)
     .post('/confirm', jwtAccessMiddleware, limit, checkSchema(confirmOrderSchema), confirmOrder)
+    .get('/card', jwtAccessMiddleware, cardPage)
 
     // tickets page router
     .get('/ticket', jwtAccessMiddleware, ticketsPage)
