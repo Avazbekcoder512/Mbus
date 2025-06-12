@@ -6,8 +6,8 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #ddd;
-  color: #333;
+  background-color: #424242;
+  color: white;
   text-align: center;
   margin: 0;
   padding: 0;
@@ -25,11 +25,11 @@ body {
 .header h1 {
   font-size: 28px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.486);
+  color: white;
 }
 
 .header a h1 span {
-  color: #49aa1f;
+  color: #ffc107;
 }
 
 .header a {
@@ -37,7 +37,7 @@ body {
 }
 
 .container h1 span {
-  color: #49aa1f;
+  color: #ffc107;
 }
 
 .about {
@@ -48,7 +48,7 @@ body {
 
 .about a {
   text-decoration: none;
-  color: #333;
+  color: white;
   font-size: 18px;
   font-weight: 500;
 }
@@ -78,7 +78,7 @@ h1 {
 }
 
 p {
-  color: #333;
+  color: white;
   font-size: 18px;
   line-height: 1.5;
 }
@@ -112,15 +112,21 @@ form .search-button {
   box-sizing: border-box;
 }
 
+#ticket-search select,
+#ticket-search input:focus {
+  background: white !important;
+}
+
 form .search-button {
-  background-color: #6abf45;
-  color: white;
+  background-color: #ffc107;
+  color: #5d5858;
   cursor: pointer;
   height: 48px;
+  font-weight: 600;
 }
 
 form .search-button:hover {
-  background-color: #5a9d3a;
+  background-color: #e2ab04;
 }
 
 .background {
@@ -481,7 +487,7 @@ table {
   margin: 0 auto; /* Markazga joylashtirish */
   border-collapse: separate;
   border-spacing: 15px;
-  background: #fff;
+  background: #4b4b4b;
   padding: 30px;
   border-radius: 20px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
@@ -500,6 +506,7 @@ td.seat {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.3s;
+  color: #000;
 }
 
 /* —– Selected & occupied holatlar (o‘zgarmaydi) —– */
@@ -588,9 +595,9 @@ td.driver {
 /* --- Login tugmasi --- */
 /* Login tugmasi yangi stil */
 #login-btn {
-  background: #00cb07;
+  background: #ffc107;
   border: none;
-  color: #fff;
+  color: #5d5858;
   padding: 0.5rem 1.2rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -625,8 +632,8 @@ td.driver {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: #00cb07;
-  color: #fff;
+  background: #ffc107;
+  color: #5d5858;
   padding: 0.5rem 1.2rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -905,10 +912,9 @@ div.bus_loading {
 }
 
 .ticket-passenger-form {
-  background: #fff;
+  background: #4b4b4b;
   margin: 28px auto;
   padding: 24px;
-  border: 1px solid #e0e0e0;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 1100px;
@@ -919,7 +925,7 @@ div.bus_loading {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 16px;
-  color: #333;
+  color: white;
 }
 
 .ticket-passenger-form .form-row {
@@ -961,7 +967,6 @@ div.bus_loading {
   margin-bottom: 6px;
   font-weight: 500;
   font-size: 0.95rem;
-  color: #555;
   display: block;
   text-align: left;
 }
@@ -973,11 +978,22 @@ div.bus_loading {
   font-size: 1.1rem;
   transition: border-color 0.2s ease-in-out;
   width: 240px; /* Inputlar kengligini to'liq bo'lishini ta'minlaydi */
+  background: #4b4b4b;
+  color: white;
 }
 
 .ticket-passenger-form input:focus {
-  border-color: #007bff;
+  box-shadow: 0 0 0 3px #ffc107;
+  background: #3b3b3b;
   outline: none;
+}
+
+.ticket-passenger-form select:valid option {
+  background-color: #4b4b4b !important;
+}
+
+.ticket-passenger-form select:valid {
+  color: white !important;
 }
 
 .ticket-passenger-form select {
@@ -987,10 +1003,12 @@ div.bus_loading {
   font-size: 1.1rem;
   transition: border-color 0.2s ease-in-out;
   width: 240px; /* Inputlar kengligini to'liq bo'lishini ta'minlaydi */
+  background: #4b4b4b;
+  color: white;
 }
 
 .ticket-passenger-form select:focus {
-  border-color: #007bff;
+  border-color: #ffc107;
   outline: none;
 }
 
@@ -1004,8 +1022,8 @@ div.bus_loading {
 
 .form-buttons button {
   padding: 14px 28px;
-  background-color: rgb(0 218 65 / 80%);
-  color: #fff;
+  background-color: #ffc107;
+  color: #5d5858;
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
@@ -1020,9 +1038,9 @@ div.bus_loading {
 .payment-container {
   max-width: 720px;
   margin: 60px auto;
-  background: #ffffff;
+  background: #4b4b4b;
   border-radius: 16px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.07);
+  box-shadow: -1px 2px 18px #ffc107;
   padding: 50px;
   font-family: "Segoe UI", sans-serif;
 }
@@ -1031,15 +1049,15 @@ div.bus_loading {
   font-size: 28px;
   text-align: center;
   margin-bottom: 35px;
-  color: #202020;
+  color: #fff;
 }
 
 .summary {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #ffc107;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 35px;
-  background: #f8fafd;
+  background: #3c3c3c;
 }
 
 .summary div {
@@ -1047,7 +1065,6 @@ div.bus_loading {
   justify-content: space-between;
   font-size: 17px;
   margin: 10px 0;
-  color: #333;
 }
 
 .summary .total {
@@ -1805,7 +1822,7 @@ div.bus_loading {
 }
 .profile-sidebar,
 .profile-details {
-  background: var(--card-bg);
+  background: #333232;
   border-radius: 16px;
   box-shadow: 0 8px 16px var(--shadow);
   text-align: start;
@@ -1895,16 +1912,16 @@ select {
   padding: 1rem 1.25rem;
   border: none;
   border-radius: 12px;
-  background: #f0f4f8;
+  background: #525353;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-  color: var(--text);
+  color: white;
   transition: background 0.2s, box-shadow 0.2s, border 0.2s;
   font-size: 1rem;
 }
 .field input:focus,
 select:focus {
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.2);
+  background: #3b3b3b;
+  box-shadow: 0 0 0 3px #ffc107;
   outline: none;
 }
 .field input:disabled,
@@ -1938,20 +1955,20 @@ select:disabled {
 }
 .btn-edit {
   background: transparent;
-  color: var(--accent-start);
-  border: 2px solid var(--accent-start);
+  color: #ffc107;
+  border: 2px solid #ffc107;
 }
 .btn-edit:hover {
   opacity: 0.8;
 }
 .btn-save {
-  background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  background: linear-gradient(135deg, #ffc107, #ffc107);
   color: #fff;
 }
 .btn-cancel,
 .btn-img-cancel {
-  background: #e0e0e0;
-  color: var(--text);
+  background: #525353;
+  color: white;
 }
 .btn:hover {
   transform: translateY(-2px);
@@ -2027,7 +2044,8 @@ select:disabled {
 }
 
 /* POPUP-CONTENT ning stil qo‘shimchalari */
-.error-popup .popup-content {
+.error-popup .popup-content,
+#error-popup .popup-content {
   background: var(--card-bg);
   padding: 2rem;
   border-radius: 12px;
@@ -2036,6 +2054,7 @@ select:disabled {
   max-width: 90%;
   width: 400px;
   text-align: center;
+  color: black !important;
 }
 
 /* YOPIQ-IKONA */
@@ -2093,7 +2112,6 @@ select:disabled {
   gap: 0.4rem;
   cursor: pointer;
   border-radius: 999px; /* oval shaklda tugma */
-  color: #2980b9;
   font-weight: 500;
   transition: transform 0.2s ease;
 }
@@ -2151,4 +2169,3 @@ select:disabled {
   width: 40px;
   height: auto;
 }
-
