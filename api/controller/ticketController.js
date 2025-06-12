@@ -619,9 +619,35 @@ export const cancelTicket = async (req, res) => {
     }
 }
 
-export const cardPage = async (req, res) => {
+export const cardPageUz = async (req, res) => {
     try {
         return res.render("card", {
+            layout: false,
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            error: req.__('SERVER_ERROR')
+        })
+    }
+}
+
+export const cardPageEn = async (req, res) => {
+    try {
+        return res.render("cardEn", {
+            layout: false,
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            error: req.__('SERVER_ERROR')
+        })
+    }
+}
+
+export const cardPageRu = async (req, res) => {
+    try {
+        return res.render("cardRu", {
             layout: false,
         })
     } catch (error) {

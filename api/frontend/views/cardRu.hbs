@@ -69,15 +69,15 @@
 
     <div class="background"></div>
     <header class="header container">
-        <a href="/" class="logo">
+        <a href="/ru" class="logo">
             <h1><span>Lime</span>Go</h1>
         </a>
         <div class="about">
-            <a href="tel:+998998483737">Texnik yordam: +998 (99) 555-15-65</a>
+            <a href="tel:+998998483737">Техническая поддержка: +998 (99) 555-15-65</a>
             <div class="lang-selector">
                 <button class="lang-btn">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Flag_of_Uzbekistan.svg"
-                        alt="Oʻzbekcha" width="20"> <span>UZ</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Flag_of_Russia.svg/330px-Flag_of_Russia.svg.png"
+                        alt="Русский" width="20"> <span>RU</span>
                     <i class="fa fa-caret-down"></i>
                 </button>
                 <ul class="lang-menu">
@@ -102,18 +102,18 @@
                 </ul>
             </div>
             <!-- Til tanlash dropdown -->
-            <a href="/login">
+            <a href="/login/ru">
                 <button type="submit" id="login-btn">
-                    <i class="fa-regular fa-right-to-bracket"></i> Kirish
+                    <i class="fa-regular fa-right-to-bracket"></i> Войти
                 </button>
             </a>
             <span id="user-name" style="display: none;">
                 <span id="username"></span>
             </span>
             <div id="user-menu" class="dropdown-menu">
-                <a href="/profile" id="profile"><i class="fa-solid fa-user"></i> Profil</a>
-                <a href="/ticket" id="tickets"><i class="fa-solid fa-ticket"></i> Chiptalarim</a>
-                <a href="/logout?lang=uz" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+                <a href="/profile/ru" id="profile"><i class="fa-solid fa-user"></i> Профиль</a>
+                <a href="/ticket/ru" id="tickets"><i class="fa-solid fa-ticket"></i> Мои билеты</a>
+                <a href="/logout?lang=ru" id="logout"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
             </div>
         </div>
     </header>
@@ -142,10 +142,9 @@
                 <div class="total"><span>Umumiy to‘lov:</span> <strong id="total-price">400 000 so'm</strong></div>
             </div>
 
-            <div id="payment-form">
+            <form id="payment-form">
 
-                <button class="pay-buttons"
-                    onclick="window.location='https://my.click.uz/services/pay?service_id=${serviceId}&merchant_id=${merchantId}&amount=${amount}&transaction_param=${transactionParam}&return_url=${returnUrl}'">
+                <button class="pay-buttons">
                     <span class="btn-text">
                         <img src="../assets/images/click.png" alt="bu yerda click yotibdi..." width="120" height="30"
                             style="object-fit: cover;">
@@ -158,7 +157,7 @@
                     </span>
                 </button>
 
-            </div>
+            </form>
         </section>
 
 
