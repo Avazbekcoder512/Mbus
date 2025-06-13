@@ -1,5 +1,5 @@
-const api_url = 'http://localhost:8000'
-// const api_url = 'https://www.atr.uz'
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://www.go.limon.uz'
 
 // --- Popup functions ---
 function showPopup(type, message, errorCode) {

@@ -64,16 +64,16 @@ export const pendingTicketSchema = {
 
 
 export const confirmOrderSchema = {
-    notEmpty: {
-        errorMessage: 'REGISTERCODE_EMPTY'
-    },
-    verificationCode: {
-        isInt: {
-            errorMessage: 'REGISTERCODE_INT'
-        },
-    },
-    isLength: {
-        options: { min: 6 },
-        errorMessage: 'REGISTERCODE_LENGTH'
-    },
+    // notEmpty: {
+    //     errorMessage: 'REGISTERCODE_EMPTY'
+    // },
+    // verificationCode: {
+    //     isInt: {
+    //         errorMessage: 'REGISTERCODE_INT'
+    //     },
+    // },
+    // isLength: {
+    //     options: { min: 6 },
+    //     errorMessage: 'REGISTERCODE_LENGTH'
+    // },
 }

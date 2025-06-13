@@ -28,7 +28,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            background: linear-gradient(120deg, #FFC107 54%, #007bff);
+            background: #FFC107;
         }
 
         /* Quyosh nuri effekti uchun pseudo-element */
@@ -138,14 +138,13 @@
 
             <div class="summary">
                 <div><span>Chiptalar soni:</span> <strong id="ticket-count">2</strong></div>
-                <div><span>1 ta chipta narxi:</span> <strong id="ticket-price">200 000 so'm</strong></div>
                 <div class="total"><span>Umumiy to‘lov:</span> <strong id="total-price">400 000 so'm</strong></div>
             </div>
 
             <div id="payment-form">
 
                 <button class="pay-buttons"
-                    onclick="window.location='https://my.click.uz/services/pay?service_id=${serviceId}&merchant_id=${merchantId}&amount=${amount}&transaction_param=${transactionParam}&return_url=${returnUrl}'">
+                    id="click-btn">
                     <span class="btn-text">
                         <img src="../assets/images/click.png" alt="bu yerda click yotibdi..." width="120" height="30"
                             style="object-fit: cover;">

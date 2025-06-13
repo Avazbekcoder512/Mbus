@@ -7,8 +7,8 @@ let departureTime = "";
 let arrivalDate = "";
 let arrivalTime = "";
 
-const api_url = 'http://localhost:8000'
-// const api_url = 'https://www.atr.uz'
+// const api_url = 'http://localhost:8000'
+const api_url = 'https://www.go.limon.uz'
 
 function showErrorPopup(message, redirectUrl = null, isSuccess = false) {
   const popup = document.getElementById('error-popup');
@@ -223,6 +223,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       totalPrice += Number(seatData.price);
     });
     localStorage.setItem("totalPrice", totalPrice.toString());
+    localStorage.setItem("selectedSeatsCount", selectedPrices.size.toString()); // Tanlangan o‘rindiqlar soni
   }
 
   function formatPhoneNumber(value) {
@@ -395,37 +396,37 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       try {
-        window.location.href = '/card'
-        // const response = await fetch(`${api_url}/ticket-pending?lang=uz`, {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify({
-        //     passengers,
-        //     from: routeFrom,
-        //     to: routeTo,
-        //     departure_date: departureDate,
-        //     departure_time: departureTime,
-        //     arrival_date: arrivalDate,
-        //     arrival_time: arrivalTime
-        //   })
-        // });
+        const response = await fetch(`${api_url}/ticket-pending?lang=uz`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            passengers,
+            from: routeFrom,
+            to: routeTo,
+            departure_date: departureDate,
+            departure_time: departureTime,
+            arrival_date: arrivalDate,
+            arrival_time: arrivalTime
+          })
+        });
 
-        // const result = await response.json();
+        const result = await response.json();
 
-        // if (response.ok && result.order) {
-        //   localStorage.setItem('order', result.order);
-        //   showVerificationModal();
-        // } else {
-        //   if (result.error === "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!") {
-        //     showErrorPopup(result.error, '/profile');
-        //   } else if (response.status === 401) {
-        //     showErrorPopup(result.error, '/login');
-        //   } else if (response.status === 500) {
-        //     window.location.href = '/500';
-        //   } else {
-        //     showErrorPopup(result.error || 'Xatolik yuz berdi');
-        //   }
-        // }
+        if (response.ok && result.order) {
+          localStorage.setItem('order', result.order);
+          // showVerificationModal();
+          window.location.href = '/card'; // <-- faqat muvaffaqiyatli bo‘lsa o'tkazadi
+        } else {
+          if (result.error === "Foydalanuvchi ma'lumotlari to'liq emas! Iltimos ma'lumotlarni to'ldiring!") {
+            showErrorPopup(result.error, '/profile');
+          } else if (response.status === 401) {
+            showErrorPopup(result.error, '/login');
+          } else if (response.status === 500) {
+            window.location.href = '/500';
+          } else {
+            showErrorPopup(result.error || 'Xatolik yuz berdi');
+          }
+        }
       } catch (err) {
         console.error("Xatolik:", err);
         showErrorPopup('Serverga ulanib bo‘lmadi', '/');

@@ -9,8 +9,8 @@ document?.addEventListener("DOMContentLoaded", () => {
     const usernameDisplay = document.getElementById("username");
     const userMenu = document.getElementById("user-menu");
     let fpInstance = null;
-    const API_BASE = "http://localhost:8000";
-    // const API_BASE = "https://www.atr.uz";
+    // const API_BASE = "http://localhost:8000";
+    const API_BASE = "https://www.go.limon.uz";
 
     // Yordamchi: backenddan kelgan xabarni ajratish (array yoki string)
     function extractError(err) {
