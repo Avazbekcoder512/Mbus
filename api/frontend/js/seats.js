@@ -224,6 +224,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     localStorage.setItem("totalPrice", totalPrice.toString());
     localStorage.setItem("selectedSeatsCount", selectedPrices.size.toString()); // Tanlangan o‘rindiqlar soni
+
+    // Tanlangan o‘rindiqlarning id-larini massiv ko‘rinishida saqlash
+    const selectedSeatIds = Array.from(selectedPrices.keys());
+    localStorage.setItem("selectedSeatIds", JSON.stringify(selectedSeatIds));
   }
 
   function formatPhoneNumber(value) {

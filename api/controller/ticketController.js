@@ -715,13 +715,19 @@ export const cardPageRu = async (req, res) => {
 
 
 export const pay = async (req, res) => {
-    const body = req.body
-    const amount = body.totalPrice
-    const SERVICE_ID = process.env.SERVICE_ID
-    const MERCHANT_ID = process.env.MERCHANT_ID
-    const MERCHANT_USER_ID = process.env.MERCHANT_USER_ID
-    const return_url = 'https://www.go.limon.uz'
-    const paymentUrl = `https://my.click.uz/services/pay?service_id=${SERVICE_ID}&merchant_id=${MERCHANT_ID}&amount=${amount}&merchant_user_id=${MERCHANT_USER_ID}&return_url=${return_url}`
+  const body = req.body
+  const generateRandomCode = () =>
+    Math.floor(1000 + Math.random() * 9000);
 
-    return res.redirect(paymentUrl)
+  const orderId = generateRandomCode();
+  const amount = body.totalPrice
+  const SERVICE_ID = process.env.SERVICE_ID
+  const MERCHANT_ID = process.env.MERCHANT_ID
+  const return_url = 'https://www.go.limon.uz'
+  const paymentUrl = `https://my.click.uz/services/pay?service_id=${SERVICE_ID}&merchant_id=${MERCHANT_ID}&amount=${amount}&transaction_param=${orderId}&return_url=${return_url}`
+
+  // return res.redirect(paymentUrl)
+  return res.status(200).send({
+    url: paymentUrl
+  })
 }
