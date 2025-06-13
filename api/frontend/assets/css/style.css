@@ -1032,7 +1032,7 @@ div.bus_loading {
 }
 
 .form-buttons button:hover {
-  background-color: rgba(7, 138, 46, 0.733);
+  background-color: #e9af00d7;
 }
 
 .payment-container {
@@ -2055,6 +2055,11 @@ select:disabled {
   width: 400px;
   text-align: center;
   color: black !important;
+}
+
+.error-popup .popup-content,
+#error-popup .popup-content p{
+  color: #000;
 }
 
 /* YOPIQ-IKONA */
