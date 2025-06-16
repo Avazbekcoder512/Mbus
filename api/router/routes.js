@@ -56,7 +56,7 @@ router
     .get('/card', jwtAccessMiddleware, cardPageUz)
     .get('/card/en', jwtAccessMiddleware, cardPageEn)
     .get('/card/ru', jwtAccessMiddleware, cardPageRu)
-    .post('/pay', jwtAccessMiddleware, pay)
+    // .post('/pay', jwtAccessMiddleware, pay)
 
     // tickets page router
     .get('/ticket', jwtAccessMiddleware, ticketsPage)
